@@ -39,7 +39,7 @@ On October, which no decision saw, the final configuration scores +0.134 skill o
 
 October has 1,522 cells; Jul-Sep has 2,010. Source: loop/results/backtest.json, key "scored".
 
-TODO (gpuloop): uncertainty. A bootstrap over series for the October skill difference, so the reader can tell if +0.012 is more than noise.
+The October gain is not significant. Resampling the 37 series 10,000 times puts the difference at +0.0125, with a 95% interval from −0.0097 to +0.0412. The model has the lower loss on 22 of the 37 series. Source: loop/results/bootstrap_october_37.txt, script loop/scripts/bootstrap_october37.py.
 
 TODO (Sunday): skill on the frozen truth for 7, 9 and 13 November, pooled, mean, median and geometric mean, with coverage.
 
@@ -54,15 +54,15 @@ The sweep that picked the final settings tried 38 configurations on July to Sept
 
 ## AWS spot: trend works there and fails on posted prices
 
-A trend setting wins on AWS spot and loses on posted prices. On 80 AWS spot series in October, a configuration that follows recent price momentum scores +0.36 skill against the starting configuration's +0.26. On the 37 posted rental series, the same trend model scores +0.10 against +0.12.
+A trend setting wins on AWS spot and loses on posted prices. On 80 AWS spot series in October, a configuration that follows recent price momentum scores +0.36 skill against the starting configuration's +0.26. On the 37 posted rental series, the same trend model scores +0.101 against +0.122.
 
 Our reading, which we have not tested directly: AWS spot is an administered price that AWS moves in frequent small steps, so a move tends to continue. Posted rate cards change rarely and in jumps, and a trend there mostly adds noise. The spot result is not scored on Sunday.
 
-Sources: loop/results/backtest.json, key "aws_trend"; loop/results/october_37_three_models.txt (TODO: lands with the loop commit).
+Sources: loop/results/backtest.json, key "aws_trend"; loop/results/october_37_three_models.txt, script loop/scripts/october37.py.
 
 ## Negative results
 
-- Most of the September edge did not survive to October. The final configuration led the start by 0.045 in September and by 0.012 in October. Choosing among 38 configurations on September made September look better than it was.
+- Most of the September edge did not survive to October. The final configuration led the start by 0.045 in September and by 0.012 in October, a gap within noise. Choosing among 38 configurations on September made September look better than it was.
 - Momentum hurts on posted prices. Adding it at 0.5 cut September skill from +0.127 to +0.034.
 - A drift term added nothing (+0.125 against +0.127 in September).
 - TODO (gpuloop): any LLM-proposer rounds that kept nothing.
