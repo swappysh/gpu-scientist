@@ -54,7 +54,8 @@ def build(pack_dir: str, out: str, tier: str = "headline") -> int:
             check=True,
         )
         with open(catalog_csv, newline="") as f:
-            keep = {r["series_id"]: r["instrument_class"] for r in csv.DictReader(f) if r["tier"] == tier}
+            keep = {r["series_id"]: r["instrument_class"] for r in csv.DictReader(f)
+                    if tier == "all" or r["tier"] == tier}
         rows: dict[str, list[tuple[int, float]]] = {sid: [] for sid in keep}
         with open(series_csv, newline="") as f:
             for r in csv.DictReader(f):
@@ -80,7 +81,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--pack", required=True, help="unzipped gpu-price-pack-v0.1.1-handover directory")
     ap.add_argument("--out", default=str(DEFAULT_PATH))
-    ap.add_argument("--tier", default="headline")
+    ap.add_argument("--tier", default="headline", help="headline, extended or all")
     args = ap.parse_args()
     n = build(args.pack, args.out, args.tier)
     print(f"wrote {args.out}: {n} {args.tier} series (catalog as of {CATALOG_AS_OF})")

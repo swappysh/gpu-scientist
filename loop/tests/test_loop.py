@@ -172,3 +172,20 @@ def test_loop_keeps_and_kills(memory):
     run(memory, rounds=4, seed=7, verbose=False)
     statuses = {e["status"] for e in memory.bound("critic").entries() if e["kind"] == "decision"}
     assert "killed" in statuses and statuses & {"kept", "corroborated"}
+
+
+def test_momentum_extends_the_last_daily_change():
+    import numpy as np
+
+    from pacific_hack.data import Series, day
+    from pacific_hack.forecaster import Changes, forecast
+
+    days = np.arange(day("2026-07-01"), day("2026-07-01") + 60)
+    vals = 2.0 * np.exp(0.01 * np.arange(60))  # steady +1% a day
+    s = Series("up", "g", days, vals)
+    origin, ch = int(days[-1]), Changes([s])
+    flat = forecast(ForecasterConfig(), s, ch, origin, 3)
+    mom = forecast(ForecasterConfig(momentum=0.5), s, ch, origin, 3)
+    shift = 0.01 * (0.5 + 0.25 + 0.125)
+    assert mom[1] == pytest.approx(flat[1] * np.exp(shift))
+    assert ForecasterConfig().momentum == 0.0  # default keeps starter parity

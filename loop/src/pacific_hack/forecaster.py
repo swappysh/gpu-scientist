@@ -36,6 +36,12 @@ class ForecasterConfig:
     pool_weight: float = 0.0
     # Fewer changes than this (own + pooled) -> flat forecast at the last value.
     min_samples: int = 20
+    # AR(1) on daily log changes: shift all quantiles by r * (phi + ... + phi^h),
+    # r = the last 1-day change (0 = off). Spot prices trend: train lag-1 ac ~ +0.6.
+    momentum: float = 0.0
+    # Blend phi toward the series' own lag-1 autocorrelation of daily changes
+    # (visible history, clipped to [0, 0.95]) at this weight (0 = global phi only).
+    momentum_fit: float = 0.0
 
     def updated(self, param: str, value) -> "ForecasterConfig":
         return replace(self, **{param: value})
@@ -112,10 +118,34 @@ def forecast(config: ForecasterConfig, s: Series, changes: Changes, origin: int,
             own_mass = w.sum() if len(w) else 1.0
             pw = pw * (config.pool_weight * own_mass / pw.sum())
         q = _weighted_quantiles(np.concatenate([ch, p_ch]), np.concatenate([w, pw]), QUANTILES)
+    if config.momentum > 0 or config.momentum_fit > 0:
+        phi = config.momentum
+        if config.momentum_fit > 0:
+            phi += config.momentum_fit * (_lag1_ac(changes, s, origin) - phi)
+        last *= float(np.exp(_momentum(s, k, h, phi)))
     q10 = last * float(np.exp(config.band_scale * q[0]))
     q90 = last * float(np.exp(config.band_scale * q[2]))
     q50 = last * float(np.exp(config.drift_weight * q[1]))
     return min(q10, q50), q50, max(q90, q50)
+
+
+def _momentum(s: Series, k: int, h: int, phi: float) -> float:
+    """Expected h-day log change under AR(1) on daily changes, from the last 1-day change."""
+    if k < 2 or s.days[k - 1] - s.days[k - 2] != 1:
+        return 0.0
+    r = float(np.log(s.vals[k - 1] / s.vals[k - 2]))
+    return r * sum(phi ** i for i in range(1, h + 1))
+
+
+def _lag1_ac(changes: Changes, s: Series, origin: int) -> float:
+    end, ch = _visible(*changes.by_series[(s.sid, 1)], origin, 0)
+    ok = np.diff(end) == 1
+    if ok.sum() < 20:
+        return 0.0
+    x, y = ch[:-1][ok], ch[1:][ok]
+    if x.std() == 0 or y.std() == 0:
+        return 0.0
+    return float(np.clip(np.corrcoef(x, y)[0, 1], 0.0, 0.95))
 
 
 def _pinball(y: float, f: float, tau: float) -> float:

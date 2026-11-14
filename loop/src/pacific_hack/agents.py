@@ -34,6 +34,7 @@ MUTATIONS: list[tuple[str, object]] = [
     ("window_days", 45),
     ("half_life_days", 30.0),
     ("half_life_days", 14.0),
+    ("half_life_days", 7.0),
     ("band_scale", 0.8),
     ("band_scale", 1.25),
     ("drift_weight", 0.5),
@@ -42,6 +43,9 @@ MUTATIONS: list[tuple[str, object]] = [
     ("pool_weight", 1.0),
     ("min_samples", 10),
     ("min_samples", 40),
+    ("momentum", 0.5),
+    ("momentum", 0.65),
+    ("momentum_fit", 0.5),
 ]
 
 GOOD = ("kept", "corroborated")

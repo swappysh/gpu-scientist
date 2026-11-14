@@ -32,6 +32,8 @@ FORECASTER_RANGES: dict[str, tuple[float, float]] = {
     "drift_weight": (0.0, 1.0),
     "pool_weight": (0.0, 2.0),
     "min_samples": (2, 60),
+    "momentum": (0.0, 0.95),
+    "momentum_fit": (0.0, 1.0),
 }
 
 
