@@ -44,6 +44,8 @@ M falls about 25% for each year of age between those two points. We extend that 
 
 Resale value = M × rent × 8,760 hours. Low uses the low rent path with the low end of M; high uses the high rent with the high end of M.
 
+A check on the H100 mid case for November 2028: M is 0.39 at age 3.4 and falls to 0.18 by age 6.1. So the resale value is 0.18 × $2.95 × 8,760 = $4,650, which the table rounds to $4,700.
+
 ## Where we differ from the published bands
 
 American Compute publishes forward residual bands for the H100. For 2028 they give 5% to 7% of price new (conservative) and 7% to 14% (moderate). For 2029 they give 2% to 3% and 3% to 6%.
