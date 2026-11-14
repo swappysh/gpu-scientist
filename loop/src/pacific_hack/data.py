@@ -21,6 +21,7 @@ import numpy as np
 HORIZONS = (1, 3, 7)
 TRAIN_START = "2026-07-01"
 TRAIN_END = "2026-09-30"  # last date any dev number may use: the proposer's as-of date
+VAL_START = "2026-09-01"  # dev origins from here on form the keep/kill gate slice
 HELDOUT_START = "2026-10-01"
 HELDOUT_END = "2026-10-31"
 PACK_END = "2026-11-06"  # last day in the pack (data cutoff)
@@ -44,6 +45,11 @@ def dev_origins() -> list[int]:
     """Jul 1 .. Sep 23: every target (origin + up to 7 days) is on or before Sep 30."""
     last = day(TRAIN_END) - max(HORIZONS)
     return list(range(day(TRAIN_START), last + 1, ORIGIN_STEP))
+
+
+def val_origins() -> list[int]:
+    """Sep 1 .. Sep 23: the last stretch of dev origins, the evaluator's and critic's gate."""
+    return [o for o in dev_origins() if o >= day(VAL_START)]
 
 
 def heldout_origins() -> list[int]:

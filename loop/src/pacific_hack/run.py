@@ -79,7 +79,7 @@ def run(
                 if verbose:
                     print(f"[round {r + 1}] {decision['idea_id']}: {c['param']}={c['value']} -> {decision['status']}")
 
-            for verdict in critic.review_pending():
+            for verdict in critic.review_pending(config):
                 if verbose:
                     print(f"    critic: {verdict['idea_id']} {verdict['status']}")
                 if verdict["status"] == "refuted":

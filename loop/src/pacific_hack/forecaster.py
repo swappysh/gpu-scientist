@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass, replace
 
 import numpy as np
 
-from .data import HORIZONS, Series, dev_origins, heldout_origins
+from .data import HORIZONS, Series, dev_origins, heldout_origins, val_origins
 
 QUANTILES = (0.1, 0.5, 0.9)
 
@@ -186,9 +186,10 @@ def _last(s: Series, origin: int) -> float:
 
 
 def backtest(config: ForecasterConfig, world: list[Series]) -> dict:
-    """Returns {"skill_train", "skill_heldout", "steps", "coverage_*", "cells_*"}.
+    """Returns {"skill_train", "skill_val", "skill_heldout", "steps", "coverage_*", "cells_*"}.
 
     skill_train:   dev origins Jul 1 - Sep 23 (all targets on or before Sep 30).
+    skill_val:     the September part of those origins (the keep/kill gate).
     skill_heldout: October origins (targets up to Nov 6).
     steps = forecast dates walked (the unit of the steps-per-hour metric).
     """
@@ -196,8 +197,10 @@ def backtest(config: ForecasterConfig, world: list[Series]) -> dict:
     dev, held = dev_origins(), heldout_origins()
     tr = score(config, world, dev, changes=changes)
     ho = score(config, world, held, changes=changes)
+    va = score(config, world, val_origins(), changes=changes)
     return {
         "skill_train": tr["skill"],
+        "skill_val": va["skill"],
         "skill_heldout": ho["skill"],
         "steps": len(dev) + len(held),
         "coverage_train": tr["coverage"],

@@ -11,7 +11,7 @@ from pacific_hack.forecaster import ForecasterConfig, backtest
 from pacific_hack.memory import HOLDOUT_AUDIENCE, JsonlMemory, PastDevMemory
 from pacific_hack.run import run
 
-HOLDOUT_KEYS = ("skill_heldout", "d_heldout", "alt_heldout")
+HOLDOUT_KEYS = ("skill_heldout", "d_heldout", "skill_val", "d_val", "alt_val")
 
 
 @pytest.fixture
@@ -100,12 +100,12 @@ def test_refuted_hypothesis_is_superseded_not_duplicated(memory, monkeypatch):
     )
     memory.append(ledger.make_entry("proposal", "proposed", "proposer", market_date=TRAIN_END, **kw))
     memory.append(ledger.make_entry("decision", "kept", "evaluator", market_date=TRAIN_END, **kw))
-    # Force the critic to refute: every alternate world shows a heldout loss.
+    # Force the critic to refute: every alternate world shows a September loss.
     monkeypatch.setattr(
         "pacific_hack.agents.backtest_batch",
         lambda configs, runner, seed: [
-            {"skill_train": 0, "skill_heldout": 0.5, "steps": 1},
-            {"skill_train": 0, "skill_heldout": 0.1, "steps": 1},
+            {"skill_train": 0, "skill_val": 0.5, "skill_heldout": 0.5, "steps": 1},
+            {"skill_train": 0, "skill_val": 0.1, "skill_heldout": 0.9, "steps": 1},
         ],
     )
     (verdict,) = Critic(memory.bound("critic")).review_pending()
@@ -189,3 +189,36 @@ def test_momentum_extends_the_last_daily_change():
     shift = 0.01 * (0.5 + 0.25 + 0.125)
     assert mom[1] == pytest.approx(flat[1] * np.exp(shift))
     assert ForecasterConfig().momentum == 0.0  # default keeps starter parity
+
+
+def test_october_never_decides_keep_or_kill(memory, monkeypatch):
+    from pacific_hack.agents import Evaluator, Proposer
+
+    # The candidate wins October by a mile but loses September: it must be killed.
+    monkeypatch.setattr(
+        "pacific_hack.agents.backtest_batch",
+        lambda configs, runner, seed: [
+            {"skill_train": 0.2, "skill_val": 0.2, "skill_heldout": 0.1, "steps": 1},
+            {"skill_train": 0.2, "skill_val": 0.19, "skill_heldout": 0.9, "steps": 1},
+        ],
+    )
+    proposals = Proposer(memory.bound("proposer")).propose_batch(ForecasterConfig(), k=1)
+    (decision,) = Evaluator(memory.bound("evaluator")).evaluate_batch(proposals, ForecasterConfig())
+    assert decision["status"] == "killed"
+
+
+def test_critic_toggles_one_param_on_the_current_config(memory, monkeypatch):
+    seen = []
+    monkeypatch.setattr(
+        "pacific_hack.agents.backtest_batch",
+        lambda configs, runner, seed: seen.append(configs)
+        or [{"skill_train": 0, "skill_val": 0.1, "skill_heldout": 0, "steps": 1}] * 2,
+    )
+    kw = dict(idea_id="idea-001", change={"param": "band_scale", "value": 0.8},
+              previous={"param": "band_scale", "value": 1.0}, fact_id=hypothesis_fact_id("idea-001"))
+    memory.append(ledger.make_entry("decision", "kept", "evaluator", market_date=TRAIN_END, **kw))
+    current = ForecasterConfig(half_life_days=7.0, band_scale=0.8)
+    Critic(memory.bound("critic"), n_alt_seeds=1).review_pending(current)
+    before, after = seen[0]
+    assert before == ForecasterConfig(half_life_days=7.0, band_scale=1.0)
+    assert after == current

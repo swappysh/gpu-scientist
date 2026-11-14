@@ -214,8 +214,9 @@ class Evaluator:
     def evaluate_batch(self, proposals: list[dict], current: ForecasterConfig) -> list[dict]:
         """Backtest the whole batch in one harness call; returns public decisions.
 
-        Keep rule: held-out October skill must strictly improve AND Jul-Sep
-        skill must not regress (guards against fitting the holdout). Each idea
+        Keep rule: September skill (the dev gate slice) must strictly improve
+        AND Jul-Sep skill must not regress. October never decides anything; it
+        is logged privately and reported once at the end of a run. Each idea
         is scored against the pre-batch config.
         """
         if not proposals:
@@ -231,7 +232,8 @@ class Evaluator:
         for proposal, cand in zip(proposals, cand_results):
             d_train = cand["skill_train"] - base["skill_train"]
             d_held = cand["skill_heldout"] - base["skill_heldout"]
-            keep = d_held > 0 and d_train >= -0.005
+            d_val = cand["skill_val"] - base["skill_val"]
+            keep = d_val > 0 and d_train >= -0.005
             status = "kept" if keep else "killed"
             common = dict(
                 agent=self.name,
@@ -240,7 +242,7 @@ class Evaluator:
                 previous=proposal["previous"],
             )
             # Private: holdout numbers, readable by the critic only.
-            self.memory.append(_private_result(status, cand, d_train, d_held, common))
+            self.memory.append(_private_result(status, cand, d_train, d_val, d_held, common))
             # Public: status + Jul-Sep numbers only. Reuses the hypothesis
             # fact_id, so it supersedes the `proposed` fact.
             decision = ledger.make_entry(
@@ -249,9 +251,9 @@ class Evaluator:
                 market_date=TRAIN_END,
                 scores={"skill_train": cand["skill_train"], "d_train": d_train},
                 reason=(
-                    "passed the Jul-Sep and held-out gates"
+                    "passed the Jul-Sep and September gates"
                     if keep
-                    else "failed the Jul-Sep or held-out gate"
+                    else "failed the Jul-Sep or September gate"
                 ),
                 fact_id=hypothesis_fact_id(proposal["idea_id"]),
                 **common,
@@ -261,18 +263,20 @@ class Evaluator:
         return decisions
 
 
-def _private_result(status: str, cand: dict, d_train: float, d_held: float, common: dict) -> dict:
+def _private_result(status: str, cand: dict, d_train: float, d_val: float, d_held: float, common: dict) -> dict:
     return ledger.make_entry(
         "result",
         status,
         market_date=HELDOUT_END,
         scores={
             "skill_train": cand["skill_train"],
+            "skill_val": cand["skill_val"],
             "skill_heldout": cand["skill_heldout"],
             "d_train": d_train,
+            "d_val": d_val,
             "d_heldout": d_held,
         },
-        reason=f"delta train {d_train:+.4f}, heldout {d_held:+.4f}",
+        reason=f"delta train {d_train:+.4f}, September {d_val:+.4f}, heldout {d_held:+.4f}",
         audience=HOLDOUT_AUDIENCE,
         **common,
     )
@@ -280,15 +284,17 @@ def _private_result(status: str, cand: dict, d_train: float, d_held: float, comm
 
 class Critic:
     name = "critic"
-    REFUTE_MARGIN = -0.02  # heldout delta worse than this on a fresh world => refute
+    REFUTE_MARGIN = -0.02  # September delta worse than this on a fresh world => refute
 
     def __init__(self, memory: Memory, runner: str = "local", n_alt_seeds: int = 2):
         self.memory = memory
         self.runner = runner
         self.n_alt_seeds = n_alt_seeds
 
-    def review_pending(self) -> list[dict]:
-        """Re-check every kept-but-unreviewed idea; returns the public verdict decisions."""
+    def review_pending(self, current: ForecasterConfig | None = None) -> list[dict]:
+        """Re-check every kept-but-unreviewed idea against `current` (the loop's
+        config after the batch); returns the public verdict decisions."""
+        current = current or ForecasterConfig()
         entries = self.memory.entries(as_of=HELDOUT_END)
         originals = {
             e["idea_id"]: e for e in entries if e["kind"] == "result" and e.get("idea_id")
@@ -296,36 +302,37 @@ class Critic:
         verdicts = []
         for idea_id, idea in _ideas(entries).items():
             if idea["kind"] == "decision" and idea["status"] == "kept":
-                verdicts.append(self._judge(idea, originals.get(idea_id)))
+                verdicts.append(self._judge(idea, originals.get(idea_id), current))
         return verdicts
 
-    def _judge(self, idea: dict, original: dict | None) -> dict:
+    def _judge(self, idea: dict, original: dict | None, current: ForecasterConfig) -> dict:
         change, previous = idea["change"], idea["previous"]
-        before = ForecasterConfig().updated(previous["param"], previous["value"])
-        after = before.updated(change["param"], change["value"])
+        # Toggle only this idea's param; every other kept change stays in place.
+        before = current.updated(previous["param"], previous["value"])
+        after = current.updated(change["param"], change["value"])
         deltas = []
         for alt in range(self.n_alt_seeds):
             base, cand = run_batch_logged(
                 self.memory, self.name, [before, after], self.runner, seed=10_000 + alt
             )
-            deltas.append(cand["skill_heldout"] - base["skill_heldout"])
+            deltas.append(cand["skill_val"] - base["skill_val"])
         refuted = min(deltas) < self.REFUTE_MARGIN
         status = "refuted" if refuted else "corroborated"
         common = dict(
             agent=self.name, idea_id=idea["idea_id"], change=change, previous=previous
         )
-        # Private evidence: alternate-world deltas next to the evaluator's holdout delta.
+        # Private evidence: alternate-world September deltas next to the evaluator's.
         self.memory.append(
             ledger.make_entry(
                 "verdict",
                 status,
                 market_date=HELDOUT_END,
                 scores={
-                    "alt_heldout_deltas": deltas,
-                    "original_d_heldout": (original or {}).get("scores", {}).get("d_heldout"),
+                    "alt_val_deltas": deltas,
+                    "original_d_val": (original or {}).get("scores", {}).get("d_val"),
                 },
                 reason=(
-                    f"heldout delta on {len(deltas)} alternate world(s): "
+                    f"September delta on {len(deltas)} alternate world(s): "
                     + ", ".join(f"{d:+.4f}" for d in deltas)
                     + ("; does not generalize" if refuted else "; generalizes")
                 ),

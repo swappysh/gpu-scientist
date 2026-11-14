@@ -27,10 +27,12 @@ Each round, three agents work through one shared `Memory` (`memory.py`):
    batch of one-parameter hypotheses. It skips ideas already tried and ranks params
    by their kept/killed history, so it learns from what the other agents wrote.
 2. **Evaluator** backtests the whole batch in one `harness.backtest_batch` call
-   (the Modal fan-out) and keeps a change only if it also improves held-out
-   October skill without regressing Jul-Sep. Writes kept/killed.
-3. **Critic** re-scores kept ideas on fresh synthetic worlds and writes
-   refuted/corroborated. Refuted ideas roll the config back.
+   (the Modal fan-out) and keeps a change only if it improves September skill
+   (the last dev slice) without regressing Jul-Sep. October never decides
+   anything; a run reports it once, at the end. Writes kept/killed.
+3. **Critic** re-scores kept ideas on resampled series mixes, toggling only that
+   idea's param on the current config, and writes refuted/corroborated from the
+   September delta. Refuted ideas roll the config back.
 
 Everything (tried / kept / killed / refuted, and why) is a ledger entry
 (`ledger.py`). Entries per run stay in the tens, not raw price rows.
@@ -94,7 +96,7 @@ real harness (~20 dates x ~100 series per config).
 ## Plugging in the real harness
 
 Replace `harness.backtest_seed(config: dict, seed: int) -> dict`. Return
-`{"skill_train", "skill_heldout"}` (skill = 1 - model error / flat-baseline error;
+`{"skill_train", "skill_val", "skill_heldout"}` (skill = 1 - model error / flat-baseline error;
 add `"steps"` = forecast dates walked for the steps/hour metric). Both runners map
 that one function, so Modal picks up the change with no edit to `modal_app.py`.
 If the harness needs a different unit of work (one Modal call per forecast date),
@@ -107,6 +109,4 @@ config; `Proposer`'s `MUTATIONS` list (or an LLM in `propose_batch`) generates c
 
 - Each idea in a batch is scored against the pre-batch config; kept changes then
   apply together (distinct params per batch, so interactions are small but real).
-- The critic compares the change against the default config on alternate seeds,
-  not against the exact current config.
 - The default proposer is rule-based; the LLM proposer is opt-in (`--proposer llm`).
