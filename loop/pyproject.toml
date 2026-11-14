@@ -1,0 +1,28 @@
+[project]
+name = "pacific-hack"
+version = "0.1.0"
+description = "Self-improving GPU-price forecaster loop on shared memory (past.dev) with Modal backtests"
+requires-python = ">=3.10"
+dependencies = [
+    "modal>=1.6.4",
+    "openai>=3.51.0",
+    "numpy>=1.26",
+]
+
+[project.scripts]
+pacific-hack = "pacific_hack:main"
+
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+# Only for `python -m pacific_hack.pack` (the pack's starter/build_series.py needs these).
+pack = [
+    "duckdb>=1.0",
+    "pandas>=2.0",
+    "pyarrow>=15",
+]
