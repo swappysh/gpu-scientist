@@ -5,6 +5,7 @@ description = "Self-improving GPU-price forecaster loop on shared memory (past.d
 requires-python = ">=3.10"
 dependencies = [
     "modal>=1.6.4",
+    "openai>=3.51.0",
 ]
 
 [project.scripts]

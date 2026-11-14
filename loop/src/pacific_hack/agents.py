@@ -18,12 +18,14 @@ Every batch also writes a `note` with runner, steps and steps-per-hour.
 from __future__ import annotations
 
 import random
+import sys
 import time
 
 from . import ledger
 from .data import HELDOUT_END, TRAIN_END
 from .forecaster import ForecasterConfig
 from .harness import backtest_batch
+from .llm_proposer import llm_candidates, schema_from_config
 from .memory import HOLDOUT_AUDIENCE, Memory
 
 # One change at a time: (param, value) pairs the proposer walks through.
@@ -91,14 +93,69 @@ def _ideas(entries: list[dict]) -> dict[str, dict]:
 class Proposer:
     name = "proposer"
 
-    def __init__(self, memory: Memory, seed: int = 0, as_of: str = TRAIN_END):
+    def __init__(
+        self,
+        memory: Memory,
+        seed: int = 0,
+        as_of: str = TRAIN_END,
+        mode: str = "rule",
+        field_schema: list[dict] | None = None,
+        llm_client=None,
+    ):
+        if mode not in ("rule", "llm"):
+            raise ValueError(f"unknown proposer mode {mode!r}")
         self.memory = memory
         self.rng = random.Random(seed)
         self.as_of = as_of  # forecast date: the proposer cannot read later facts
+        self.mode = mode
+        self.field_schema = field_schema  # default: schema_from_config(current)
+        self.llm_client = llm_client
 
     def propose_batch(self, current: ForecasterConfig, k: int = 3) -> list[dict]:
-        """Write up to `k` proposals touching distinct params; [] when exhausted."""
+        """Write up to `k` proposals touching distinct params; [] when exhausted.
+
+        In `llm` mode the model proposes; the rule-based proposer takes over if
+        the key is missing, the call fails, or no valid candidate comes back.
+        """
         entries = self.memory.entries(as_of=self.as_of)
+        if self.mode == "llm":
+            proposals = self._propose_llm(current, k, entries)
+            if proposals:
+                return proposals
+        return self._propose_rule(current, k, entries)
+
+    def _propose_llm(self, current: ForecasterConfig, k: int, entries: list[dict]) -> list[dict]:
+        try:
+            candidates = llm_candidates(
+                current.to_dict(),
+                self.field_schema or schema_from_config(current),
+                entries,
+                k,
+                client=self.llm_client,
+            )
+        except Exception as exc:  # any failure -> rule-based fallback; never print the message (may echo a key)
+            print(f"proposer: LLM unavailable ({type(exc).__name__}), using rules", file=sys.stderr)
+            return []
+        n_ideas = len(_ideas(entries))
+        proposals = []
+        for c in candidates:
+            idea_id = f"idea-{n_ideas + len(proposals) + 1:03d}"
+            entry = ledger.make_entry(
+                "proposal",
+                "proposed",
+                self.name,
+                market_date=self.as_of,
+                idea_id=idea_id,
+                change={"param": c["param"], "value": c["value"]},
+                previous={"param": c["param"], "value": getattr(current, c["param"])},
+                reason=c["hypothesis"],
+                fact_id=hypothesis_fact_id(idea_id),
+            )
+            self.memory.append(entry)
+            proposals.append(entry)
+        return proposals
+
+    def _propose_rule(self, current: ForecasterConfig, k: int, entries: list[dict]) -> list[dict]:
         ideas = _ideas(entries)
         tried = {
             (i["change"]["param"], i["change"]["value"]) for i in ideas.values() if i.get("change")

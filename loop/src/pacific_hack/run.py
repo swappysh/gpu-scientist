@@ -2,6 +2,7 @@
 
     python -m pacific_hack.run [--memory jsonl|past] [--runner local|modal]
                                [--ledger ledger.jsonl] [-n 3] [--batch 3] [--seed 7]
+                               [--proposer rule|llm]
 
 Each round: the proposer reads the shared ledger and writes a batch of
 `proposal` facts; the evaluator backtests the whole batch in one harness call
@@ -29,10 +30,11 @@ def run(
     batch: int = 3,
     runner: str = "local",
     verbose: bool = True,
+    proposer_mode: str = "rule",
 ) -> ForecasterConfig:
     # One bound view per agent: reads are attributed (past.dev identity) and
     # filtered (holdout audience) per agent.
-    proposer = Proposer(memory.bound("proposer"), seed=seed + 1)
+    proposer = Proposer(memory.bound("proposer"), seed=seed + 1, mode=proposer_mode)
     evaluator = Evaluator(memory.bound("evaluator"), runner=runner, seed=seed)
     critic = Critic(memory.bound("critic"), runner=runner)
 
@@ -109,9 +111,10 @@ def main(argv=None) -> None:
     p.add_argument("-n", "--rounds", type=int, default=3)
     p.add_argument("--batch", type=int, default=3, help="candidates per round")
     p.add_argument("--seed", type=int, default=7)
+    p.add_argument("--proposer", choices=["rule", "llm"], default="rule", help="llm needs OPENAI_API_KEY; falls back to rule")
     args = p.parse_args(argv)
     memory = make_memory(args.memory, args.ledger)
-    run(memory, args.rounds, args.seed, batch=args.batch, runner=args.runner)
+    run(memory, args.rounds, args.seed, batch=args.batch, runner=args.runner, proposer_mode=args.proposer)
 
 
 if __name__ == "__main__":
