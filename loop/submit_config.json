@@ -1,0 +1,4 @@
+{
+  "default": {"pool_weight": 0.5, "half_life_days": 14.0, "band_scale": 1.2},
+  "aws_spot.": {"half_life_days": 7.0, "momentum": 0.65, "momentum_fit": 1.0, "band_scale": 0.8, "pool_weight": 0.25}
+}

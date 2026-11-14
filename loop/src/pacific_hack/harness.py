@@ -9,10 +9,11 @@ dates walked, used for the steps-per-hour metric). The loop never calls
 `run_local` maps it in-process, `modal_app.run_batch` maps the same function
 on Modal containers (`.starmap`, one call per job).
 
-World: the Pacific pack's headline series (`pack.py`), or step-shaped fake
-series when PACIFIC_DATA=synthetic (offline tests). `seed` < 1000 scores
-every series; seed >= 1000 (the critic's alternate worlds) scores a bootstrap
-resample of the series, so a kept change must hold up on other series mixes.
+World: the Pacific pack build (`pack.py`), or step-shaped fake series when
+PACIFIC_DATA=synthetic (offline tests). Skill is scored on the build's
+headline (scored) series; the rest only feed pooling. `seed` < 1000 scores
+every scored series; seed >= 1000 (the critic's alternate worlds) scores a
+bootstrap resample of them, so a kept change must hold up on other mixes.
 """
 
 from __future__ import annotations
@@ -30,20 +31,25 @@ DATA_ENV = "PACIFIC_DATA"  # "pack" (default) or "synthetic"
 BOOTSTRAP_FROM = 1000
 
 
-def world(seed: int) -> list[Series]:
+def world(seed: int) -> tuple[list[Series], list[Series]]:
+    """(pool, scored): pooling sees `pool`, skill is scored on `scored`."""
     if os.environ.get(DATA_ENV, "pack") == "synthetic":
-        series = synthetic_world(seed=7)
+        series, ids = synthetic_world(seed=7), None
     else:
-        series = pack.load()
-    if seed < BOOTSTRAP_FROM:
-        return series
-    rng = random.Random(seed)
-    return [series[rng.randrange(len(series))] for _ in series]
+        series, ids = pack.load(), pack.scored_ids()
+    scored = [s for s in series if s.sid in ids] if ids else series
+    if seed >= BOOTSTRAP_FROM:
+        rng = random.Random(seed)
+        scored = [scored[rng.randrange(len(scored))] for _ in scored]
+        if not ids:  # older builds: the resample is the whole world, as before
+            series = scored
+    return series, scored
 
 
 def backtest_seed(config: dict, seed: int) -> dict:
     """One job: score one config on world `seed`. Runs locally or on Modal."""
-    return backtest(ForecasterConfig(**config), world(seed))
+    pool, scored = world(seed)
+    return backtest(ForecasterConfig(**config), pool, score_on=scored)
 
 
 def run_local(jobs: list[tuple[dict, int]]) -> list[dict]:

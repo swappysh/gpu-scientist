@@ -1,0 +1,84 @@
+{
+  "scored": {
+    "series": 37,
+    "starter": {
+      "config": {
+        "window_days": 0,
+        "half_life_days": 0.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.0,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.09607411330675864,
+      "skill_val": 0.12724329389935962,
+      "skill_heldout": 0.12163146997622531,
+      "coverage_train": 0.6935323383084577,
+      "coverage_heldout": 0.6248357424441524,
+      "cells_train": 2010,
+      "cells_heldout": 1522
+    },
+    "model": {
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.2,
+        "drift_weight": 0.0,
+        "pool_weight": 0.5,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.14398010712155196,
+      "skill_val": 0.17239987029098014,
+      "skill_heldout": 0.13412810916206708,
+      "coverage_train": 0.7895522388059701,
+      "coverage_heldout": 0.759526938239159,
+      "cells_train": 2010,
+      "cells_heldout": 1522
+    }
+  },
+  "aws_trend": {
+    "series": 80,
+    "starter": {
+      "config": {
+        "window_days": 0,
+        "half_life_days": 0.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.0,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.16660766566114427,
+      "skill_val": -0.0024571322547772834,
+      "skill_heldout": 0.25898911140876246,
+      "coverage_train": 0.7923449612403101,
+      "coverage_heldout": 0.7106707317073171,
+      "cells_train": 10320,
+      "cells_heldout": 3280
+    },
+    "model": {
+      "config": {
+        "window_days": 0,
+        "half_life_days": 7.0,
+        "band_scale": 0.8,
+        "drift_weight": 0.0,
+        "pool_weight": 0.25,
+        "min_samples": 20,
+        "momentum": 0.65,
+        "momentum_fit": 1.0
+      },
+      "skill_train": 0.3873769078342906,
+      "skill_val": 0.354559974517463,
+      "skill_heldout": 0.36137054615874953,
+      "coverage_train": 0.6861434108527131,
+      "coverage_heldout": 0.6676829268292683,
+      "cells_train": 10320,
+      "cells_heldout": 3280
+    }
+  }
+}

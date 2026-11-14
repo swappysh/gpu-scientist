@@ -44,18 +44,29 @@ def load(npz: str | None = None) -> list[Series]:
     return world
 
 
-def build(pack_dir: str, out: str, tier: str = "headline") -> int:
+@lru_cache(maxsize=1)
+def scored_ids(npz: str | None = None) -> frozenset[str] | None:
+    """Series flagged headline in the build's catalog (the scored set), or None
+    for an older build without the flag. Other series only feed pooling."""
+    z = np.load(Path(npz) if npz else path(), allow_pickle=False)
+    if "headline" not in z:
+        return None
+    return frozenset(str(sid) for sid, h in zip(z["sids"], z["headline"]) if h)
+
+
+def build(pack_dir: str, out: str, tier: str = "headline", as_of: str = CATALOG_AS_OF) -> int:
     starter = Path(pack_dir) / "starter" / "build_series.py"
     with tempfile.TemporaryDirectory() as tmp:
         series_csv, catalog_csv = f"{tmp}/series_daily.csv", f"{tmp}/series_catalog.csv"
         subprocess.run(
             [sys.executable, "-I", "-B", str(starter), "--pack", pack_dir, "--out", series_csv,
-             "--catalog", catalog_csv, "--as-of", CATALOG_AS_OF, "--report", f"{tmp}/report.json"],
+             "--catalog", catalog_csv, "--as-of", as_of, "--report", f"{tmp}/report.json"],
             check=True,
         )
         with open(catalog_csv, newline="") as f:
-            keep = {r["series_id"]: r["instrument_class"] for r in csv.DictReader(f)
-                    if tier == "all" or r["tier"] == tier}
+            cat = [r for r in csv.DictReader(f) if tier == "all" or r["tier"] == tier]
+        keep = {r["series_id"]: r["instrument_class"] for r in cat}
+        headline = {r["series_id"] for r in cat if r["tier"] == "headline"}
         rows: dict[str, list[tuple[int, float]]] = {sid: [] for sid in keep}
         with open(series_csv, newline="") as f:
             for r in csv.DictReader(f):
@@ -72,7 +83,7 @@ def build(pack_dir: str, out: str, tier: str = "headline") -> int:
     np.savez_compressed(
         out, sids=np.array(sids), groups=np.array([keep[s] for s in sids]),
         days=np.array(days, dtype=np.int64), vals=np.array(vals, dtype=np.float64),
-        offsets=np.array(offsets, dtype=np.int64),
+        offsets=np.array(offsets, dtype=np.int64), headline=np.array([s in headline for s in sids]),
     )
     return len(sids)
 
@@ -82,9 +93,10 @@ def main() -> None:
     ap.add_argument("--pack", required=True, help="unzipped gpu-price-pack-v0.1.1-handover directory")
     ap.add_argument("--out", default=str(DEFAULT_PATH))
     ap.add_argument("--tier", default="headline", help="headline, extended or all")
+    ap.add_argument("--as-of", default=CATALOG_AS_OF, help="catalog date that sets the tiers (headline = scored)")
     args = ap.parse_args()
-    n = build(args.pack, args.out, args.tier)
-    print(f"wrote {args.out}: {n} {args.tier} series (catalog as of {CATALOG_AS_OF})")
+    n = build(args.pack, args.out, args.tier, args.as_of)
+    print(f"wrote {args.out}: {n} {args.tier} series (catalog as of {args.as_of})")
 
 
 if __name__ == "__main__":

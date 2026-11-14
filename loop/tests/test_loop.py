@@ -222,3 +222,14 @@ def test_critic_toggles_one_param_on_the_current_config(memory, monkeypatch):
     before, after = seen[0]
     assert before == ForecasterConfig(half_life_days=7.0, band_scale=1.0)
     assert after == current
+
+
+def test_scored_subset_pools_over_the_whole_world():
+    from pacific_hack.forecaster import Changes, score
+    from pacific_hack.data import dev_origins
+
+    world = synthetic_world(seed=7)
+    cfg = ForecasterConfig(pool_weight=0.5)
+    got = backtest(cfg, world, score_on=world[:2])
+    assert got["skill_train"] == score(cfg, world[:2], dev_origins(), changes=Changes(world))["skill"]
+    assert got["skill_train"] != backtest(cfg, world[:2])["skill_train"]  # neighbours matter

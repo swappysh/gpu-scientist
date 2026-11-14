@@ -185,8 +185,11 @@ def _last(s: Series, origin: int) -> float:
     return float(s.vals[int(np.searchsorted(s.days, origin, side="right")) - 1])
 
 
-def backtest(config: ForecasterConfig, world: list[Series]) -> dict:
+def backtest(config: ForecasterConfig, world: list[Series], score_on: list[Series] | None = None) -> dict:
     """Returns {"skill_train", "skill_val", "skill_heldout", "steps", "coverage_*", "cells_*"}.
+
+    Pooling sees every series in `world`; skill is scored on `score_on`
+    (default: all of `world`).
 
     skill_train:   dev origins Jul 1 - Sep 23 (all targets on or before Sep 30).
     skill_val:     the September part of those origins (the keep/kill gate).
@@ -194,10 +197,11 @@ def backtest(config: ForecasterConfig, world: list[Series]) -> dict:
     steps = forecast dates walked (the unit of the steps-per-hour metric).
     """
     changes = Changes(world)
+    target = world if score_on is None else score_on
     dev, held = dev_origins(), heldout_origins()
-    tr = score(config, world, dev, changes=changes)
-    ho = score(config, world, held, changes=changes)
-    va = score(config, world, val_origins(), changes=changes)
+    tr = score(config, target, dev, changes=changes)
+    ho = score(config, target, held, changes=changes)
+    va = score(config, target, val_origins(), changes=changes)
     return {
         "skill_train": tr["skill"],
         "skill_val": va["skill"],
