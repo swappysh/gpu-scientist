@@ -1,0 +1,358 @@
+source_id,provider,gpu_model,instrument_class,pricing_tier,family,n_days,level_end,end_from,end_to,level_start,start_from,panel,years,change,annual_change,n_level_changes,mean_jan_aug
+afhubbard,aws,A100 40GB,hyperscaler_list,on_demand,A100,234,3.2936,2026-10-24,2026-11-06,3.2936,2026-01-12,True,0.8159,0.0000,0.0000,2,3.2936
+afhubbard,aws,A100 40GB,hyperscaler_spot,spot,A100,234,1.3119,2026-10-24,2026-11-06,1.1789,2026-01-12,True,0.8159,0.1128,0.1399,188,1.2853
+afhubbard,aws,A100 SXM 80GB,hyperscaler_list,on_demand,A100,234,4.2017,2026-10-24,2026-11-06,4.2017,2026-01-12,True,0.8159,0.0000,0.0000,2,4.2002
+afhubbard,aws,A100 SXM 80GB,hyperscaler_spot,spot,A100,234,2.3509,2026-10-24,2026-11-06,1.2612,2026-01-12,True,0.8159,0.8640,1.1452,182,1.7955
+afhubbard,aws,B200,hyperscaler_list,on_demand,B200,147,17.0899,2026-10-24,2026-11-06,14.2416,2026-06-12,False,0.4025,0.2000,0.5730,4,14.2592
+afhubbard,aws,B200,hyperscaler_spot,spot,B200,147,6.3263,2026-10-24,2026-11-06,3.3253,2026-06-12,False,0.4025,0.9025,3.9433,118,4.2719
+afhubbard,aws,H100 SXM 80GB,hyperscaler_list,on_demand,H100,234,8.2560,2026-10-24,2026-11-06,8.2560,2026-01-12,True,0.8159,0.0000,0.0000,4,8.2591
+afhubbard,aws,H100 SXM 80GB,hyperscaler_spot,spot,H100,234,3.2164,2026-10-24,2026-11-06,3.2587,2026-01-12,True,0.8159,-0.0130,-0.0159,169,2.6808
+afhubbard,aws,H200,hyperscaler_list,on_demand,H200,102,9.4944,2026-10-24,2026-11-06,9.4944,2026-07-27,False,0.2793,0.0000,0.0000,2,9.4812
+afhubbard,aws,H200,hyperscaler_spot,spot,H200,102,4.3461,2026-10-24,2026-11-06,3.3837,2026-07-27,False,0.2793,0.2844,1.4505,101,3.3738
+afhubbard,aws,V100,hyperscaler_list,on_demand,V100,69,3.6305,2026-05-11,2026-05-24,3.6305,2026-01-12,False,0.3614,0.0000,0.0000,0,3.6305
+afhubbard,aws,V100,hyperscaler_spot,spot,V100,69,1.9069,2026-05-11,2026-05-24,0.5750,2026-01-12,False,0.3614,2.3163,26.5839,51,1.0153
+afhubbard,azure,A100 40GB,hyperscaler_list,on_demand,A100,234,4.0788,2026-10-24,2026-11-06,4.1646,2026-01-12,True,0.8159,-0.0206,-0.0252,2,4.1559
+afhubbard,azure,A100 40GB,hyperscaler_spot,spot,A100,234,0.8855,2026-10-24,2026-11-06,0.9162,2026-01-12,True,0.8159,-0.0335,-0.0409,2,0.9147
+afhubbard,azure,A100 PCIe 80GB,hyperscaler_list,on_demand,A100,234,4.7750,2026-10-24,2026-11-06,4.7750,2026-01-12,True,0.8159,0.0000,0.0000,0,4.7750
+afhubbard,azure,A100 PCIe 80GB,hyperscaler_spot,spot,A100,234,0.8824,2026-10-24,2026-11-06,0.9708,2026-01-12,True,0.8159,-0.0910,-0.1104,8,0.9199
+afhubbard,azure,A100 SXM 80GB,hyperscaler_list,on_demand,A100,234,5.3251,2026-10-24,2026-11-06,5.3251,2026-01-12,True,0.8159,0.0000,0.0000,4,5.3251
+afhubbard,azure,A100 SXM 80GB,hyperscaler_spot,spot,A100,234,1.5089,2026-10-24,2026-11-06,1.3845,2026-01-12,True,0.8159,0.0898,0.1112,6,1.3844
+afhubbard,azure,H100 NVL,hyperscaler_list,on_demand,H100,183,9.0740,2026-10-24,2026-11-06,9.0740,2026-05-07,False,0.5010,0.0000,0.0000,0,9.0740
+afhubbard,azure,H100 NVL,hyperscaler_spot,spot,H100,183,1.8173,2026-10-24,2026-11-06,4.0205,2026-05-07,False,0.5010,-0.5480,-0.7950,11,3.2392
+afhubbard,azure,H200,hyperscaler_list,on_demand,H200,183,13.7800,2026-10-24,2026-11-06,13.2500,2026-05-07,False,0.5010,0.0400,0.0814,1,13.3089
+afhubbard,azure,H200,hyperscaler_spot,spot,H200,183,13.7800,2026-10-24,2026-11-06,13.2500,2026-05-07,False,0.5010,0.0400,0.0814,3,13.3089
+afhubbard,azure,V100,hyperscaler_list,on_demand,V100,234,3.8230,2026-10-24,2026-11-06,3.6720,2026-01-12,True,0.8159,0.0411,0.0506,1,3.6837
+afhubbard,azure,V100,hyperscaler_spot,spot,V100,234,0.7065,2026-10-24,2026-11-06,0.6786,2026-01-12,True,0.8159,0.0411,0.0506,1,0.6806
+afhubbard,cudo,A100 40GB,neocloud_rate_card,on_demand,A100,114,2.0047,2026-06-25,2026-07-08,1.7992,2026-01-12,False,0.4846,0.1142,0.2500,3,1.9146
+afhubbard,cudo,H100 80GB,neocloud_rate_card,on_demand,H100,113,2.6530,2026-06-25,2026-07-08,2.6530,2026-01-12,False,0.4846,0.0000,0.0000,0,2.6530
+afhubbard,cudo,V100,neocloud_rate_card,on_demand,V100,51,0.3242,2026-02-23,2026-03-09,0.3242,2026-01-12,False,0.1533,0.0000,0.0000,0,0.3242
+afhubbard,daytona,H100 80GB,neocloud_rate_card,on_demand,H100,38,6.0008,2026-10-24,2026-11-06,6.0008,2026-09-30,False,0.1013,0.0000,0.0000,0,
+afhubbard,daytona,H100 80GB,neocloud_spot,spot,H100,38,3.4559,2026-10-24,2026-11-06,3.4559,2026-09-30,False,0.1013,0.0000,0.0000,0,
+afhubbard,daytona,H200,neocloud_rate_card,on_demand,H200,38,6.5908,2026-10-24,2026-11-06,6.5908,2026-09-30,False,0.1013,0.0000,0.0000,0,
+afhubbard,daytona,H200,neocloud_spot,spot,H200,38,3.7959,2026-10-24,2026-11-06,3.7959,2026-09-30,False,0.1013,0.0000,0.0000,0,
+afhubbard,gcp,A100 40GB,hyperscaler_list,on_demand,A100,234,2.7785,2026-10-24,2026-11-06,2.5884,2026-01-12,True,0.8159,0.0734,0.0907,1,2.7276
+afhubbard,gcp,A100 40GB,hyperscaler_spot,spot,A100,234,2.1433,2026-10-24,2026-11-06,1.5829,2026-01-12,True,0.8159,0.3541,0.4499,17,1.8731
+afhubbard,gcp,A100 SXM 80GB,hyperscaler_list,on_demand,A100,234,5.0688,2026-10-24,2026-11-06,5.0688,2026-01-12,True,0.8159,0.0000,0.0000,1,5.0688
+afhubbard,gcp,A100 SXM 80GB,hyperscaler_spot,spot,A100,234,3.0081,2026-10-24,2026-11-06,2.3264,2026-01-12,True,0.8159,0.2930,0.3702,28,2.5836
+afhubbard,gcp,B200,hyperscaler_list,on_demand,B200,234,11.2770,2026-10-24,2026-11-06,11.2770,2026-01-12,True,0.8159,0.0000,0.0000,0,11.2770
+afhubbard,gcp,B200,hyperscaler_spot,spot,B200,234,5.3923,2026-10-24,2026-11-06,3.7053,2026-01-12,True,0.8159,0.4553,0.5839,11,4.2747
+afhubbard,gcp,H100 SXM 80GB,hyperscaler_list,on_demand,H100,234,10.9791,2026-10-24,2026-11-06,10.9791,2026-01-12,True,0.8159,0.0000,0.0000,0,10.9791
+afhubbard,gcp,H100 SXM 80GB,hyperscaler_spot,spot,H100,234,6.5384,2026-10-24,2026-11-06,2.6156,2026-01-12,True,0.8159,1.4998,2.0740,26,3.9577
+afhubbard,gcp,V100,hyperscaler_list,on_demand,V100,234,2.6151,2026-10-24,2026-11-06,2.6151,2026-01-12,True,0.8159,0.0000,0.0000,0,2.6151
+afhubbard,gcp,V100,hyperscaler_spot,spot,V100,234,1.4790,2026-10-24,2026-11-06,1.0997,2026-01-12,True,0.8159,0.3449,0.4379,30,1.2371
+afhubbard,lambdalabs,A100 40GB,neocloud_rate_card,on_demand,A100,234,1.9900,2026-10-24,2026-11-06,1.2900,2026-01-12,True,0.8159,0.5426,0.7012,2,1.7877
+afhubbard,lambdalabs,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,234,2.7900,2026-10-24,2026-11-06,1.7900,2026-01-12,True,0.8159,0.5587,0.7229,2,2.5009
+afhubbard,lambdalabs,B200,neocloud_rate_card,on_demand,B200,234,6.8900,2026-10-24,2026-11-06,5.1400,2026-01-12,True,0.8159,0.3405,0.4321,3,6.3771
+afhubbard,lambdalabs,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,234,3.2900,2026-10-24,2026-11-06,2.4900,2026-01-12,True,0.8159,0.3213,0.4070,2,3.0670
+afhubbard,lambdalabs,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,234,4.1400,2026-10-24,2026-11-06,3.1400,2026-01-12,True,0.8159,0.3185,0.4034,2,3.8616
+afhubbard,lambdalabs,V100,neocloud_rate_card,on_demand,V100,234,0.7900,2026-10-24,2026-11-06,0.5500,2026-01-12,True,0.8159,0.4364,0.5587,2,0.7193
+afhubbard,nebius,B200,neocloud_rate_card,on_demand,B200,234,8.5000,2026-10-24,2026-11-06,5.5000,2026-01-12,True,0.8159,0.5455,0.7050,3,6.4036
+afhubbard,nebius,B200,neocloud_spot,spot,B200,234,4.6750,2026-10-24,2026-11-06,2.9000,2026-01-12,True,0.8159,0.6121,0.7955,30,3.4750
+afhubbard,nebius,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,234,4.5000,2026-10-24,2026-11-06,2.9500,2026-01-12,True,0.8159,0.5254,0.6779,3,3.4429
+afhubbard,nebius,H100 SXM 80GB,neocloud_spot,spot,H100,234,0.9475,2026-10-24,2026-11-06,1.2500,2026-01-12,True,0.8159,-0.2420,-0.2879,15,1.7429
+afhubbard,nebius,H200,neocloud_rate_card,on_demand,H200,234,5.4000,2026-10-24,2026-11-06,3.5000,2026-01-12,True,0.8159,0.5429,0.7015,3,4.0476
+afhubbard,nebius,H200,neocloud_spot,spot,H200,234,1.9500,2026-10-24,2026-11-06,1.4500,2026-01-12,True,0.8159,0.3448,0.4378,30,1.9976
+afhubbard,oci,A100 40GB,hyperscaler_list,on_demand,A100,234,3.0500,2026-10-24,2026-11-06,3.0500,2026-01-12,True,0.8159,0.0000,0.0000,0,3.0500
+afhubbard,oci,A100 SXM 80GB,hyperscaler_list,on_demand,A100,234,4.0000,2026-10-24,2026-11-06,4.0000,2026-01-12,True,0.8159,0.0000,0.0000,0,4.0000
+afhubbard,oci,B200,hyperscaler_list,on_demand,B200,165,14.0000,2026-10-24,2026-11-06,14.0000,2026-05-25,False,0.4517,0.0000,0.0000,0,14.0000
+afhubbard,oci,H100 SXM 80GB,hyperscaler_list,on_demand,H100,165,10.0000,2026-10-24,2026-11-06,10.0000,2026-05-25,False,0.4517,0.0000,0.0000,0,10.0000
+afhubbard,oci,H200,hyperscaler_list,on_demand,H200,165,10.0000,2026-10-24,2026-11-06,10.0000,2026-05-25,False,0.4517,0.0000,0.0000,0,10.0000
+afhubbard,oci,V100,hyperscaler_list,on_demand,V100,234,2.9500,2026-10-24,2026-11-06,2.9500,2026-01-12,True,0.8159,0.0000,0.0000,0,2.9500
+afhubbard,oci,V100,hyperscaler_spot,spot,V100,234,1.4750,2026-10-24,2026-11-06,1.4750,2026-01-12,True,0.8159,0.0000,0.0000,0,1.4750
+afhubbard,verda,A100 40GB,neocloud_rate_card,on_demand,A100,234,1.6049,2026-10-24,2026-11-06,0.7211,2026-01-12,True,0.8159,1.2256,1.6659,43,1.0547
+afhubbard,verda,A100 40GB,neocloud_spot,spot,A100,234,0.8025,2026-10-24,2026-11-06,0.2524,2026-01-12,True,0.8159,2.1796,3.1281,45,0.3990
+afhubbard,verda,A100 80GB,neocloud_rate_card,on_demand,A100,234,2.2424,2026-10-24,2026-11-06,1.2900,2026-01-12,True,0.8159,0.7383,0.9693,48,1.5846
+afhubbard,verda,A100 80GB,neocloud_spot,spot,A100,234,1.1213,2026-10-24,2026-11-06,0.4515,2026-01-12,True,0.8159,1.4834,2.0493,51,0.5993
+afhubbard,verda,B200,neocloud_rate_card,on_demand,B200,234,8.8472,2026-10-24,2026-11-06,3.9900,2026-01-12,True,0.8159,1.2174,1.6539,53,5.4589
+afhubbard,verda,B200,neocloud_spot,spot,B200,234,4.4239,2026-10-24,2026-11-06,1.3965,2026-01-12,True,0.8159,2.1678,3.1093,57,2.0414
+afhubbard,verda,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,234,4.7812,2026-10-24,2026-11-06,2.2900,2026-01-12,True,0.8159,1.0879,1.4652,52,2.8557
+afhubbard,verda,H100 SXM 80GB,neocloud_spot,spot,H100,234,2.3906,2026-10-24,2026-11-06,0.8015,2026-01-12,True,0.8159,1.9826,2.8168,55,1.0799
+afhubbard,verda,H200,neocloud_rate_card,on_demand,H200,234,6.2350,2026-10-24,2026-11-06,2.9900,2026-01-12,True,0.8159,1.0853,1.4615,53,3.6828
+afhubbard,verda,H200,neocloud_spot,spot,H200,234,3.1175,2026-10-24,2026-11-06,1.0465,2026-01-12,True,0.8159,1.9790,2.8111,57,1.4246
+afhubbard,verda,V100,neocloud_rate_card,on_demand,V100,234,0.2360,2026-10-24,2026-11-06,0.1381,2026-01-12,True,0.8159,0.7089,0.9286,44,0.1567
+afhubbard,verda,V100,neocloud_spot,spot,V100,234,0.1180,2026-10-24,2026-11-06,0.0483,2026-01-12,True,0.8159,1.4431,1.9887,47,0.0592
+afhubbard,vultr,A100 40GB,neocloud_rate_card,on_demand,A100,49,1.1990,2026-02-22,2026-03-09,1.1990,2026-01-12,False,0.1533,0.0000,0.0000,0,1.1990
+afhubbard,vultr,A100 80GB,neocloud_rate_card,on_demand,A100,185,2.8000,2026-09-15,2026-11-06,2.3973,2026-01-12,False,0.8159,0.1680,0.2096,17,2.6811
+fastgpu_daily,aws,A100 40GB,hyperscaler_list,on_demand,A100,60,2.7450,2026-10-24,2026-11-06,2.7450,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,aws,A100 40GB,hyperscaler_spot,spot,A100,60,0.3705,2026-10-24,2026-11-06,0.3775,2026-09-08,False,0.1615,-0.0185,-0.1094,50,
+fastgpu_daily,aws,A100 80GB,hyperscaler_list,on_demand,A100,60,3.4310,2026-10-24,2026-11-06,3.4310,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,aws,A100 80GB,hyperscaler_spot,spot,A100,60,1.4240,2026-10-24,2026-11-06,2.6695,2026-09-08,False,0.1615,-0.4666,-0.9796,51,
+fastgpu_daily,aws,B200,hyperscaler_list,on_demand,B200,60,14.2420,2026-10-24,2026-11-06,14.2420,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,aws,B200,hyperscaler_spot,spot,B200,60,2.0670,2026-10-24,2026-11-06,3.2840,2026-09-08,False,0.1615,-0.3706,-0.9431,46,
+fastgpu_daily,aws,H100 SXM 80GB,hyperscaler_list,on_demand,H100,60,6.8800,2026-10-24,2026-11-06,6.8800,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,aws,H100 SXM 80GB,hyperscaler_spot,spot,H100,60,1.8355,2026-10-24,2026-11-06,1.4900,2026-09-08,False,0.1615,0.2319,2.6365,47,
+fastgpu_daily,aws,H200,hyperscaler_list,on_demand,H200,60,7.9120,2026-10-24,2026-11-06,7.9120,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,aws,H200,hyperscaler_spot,spot,H200,60,1.0425,2026-10-24,2026-11-06,2.1755,2026-09-08,False,0.1615,-0.5208,-0.9895,49,
+fastgpu_daily,azure,A100 40GB,hyperscaler_list,on_demand,A100,60,3.4000,2026-10-24,2026-11-06,3.4000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,A100 40GB,hyperscaler_spot,spot,A100,60,0.7380,2026-10-24,2026-11-06,0.7380,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,A100 80GB,hyperscaler_list,on_demand,A100,60,3.6730,2026-10-24,2026-11-06,3.6730,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,A100 80GB,hyperscaler_spot,spot,A100,60,0.6790,2026-10-24,2026-11-06,0.6790,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,H100 NVL,hyperscaler_list,on_demand,H100,60,6.9800,2026-10-24,2026-11-06,6.9800,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,H100 NVL,hyperscaler_spot,spot,H100,60,1.2900,2026-10-24,2026-11-06,1.2900,2026-09-08,False,0.1615,0.0000,0.0000,1,
+fastgpu_daily,azure,H200,hyperscaler_list,on_demand,H200,60,10.6000,2026-10-24,2026-11-06,10.6000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,H200,hyperscaler_spot,spot,H200,60,10.6000,2026-10-24,2026-11-06,10.6000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,V100,hyperscaler_list,on_demand,V100,60,2.7540,2026-10-24,2026-11-06,2.7540,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,azure,V100,hyperscaler_spot,spot,V100,60,0.5090,2026-10-24,2026-11-06,0.5090,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,baseten,A100 80GB,neocloud_rate_card,on_demand,A100,57,4.0000,2026-10-21,2026-11-03,4.0000,2026-09-08,False,0.1533,0.0000,0.0000,0,
+fastgpu_daily,baseten,B200,neocloud_rate_card,on_demand,B200,57,9.9800,2026-10-21,2026-11-03,9.9800,2026-09-08,False,0.1533,0.0000,0.0000,0,
+fastgpu_daily,baseten,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,57,6.5000,2026-10-21,2026-11-03,6.5000,2026-09-08,False,0.1533,0.0000,0.0000,0,
+fastgpu_daily,coreweave,A100 80GB,neocloud_rate_card,on_demand,A100,60,2.7000,2026-10-24,2026-11-06,2.7000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,A100 80GB,neocloud_spot,spot,A100,60,1.1890,2026-10-24,2026-11-06,1.1890,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,B200,neocloud_rate_card,on_demand,B200,60,8.6000,2026-10-24,2026-11-06,8.6000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,B200,neocloud_spot,spot,B200,60,4.2640,2026-10-24,2026-11-06,4.2640,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,6.1600,2026-10-24,2026-11-06,6.1600,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,H100 SXM 80GB,neocloud_spot,spot,H100,60,2.4390,2026-10-24,2026-11-06,2.4390,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,H200,neocloud_rate_card,on_demand,H200,60,6.3100,2026-10-24,2026-11-06,6.3100,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,coreweave,H200,neocloud_spot,spot,H200,60,2.5800,2026-10-24,2026-11-06,2.5800,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,crusoe,A100 80GB,neocloud_rate_card,on_demand,A100,45,2.0000,2026-10-09,2026-10-22,2.0000,2026-09-08,False,0.1205,0.0000,0.0000,0,
+fastgpu_daily,crusoe,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,45,3.9000,2026-10-09,2026-10-22,3.9000,2026-09-08,False,0.1205,0.0000,0.0000,2,
+fastgpu_daily,crusoe,H200,neocloud_rate_card,on_demand,H200,45,4.2900,2026-10-09,2026-10-22,4.2900,2026-09-08,False,0.1205,0.0000,0.0000,2,
+fastgpu_daily,daytona,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,39,3.9490,2026-10-24,2026-11-06,3.9490,2026-09-29,False,0.1040,0.0000,0.0000,0,
+fastgpu_daily,daytona,H100 SXM 80GB,neocloud_spot,spot,H100,39,2.2700,2026-10-24,2026-11-06,2.2700,2026-09-29,False,0.1040,0.0000,0.0000,0,
+fastgpu_daily,daytona,H200,neocloud_rate_card,on_demand,H200,39,4.5400,2026-10-24,2026-11-06,4.5400,2026-09-29,False,0.1040,0.0000,0.0000,0,
+fastgpu_daily,daytona,H200,neocloud_spot,spot,H200,39,2.6100,2026-10-24,2026-11-06,2.6100,2026-09-29,False,0.1040,0.0000,0.0000,0,
+fastgpu_daily,deepinfra,A100 80GB,neocloud_rate_card,on_demand,A100,60,1.4900,2026-10-24,2026-11-06,0.8900,2026-09-08,False,0.1615,0.6742,23.2913,1,
+fastgpu_daily,deepinfra,B200,neocloud_rate_card,on_demand,B200,60,4.8900,2026-10-24,2026-11-06,3.6900,2026-09-08,False,0.1615,0.3252,4.7149,1,
+fastgpu_daily,deepinfra,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,2.9000,2026-10-24,2026-11-06,2.2000,2026-09-08,False,0.1615,0.3182,4.5300,1,
+fastgpu_daily,deepinfra,H200,neocloud_rate_card,on_demand,H200,60,3.4900,2026-10-24,2026-11-06,2.6900,2026-09-08,False,0.1615,0.2974,4.0119,1,
+fastgpu_daily,fal,B200,neocloud_rate_card,on_demand,B200,43,7.9900,2026-10-07,2026-10-20,6.2500,2026-09-08,False,0.1150,0.2784,7.4649,1,
+fastgpu_daily,fal,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,43,4.5000,2026-10-07,2026-10-20,4.5000,2026-09-08,False,0.1150,0.0000,0.0000,0,
+fastgpu_daily,fal,H200,neocloud_rate_card,on_demand,H200,43,6.0000,2026-10-07,2026-10-20,4.5000,2026-09-08,False,0.1150,0.3333,11.2045,1,
+fastgpu_daily,gcp,A100 40GB,hyperscaler_list,on_demand,A100,60,2.1630,2026-10-24,2026-11-06,2.1630,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,A100 40GB,hyperscaler_spot,spot,A100,60,1.7290,2026-10-24,2026-11-06,2.0415,2026-09-08,False,0.1615,-0.1531,-0.6425,6,
+fastgpu_daily,gcp,A100 80GB,hyperscaler_list,on_demand,A100,60,3.2200,2026-10-24,2026-11-06,3.2200,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,A100 80GB,hyperscaler_spot,spot,A100,60,1.7930,2026-10-24,2026-11-06,1.8320,2026-09-08,False,0.1615,-0.0213,-0.1247,8,
+fastgpu_daily,gcp,B200,hyperscaler_list,reserved_unspecified,B200,60,11.2770,2026-10-24,2026-11-06,11.2770,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,B200,hyperscaler_spot,spot,B200,60,1.7400,2026-10-24,2026-11-06,1.8640,2026-09-08,False,0.1615,-0.0665,-0.3470,3,
+fastgpu_daily,gcp,H100 SXM 80GB,hyperscaler_list,on_demand,H100,60,5.3830,2026-10-24,2026-11-06,5.3830,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,H100 SXM 80GB,hyperscaler_spot,spot,H100,60,1.0880,2026-10-24,2026-11-06,1.0880,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,V100,hyperscaler_list,on_demand,V100,60,2.4860,2026-10-24,2026-11-06,2.4860,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,gcp,V100,hyperscaler_spot,spot,V100,60,0.2760,2026-10-24,2026-11-06,0.3740,2026-09-08,False,0.1615,-0.2620,-0.8476,8,
+fastgpu_daily,gmi,B200,neocloud_rate_card,on_demand,B200,60,5.0000,2026-10-24,2026-11-06,4.0000,2026-09-08,False,0.1615,0.2500,2.9805,1,
+fastgpu_daily,gmi,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,2.6000,2026-10-24,2026-11-06,2.0000,2026-09-08,False,0.1615,0.3000,4.0744,1,
+fastgpu_daily,gmi,H200,neocloud_rate_card,on_demand,H200,60,3.2000,2026-10-24,2026-11-06,2.6000,2026-09-08,False,0.1615,0.2308,2.6162,1,
+fastgpu_daily,hyperstack,A100 80GB,neocloud_rate_card,on_demand,A100,60,1.3500,2026-10-24,2026-11-06,1.3500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,A100 80GB,neocloud_rate_card,reserved_unspecified,A100,60,0.9500,2026-10-24,2026-11-06,0.9500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,A100 80GB,neocloud_spot,spot,A100,60,1.0800,2026-10-24,2026-11-06,1.0800,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,B200,neocloud_rate_card,on_demand,B200,60,6.0000,2026-10-24,2026-11-06,6.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,B200,neocloud_rate_card,reserved_unspecified,B200,60,5.1000,2026-10-24,2026-11-06,5.1000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,60,2.5000,2026-10-24,2026-11-06,2.5000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H100 PCIe 80GB,neocloud_rate_card,reserved_unspecified,H100,60,1.7500,2026-10-24,2026-11-06,1.7500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H100 PCIe 80GB,neocloud_spot,spot,H100,60,2.0000,2026-10-24,2026-11-06,2.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,35,3.2000,2026-10-24,2026-11-06,3.2000,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H100 SXM 80GB,neocloud_rate_card,reserved_unspecified,H100,35,2.7200,2026-10-24,2026-11-06,2.7200,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H200,neocloud_rate_card,on_demand,H200,60,3.9900,2026-10-24,2026-11-06,3.9900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,hyperstack,H200,neocloud_rate_card,reserved_unspecified,H200,60,2.7900,2026-10-24,2026-11-06,2.7900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,impossiblecloud,H100 SXM 80GB,neocloud_rate_card,reserved_unspecified,H100,28,2.9750,2026-10-24,2026-11-06,2.9625,2026-10-10,False,0.0739,0.0042,0.0586,4,
+fastgpu_daily,impossiblecloud,H200,neocloud_rate_card,reserved_unspecified,H200,28,3.1050,2026-10-24,2026-11-06,3.1050,2026-10-10,False,0.0739,0.0000,0.0000,5,
+fastgpu_daily,jarvislabs,A100 40GB,neocloud_rate_card,on_demand,A100,48,0.8900,2026-10-12,2026-10-25,0.8900,2026-09-08,False,0.1287,0.0000,0.0000,0,
+fastgpu_daily,jarvislabs,A100 80GB,neocloud_rate_card,on_demand,A100,48,1.4900,2026-10-12,2026-10-25,1.4900,2026-09-08,False,0.1287,0.0000,0.0000,0,
+fastgpu_daily,jarvislabs,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,48,3.4900,2026-10-12,2026-10-25,2.6900,2026-09-08,False,0.1287,0.2974,6.5635,1,
+fastgpu_daily,jarvislabs,H200,neocloud_rate_card,on_demand,H200,48,4.5900,2026-10-12,2026-10-25,3.9900,2026-09-08,False,0.1287,0.1504,1.9703,1,
+fastgpu_daily,lambdalabs,A100 40GB,neocloud_rate_card,on_demand,A100,60,1.9900,2026-10-24,2026-11-06,1.9900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,lambdalabs,A100 80GB,neocloud_rate_card,on_demand,A100,60,2.7900,2026-10-24,2026-11-06,2.7900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,lambdalabs,B200,neocloud_rate_card,on_demand,B200,60,6.6900,2026-10-24,2026-11-06,6.6900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,lambdalabs,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,60,3.2900,2026-10-24,2026-11-06,3.2900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,lambdalabs,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,35,3.9900,2026-10-24,2026-11-06,3.9900,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,lambdalabs,V100,neocloud_rate_card,on_demand,V100,60,0.7900,2026-10-24,2026-11-06,0.7900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,modal,A100 40GB,neocloud_rate_card,on_demand,A100,58,2.0990,2026-10-24,2026-11-06,2.0990,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,modal,A100 80GB,neocloud_rate_card,on_demand,A100,58,2.4980,2026-10-24,2026-11-06,2.4980,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,modal,B200,neocloud_rate_card,on_demand,B200,58,6.2500,2026-10-24,2026-11-06,6.2500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,modal,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,58,3.9490,2026-10-24,2026-11-06,3.9490,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,modal,H200,neocloud_rate_card,on_demand,H200,58,4.5400,2026-10-24,2026-11-06,4.5400,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,nebius,B200,neocloud_rate_card,on_demand,B200,60,8.5000,2026-10-24,2026-11-06,7.1500,2026-09-08,False,0.1615,0.1888,1.9174,1,
+fastgpu_daily,nebius,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,4.5000,2026-10-24,2026-11-06,3.8500,2026-09-08,False,0.1615,0.1688,1.6268,1,
+fastgpu_daily,nebius,H200,neocloud_rate_card,on_demand,H200,60,5.4000,2026-10-24,2026-11-06,4.5000,2026-09-08,False,0.1615,0.2000,2.0916,1,
+fastgpu_daily,oci,A100 40GB,hyperscaler_list,on_demand,A100,60,3.0500,2026-10-24,2026-11-06,3.0500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,A100 80GB,hyperscaler_list,on_demand,A100,60,4.0000,2026-10-24,2026-11-06,4.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,B200,hyperscaler_list,on_demand,B200,60,14.0000,2026-10-24,2026-11-06,14.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,H100 SXM 80GB,hyperscaler_list,on_demand,H100,60,10.0000,2026-10-24,2026-11-06,10.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,H200,hyperscaler_list,on_demand,H200,60,10.0000,2026-10-24,2026-11-06,10.0000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,V100,hyperscaler_list,on_demand,V100,60,2.9500,2026-10-24,2026-11-06,2.9500,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,oci,V100,hyperscaler_spot,spot,V100,60,1.4750,2026-10-24,2026-11-06,1.4750,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,paperspace,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,4.4100,2026-10-24,2026-11-06,4.4100,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,paperspace,H100 SXM 80GB,neocloud_rate_card,reserved_unspecified,H100,60,3.2600,2026-10-24,2026-11-06,3.2600,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,paperspace,H200,neocloud_rate_card,on_demand,H200,60,4.4700,2026-10-24,2026-11-06,4.4700,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,paperspace,H200,neocloud_rate_card,reserved_unspecified,H200,60,3.4000,2026-10-24,2026-11-06,3.4000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,quantacloud,A100 80GB,neocloud_rate_card,on_demand,A100,32,1.4800,2026-10-24,2026-11-06,1.4800,2026-10-06,False,0.0849,0.0000,0.0000,4,
+fastgpu_daily,quantacloud,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,32,2.5900,2026-10-24,2026-11-06,2.5900,2026-10-06,False,0.0849,0.0000,0.0000,2,
+fastgpu_daily,replicate,A100 80GB,neocloud_rate_card,on_demand,A100,60,5.0400,2026-10-24,2026-11-06,5.0400,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,replicate,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,5.4900,2026-10-24,2026-11-06,5.4900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,replicate,H200,neocloud_rate_card,on_demand,H200,60,5.4900,2026-10-24,2026-11-06,5.4900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,tensordock,V100,marketplace_ask,on_demand,V100,60,0.1900,2026-10-24,2026-11-06,0.1900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,thundercompute,A100 80GB,neocloud_rate_card,on_demand,A100,60,1.0900,2026-10-24,2026-11-06,1.0900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,thundercompute,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,39,3.2000,2026-10-24,2026-11-06,3.2000,2026-09-29,False,0.1040,0.0000,0.0000,0,
+fastgpu_daily,together,B200,neocloud_rate_card,on_demand,B200,35,8.1900,2026-10-24,2026-11-06,8.1900,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,together,B200,neocloud_spot,spot,B200,60,4.0900,2026-10-24,2026-11-06,4.0900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,together,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,35,3.9900,2026-10-24,2026-11-06,3.9900,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,together,H100 SXM 80GB,neocloud_spot,spot,H100,60,1.9900,2026-10-24,2026-11-06,1.9900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,together,H200,neocloud_rate_card,on_demand,H200,35,5.9900,2026-10-24,2026-11-06,5.9900,2026-10-03,False,0.0931,0.0000,0.0000,0,
+fastgpu_daily,together,H200,neocloud_spot,spot,H200,60,2.9900,2026-10-24,2026-11-06,2.9900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,verda,A100 40GB,neocloud_rate_card,on_demand,A100,60,1.6010,2026-10-24,2026-11-06,1.2640,2026-09-08,False,0.1615,0.2666,3.3195,30,
+fastgpu_daily,verda,A100 40GB,neocloud_spot,spot,A100,60,0.8010,2026-10-24,2026-11-06,0.6320,2026-09-08,False,0.1615,0.2674,3.3363,30,
+fastgpu_daily,verda,A100 80GB,neocloud_rate_card,on_demand,A100,60,2.2370,2026-10-24,2026-11-06,1.7350,2026-09-08,False,0.1615,0.2893,3.8222,38,
+fastgpu_daily,verda,A100 80GB,neocloud_spot,spot,A100,60,1.1185,2026-10-24,2026-11-06,0.8680,2026-09-08,False,0.1615,0.2886,3.8050,38,
+fastgpu_daily,verda,B200,neocloud_rate_card,on_demand,B200,60,8.8245,2026-10-24,2026-11-06,6.2300,2026-09-08,False,0.1615,0.4165,7.6306,41,
+fastgpu_daily,verda,B200,neocloud_spot,spot,B200,60,4.4125,2026-10-24,2026-11-06,3.1150,2026-09-08,False,0.1615,0.4165,7.6337,39,
+fastgpu_daily,verda,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,60,4.7690,2026-10-24,2026-11-06,3.2575,2026-09-08,False,0.1615,0.4640,9.5882,42,
+fastgpu_daily,verda,H100 SXM 80GB,neocloud_spot,spot,H100,60,2.3845,2026-10-24,2026-11-06,1.6290,2026-09-08,False,0.1615,0.4638,9.5782,42,
+fastgpu_daily,verda,H200,neocloud_rate_card,on_demand,H200,60,6.2190,2026-10-24,2026-11-06,4.2210,2026-09-08,False,0.1615,0.4733,10.0134,42,
+fastgpu_daily,verda,H200,neocloud_spot,spot,H200,60,3.1095,2026-10-24,2026-11-06,2.1105,2026-09-08,False,0.1615,0.4733,10.0134,42,
+fastgpu_daily,verda,V100,neocloud_rate_card,on_demand,V100,60,0.2360,2026-10-24,2026-11-06,0.1705,2026-09-08,False,0.1615,0.3842,6.4825,34,
+fastgpu_daily,verda,V100,neocloud_spot,spot,V100,60,0.1180,2026-10-24,2026-11-06,0.0855,2026-09-08,False,0.1615,0.3801,6.3481,33,
+fastgpu_daily,voltagepark,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,58,1.9900,2026-10-24,2026-11-06,1.9900,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,vultr,A100 80GB,neocloud_rate_card,on_demand,A100,60,2.3970,2026-10-24,2026-11-06,2.3970,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,vultr,B200,neocloud_spot,spot,B200,60,3.2000,2026-10-24,2026-11-06,3.2000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+fastgpu_daily,vultr,H100 SXM 80GB,neocloud_spot,spot,H100,60,2.3000,2026-10-24,2026-11-06,2.3000,2026-09-08,False,0.1615,0.0000,0.0000,0,
+gpurentalprices,aws,A100 40GB,hyperscaler_list,on_demand,A100,34,2.7447,2026-10-20,2026-11-06,2.7447,2026-09-28,False,0.1068,0.0000,0.0000,1,
+gpurentalprices,aws,A100 40GB,hyperscaler_spot,spot,A100,34,1.6333,2026-10-20,2026-11-06,1.6333,2026-09-28,False,0.1068,0.0000,0.0000,0,
+gpurentalprices,aws,A100 SXM 80GB,hyperscaler_list,on_demand,A100,34,3.4309,2026-10-20,2026-11-06,3.4309,2026-09-28,False,0.1068,0.0000,0.0000,1,
+gpurentalprices,aws,H100 SXM 80GB,hyperscaler_list,on_demand,H100,34,6.8800,2026-10-20,2026-11-06,6.8800,2026-09-28,False,0.1068,0.0000,0.0000,1,
+gpurentalprices,aws,H100 SXM 80GB,hyperscaler_spot,spot,H100,34,7.2202,2026-10-20,2026-11-06,7.2202,2026-09-28,False,0.1068,0.0000,0.0000,0,
+gpurentalprices,aws,H200,hyperscaler_list,on_demand,H200,34,7.9120,2026-10-20,2026-11-06,7.9120,2026-09-28,False,0.1068,0.0000,0.0000,1,
+gpurentalprices,azure,A100 40GB,hyperscaler_list,on_demand,A100,89,3.3996,2026-10-20,2026-11-06,3.3996,2026-08-04,False,0.2574,0.0000,0.0000,0,3.3996
+gpurentalprices,azure,A100 40GB,hyperscaler_spot,spot,A100,89,0.7430,2026-10-20,2026-11-06,0.7479,2026-08-04,False,0.2574,-0.0066,-0.0254,2,0.7479
+gpurentalprices,azure,A100 PCIe 80GB,hyperscaler_list,on_demand,A100,89,3.6730,2026-10-20,2026-11-06,3.6730,2026-08-04,False,0.2574,0.0000,0.0000,0,3.6730
+gpurentalprices,azure,A100 PCIe 80GB,hyperscaler_spot,spot,A100,89,0.6788,2026-10-20,2026-11-06,0.6788,2026-08-04,False,0.2574,0.0000,0.0000,1,0.6788
+gpurentalprices,azure,A100 SXM 80GB,hyperscaler_list,on_demand,A100,89,4.0963,2026-10-20,2026-11-06,4.0963,2026-08-04,False,0.2574,0.0000,0.0000,0,4.0962
+gpurentalprices,azure,A100 SXM 80GB,hyperscaler_spot,spot,A100,89,1.0552,2026-10-20,2026-11-06,1.0650,2026-08-04,False,0.2574,-0.0092,-0.0354,1,1.0650
+gpurentalprices,azure,H100 NVL,hyperscaler_list,on_demand,H100,89,6.9800,2026-10-20,2026-11-06,6.9800,2026-08-04,False,0.2574,0.0000,0.0000,0,6.9800
+gpurentalprices,azure,H100 NVL,hyperscaler_spot,spot,H100,89,1.2899,2026-10-20,2026-11-06,1.2899,2026-08-04,False,0.2574,0.0000,0.0000,1,1.2899
+gpurentalprices,azure,H100 SXM 80GB,hyperscaler_list,on_demand,H100,89,11.6755,2026-10-20,2026-11-06,11.0610,2026-08-04,False,0.2574,0.0556,0.2338,1,11.0610
+gpurentalprices,azure,H100 SXM 80GB,hyperscaler_spot,spot,H100,89,2.1576,2026-10-20,2026-11-06,2.0441,2026-08-04,False,0.2574,0.0556,0.2338,1,2.0441
+gpurentalprices,baseten,A100 80GB,neocloud_rate_card,serverless,A100,86,4.0000,2026-10-16,2026-11-03,4.0000,2026-08-04,False,0.2491,0.0000,0.0000,0,4.0000
+gpurentalprices,baseten,B200,neocloud_rate_card,serverless,B200,86,9.9800,2026-10-16,2026-11-03,9.9800,2026-08-04,False,0.2491,0.0000,0.0000,0,9.9800
+gpurentalprices,baseten,H100 80GB,neocloud_rate_card,serverless,H100,86,6.5000,2026-10-16,2026-11-03,6.5000,2026-08-04,False,0.2491,0.0000,0.0000,0,6.5000
+gpurentalprices,cerebrium,A100 40GB,neocloud_rate_card,serverless,A100,89,1.9980,2026-10-20,2026-11-06,1.9980,2026-08-04,False,0.2574,0.0000,0.0000,0,1.9980
+gpurentalprices,cerebrium,A100 80GB,neocloud_rate_card,serverless,A100,89,2.0988,2026-10-20,2026-11-06,2.0988,2026-08-04,False,0.2574,0.0000,0.0000,0,2.0988
+gpurentalprices,cerebrium,B200,neocloud_rate_card,serverless,B200,89,6.0120,2026-10-20,2026-11-06,6.0120,2026-08-04,False,0.2574,0.0000,0.0000,0,6.0120
+gpurentalprices,cerebrium,H100 80GB,neocloud_rate_card,serverless,H100,89,3.3984,2026-10-20,2026-11-06,3.3984,2026-08-04,False,0.2574,0.0000,0.0000,0,3.3984
+gpurentalprices,cerebrium,H200,neocloud_rate_card,serverless,H200,89,4.1976,2026-10-20,2026-11-06,4.1976,2026-08-04,False,0.2574,0.0000,0.0000,0,4.1976
+gpurentalprices,coreweave,A100 80GB,neocloud_rate_card,on_demand,A100,89,2.7000,2026-10-20,2026-11-06,2.7000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.7000
+gpurentalprices,coreweave,B200,neocloud_rate_card,on_demand,B200,89,8.6000,2026-10-20,2026-11-06,8.6000,2026-08-04,False,0.2574,0.0000,0.0000,0,8.6000
+gpurentalprices,coreweave,H100 80GB,neocloud_rate_card,on_demand,H100,89,6.1550,2026-10-20,2026-11-06,6.1550,2026-08-04,False,0.2574,0.0000,0.0000,0,6.1550
+gpurentalprices,coreweave,H200,neocloud_rate_card,on_demand,H200,89,6.3050,2026-10-20,2026-11-06,6.3050,2026-08-04,False,0.2574,0.0000,0.0000,0,6.3050
+gpurentalprices,crusoe,A100 PCIe 80GB,neocloud_rate_card,on_demand,A100,89,2.0000,2026-10-20,2026-11-06,2.0000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.0000
+gpurentalprices,crusoe,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,89,2.3000,2026-10-20,2026-11-06,2.3000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.3000
+gpurentalprices,crusoe,H100 80GB,neocloud_rate_card,on_demand,H100,89,3.9000,2026-10-20,2026-11-06,3.9000,2026-08-04,False,0.2574,0.0000,0.0000,2,3.9000
+gpurentalprices,crusoe,H200,neocloud_rate_card,on_demand,H200,89,4.2900,2026-10-20,2026-11-06,4.2900,2026-08-04,False,0.2574,0.0000,0.0000,2,4.2900
+gpurentalprices,daytona,B200,neocloud_rate_card,on_demand,B200,28,6.2500,2026-10-20,2026-11-06,6.2500,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,daytona,B200,neocloud_spot,spot,B200,28,3.5900,2026-10-20,2026-11-06,3.5900,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,daytona,H100 80GB,neocloud_rate_card,on_demand,H100,28,3.9500,2026-10-20,2026-11-06,3.9500,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,daytona,H100 80GB,neocloud_spot,spot,H100,28,2.2700,2026-10-20,2026-11-06,2.2700,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,daytona,H200,neocloud_rate_card,on_demand,H200,28,4.5400,2026-10-20,2026-11-06,4.5400,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,daytona,H200,neocloud_spot,spot,H200,28,2.6100,2026-10-20,2026-11-06,2.6100,2026-10-04,False,0.0903,0.0000,0.0000,0,
+gpurentalprices,digitalocean,H100 80GB,neocloud_rate_card,on_demand,H100,89,4.4100,2026-10-20,2026-11-06,4.4100,2026-08-04,False,0.2574,0.0000,0.0000,0,4.4100
+gpurentalprices,digitalocean,H200,neocloud_rate_card,on_demand,H200,89,4.4700,2026-10-20,2026-11-06,4.4700,2026-08-04,False,0.2574,0.0000,0.0000,0,4.4700
+gpurentalprices,fal,B200,neocloud_rate_card,serverless,B200,89,7.9900,2026-10-20,2026-11-06,6.2500,2026-08-04,False,0.2574,0.2784,1.5970,1,6.2500
+gpurentalprices,fal,H100 80GB,neocloud_rate_card,serverless,H100,89,4.5000,2026-10-20,2026-11-06,4.5000,2026-08-04,False,0.2574,0.0000,0.0000,0,4.5000
+gpurentalprices,fal,H200,neocloud_rate_card,serverless,H200,89,6.0000,2026-10-20,2026-11-06,4.5000,2026-08-04,False,0.2574,0.3333,2.0582,1,4.5000
+gpurentalprices,fireworks,B200,neocloud_rate_card,serverless,B200,86,13.0000,2026-10-16,2026-11-03,10.0000,2026-08-04,False,0.2491,0.3000,1.8664,1,10.0000
+gpurentalprices,fireworks,H100 80GB,neocloud_rate_card,serverless,H100,86,8.0000,2026-10-16,2026-11-03,7.0000,2026-08-04,False,0.2491,0.1429,0.7091,1,7.0000
+gpurentalprices,fireworks,H200,neocloud_rate_card,serverless,H200,86,8.0000,2026-10-16,2026-11-03,7.0000,2026-08-04,False,0.2491,0.1429,0.7091,1,7.0000
+gpurentalprices,gcp,A100 40GB,hyperscaler_list,on_demand,A100,89,2.9339,2026-10-20,2026-11-06,2.9339,2026-08-04,False,0.2574,0.0000,0.0000,0,2.9339
+gpurentalprices,gcp,A100 40GB,hyperscaler_spot,spot,A100,89,1.6723,2026-10-20,2026-11-06,1.6939,2026-08-04,False,0.2574,-0.0128,-0.0486,3,1.6939
+gpurentalprices,gcp,A100 SXM 80GB,hyperscaler_list,on_demand,A100,89,3.9281,2026-10-20,2026-11-06,3.9281,2026-08-04,False,0.2574,0.0000,0.0000,0,3.9281
+gpurentalprices,gcp,A100 SXM 80GB,hyperscaler_spot,spot,A100,89,2.3568,2026-10-20,2026-11-06,2.2684,2026-08-04,False,0.2574,0.0390,0.1601,1,2.2684
+gpurentalprices,gcp,B200,hyperscaler_list,on_demand,B200,89,16.1100,2026-10-20,2026-11-06,16.1100,2026-08-04,False,0.2574,0.0000,0.0000,0,16.1100
+gpurentalprices,gcp,B200,hyperscaler_spot,spot,B200,89,4.9542,2026-10-20,2026-11-06,4.9542,2026-08-04,False,0.2574,0.0000,0.0000,0,4.9542
+gpurentalprices,gcp,H100 80GB,hyperscaler_list,on_demand,H100,89,9.7966,2026-10-20,2026-11-06,9.7966,2026-08-04,False,0.2574,0.0000,0.0000,0,9.7966
+gpurentalprices,gcp,H100 80GB,hyperscaler_spot,spot,H100,89,5.2940,2026-10-20,2026-11-06,5.8779,2026-08-04,False,0.2574,-0.0993,-0.3340,7,5.8779
+gpurentalprices,gcp,H200,hyperscaler_list,on_demand,H200,89,9.3117,2026-10-20,2026-11-06,9.3117,2026-08-04,False,0.2574,0.0000,0.0000,0,9.3117
+gpurentalprices,gcp,H200,hyperscaler_spot,spot,H200,89,5.5860,2026-10-20,2026-11-06,5.3776,2026-08-04,False,0.2574,0.0388,0.1592,1,5.3776
+gpurentalprices,gcp,V100,hyperscaler_list,on_demand,V100,89,2.4800,2026-10-20,2026-11-06,2.4800,2026-08-04,False,0.2574,0.0000,0.0000,0,2.4800
+gpurentalprices,gcp,V100,hyperscaler_spot,spot,V100,89,1.4660,2026-10-20,2026-11-06,1.3586,2026-08-04,False,0.2574,0.0791,0.3440,13,1.3740
+gpurentalprices,gmi,B200,neocloud_rate_card,on_demand,B200,89,5.0000,2026-10-20,2026-11-06,4.0000,2026-08-04,False,0.2574,0.2500,1.3799,1,4.0000
+gpurentalprices,gmi,H100 80GB,neocloud_rate_card,on_demand,H100,89,2.6000,2026-10-20,2026-11-06,2.0000,2026-08-04,False,0.2574,0.3000,1.7717,1,2.0000
+gpurentalprices,gmi,H200,neocloud_rate_card,on_demand,H200,89,3.2000,2026-10-20,2026-11-06,2.6000,2026-08-04,False,0.2574,0.2308,1.2408,1,2.6000
+gpurentalprices,hyperstack,A100 80GB,neocloud_rate_card,on_demand,A100,89,1.3500,2026-10-20,2026-11-06,1.3500,2026-08-04,False,0.2574,0.0000,0.0000,0,1.3500
+gpurentalprices,hyperstack,A100 80GB,neocloud_rate_card,reserved_unspecified,A100,29,0.9500,2026-10-20,2026-11-06,0.9500,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,hyperstack,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,89,1.6000,2026-10-20,2026-11-06,1.6000,2026-08-04,False,0.2574,0.0000,0.0000,0,1.6000
+gpurentalprices,hyperstack,A100 SXM 80GB,neocloud_rate_card,reserved_unspecified,A100,29,1.3600,2026-10-20,2026-11-06,1.3600,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,hyperstack,B200,neocloud_rate_card,on_demand,B200,89,6.0000,2026-10-20,2026-11-06,6.0000,2026-08-04,False,0.2574,0.0000,0.0000,0,6.0000
+gpurentalprices,hyperstack,B200,neocloud_rate_card,reserved_unspecified,B200,29,5.1000,2026-10-20,2026-11-06,5.1000,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,hyperstack,H100 80GB,neocloud_rate_card,on_demand,H100,89,2.5000,2026-10-20,2026-11-06,2.5000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.5000
+gpurentalprices,hyperstack,H100 80GB,neocloud_rate_card,reserved_unspecified,H100,29,1.7500,2026-10-20,2026-11-06,1.7500,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,hyperstack,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,89,3.2000,2026-10-20,2026-11-06,3.2000,2026-08-04,False,0.2574,0.0000,0.0000,0,3.2000
+gpurentalprices,hyperstack,H100 SXM 80GB,neocloud_rate_card,reserved_unspecified,H100,29,2.7200,2026-10-20,2026-11-06,2.7200,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,hyperstack,H200,neocloud_rate_card,on_demand,H200,89,3.9900,2026-10-20,2026-11-06,3.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,3.9900
+gpurentalprices,hyperstack,H200,neocloud_rate_card,reserved_unspecified,H200,29,2.7900,2026-10-20,2026-11-06,2.7900,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,impossiblecloud,H200,neocloud_rate_card,reserved_unspecified,H200,28,3.1579,2026-10-20,2026-11-06,3.1225,2026-10-04,False,0.0903,0.0113,0.1329,5,
+gpurentalprices,jarvislabs,A100 40GB,neocloud_rate_card,on_demand,A100,86,0.8900,2026-10-16,2026-11-06,0.8900,2026-08-04,False,0.2574,0.0000,0.0000,0,0.8900
+gpurentalprices,jarvislabs,A100 80GB,neocloud_rate_card,on_demand,A100,86,1.4900,2026-10-16,2026-11-06,1.4900,2026-08-04,False,0.2574,0.0000,0.0000,0,1.4900
+gpurentalprices,jarvislabs,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,86,3.4900,2026-10-16,2026-11-06,2.6900,2026-08-04,False,0.2574,0.2974,1.7502,1,2.6900
+gpurentalprices,jarvislabs,H200,neocloud_rate_card,on_demand,H200,86,4.5900,2026-10-16,2026-11-06,3.9900,2026-08-04,False,0.2574,0.1504,0.7235,1,3.9900
+gpurentalprices,koyeb,A100 80GB,neocloud_rate_card,serverless,A100,89,1.6000,2026-10-20,2026-11-06,1.6000,2026-08-04,False,0.2574,0.0000,0.0000,0,1.6000
+gpurentalprices,koyeb,A100 SXM 80GB,neocloud_rate_card,serverless,A100,89,2.1500,2026-10-20,2026-11-06,2.1500,2026-08-04,False,0.2574,0.0000,0.0000,0,2.1500
+gpurentalprices,koyeb,B200,neocloud_rate_card,serverless,B200,89,5.5000,2026-10-20,2026-11-06,5.5000,2026-08-04,False,0.2574,0.0000,0.0000,0,5.5000
+gpurentalprices,koyeb,H100 80GB,neocloud_rate_card,serverless,H100,89,2.5000,2026-10-20,2026-11-06,2.5000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.5000
+gpurentalprices,koyeb,H200,neocloud_rate_card,serverless,H200,89,3.0000,2026-10-20,2026-11-06,3.0000,2026-08-04,False,0.2574,0.0000,0.0000,0,3.0000
+gpurentalprices,lambdalabs,A100 40GB,neocloud_rate_card,on_demand,A100,89,1.9900,2026-10-20,2026-11-06,1.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,1.9900
+gpurentalprices,lambdalabs,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,85,2.7900,2026-10-15,2026-11-02,2.7900,2026-08-04,False,0.2464,0.0000,0.0000,0,2.7900
+gpurentalprices,lambdalabs,B200,neocloud_rate_card,on_demand,B200,89,6.8400,2026-10-20,2026-11-06,6.6900,2026-08-04,False,0.2574,0.0224,0.0900,2,6.6900
+gpurentalprices,lambdalabs,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,89,3.2900,2026-10-20,2026-11-06,3.2900,2026-08-04,False,0.2574,0.0000,0.0000,1,3.2900
+gpurentalprices,lambdalabs,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,89,4.1400,2026-10-20,2026-11-06,3.9900,2026-08-04,False,0.2574,0.0376,0.1542,3,3.9900
+gpurentalprices,lambdalabs,V100,neocloud_rate_card,on_demand,V100,89,0.7900,2026-10-20,2026-11-06,0.7900,2026-08-04,False,0.2574,0.0000,0.0000,0,0.7900
+gpurentalprices,latitude,H100 80GB,neocloud_rate_card,on_demand,H100,89,3.3700,2026-10-20,2026-11-06,3.3700,2026-08-04,False,0.2574,0.0000,0.0000,0,3.3700
+gpurentalprices,latitude,H100 80GB,neocloud_rate_card,reserved_unspecified,H100,29,1.4439,2026-10-20,2026-11-06,1.4439,2026-10-03,False,0.0931,0.0000,0.0000,0,
+gpurentalprices,lium,B200,marketplace_ask,on_demand,B200,28,6.0675,2026-10-20,2026-11-06,5.6000,2026-10-04,False,0.0903,0.0835,1.4289,16,
+gpurentalprices,massedcompute,A100 80GB,neocloud_rate_card,on_demand,A100,89,1.3500,2026-10-20,2026-11-06,1.3500,2026-08-04,False,0.2574,0.0000,0.0000,0,1.3500
+gpurentalprices,massedcompute,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,89,1.3800,2026-10-20,2026-11-06,1.3800,2026-08-04,False,0.2574,0.0000,0.0000,0,1.3800
+gpurentalprices,massedcompute,H100 80GB,neocloud_rate_card,on_demand,H100,89,2.7300,2026-10-20,2026-11-06,2.7300,2026-08-04,False,0.2574,0.0000,0.0000,0,2.7300
+gpurentalprices,massedcompute,H100 NVL,neocloud_rate_card,on_demand,H100,89,2.9200,2026-10-20,2026-11-06,2.9200,2026-08-04,False,0.2574,0.0000,0.0000,0,2.9200
+gpurentalprices,massedcompute,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,89,3.1400,2026-10-20,2026-11-06,3.1400,2026-08-04,False,0.2574,0.0000,0.0000,2,3.1043
+gpurentalprices,massedcompute,H200 NVL,neocloud_rate_card,on_demand,H200,89,3.6200,2026-10-20,2026-11-06,3.6200,2026-08-04,False,0.2574,0.0000,0.0000,0,3.6200
+gpurentalprices,modal,A100 40GB,neocloud_rate_card,serverless,A100,89,2.0988,2026-10-20,2026-11-06,2.0988,2026-08-04,False,0.2574,0.0000,0.0000,0,2.0988
+gpurentalprices,modal,A100 80GB,neocloud_rate_card,serverless,A100,89,2.4984,2026-10-20,2026-11-06,2.4984,2026-08-04,False,0.2574,0.0000,0.0000,0,2.4984
+gpurentalprices,modal,B200,neocloud_rate_card,serverless,B200,89,6.2496,2026-10-20,2026-11-06,6.2496,2026-08-04,False,0.2574,0.0000,0.0000,0,6.2496
+gpurentalprices,modal,H100 SXM 80GB,neocloud_rate_card,serverless,H100,81,3.9492,2026-10-20,2026-11-06,3.9492,2026-08-12,False,0.2355,0.0000,0.0000,0,3.9492
+gpurentalprices,modal,H200,neocloud_rate_card,serverless,H200,89,4.5396,2026-10-20,2026-11-06,4.5396,2026-08-04,False,0.2574,0.0000,0.0000,0,4.5396
+gpurentalprices,nebius,B200,neocloud_rate_card,on_demand,B200,89,8.5000,2026-10-20,2026-11-06,7.1500,2026-08-04,False,0.2574,0.1888,0.9582,1,7.1500
+gpurentalprices,nebius,H100 80GB,neocloud_rate_card,on_demand,H100,89,4.5000,2026-10-20,2026-11-06,3.8500,2026-08-04,False,0.2574,0.1688,0.8334,1,3.8500
+gpurentalprices,nebius,H200,neocloud_rate_card,on_demand,H200,89,5.4000,2026-10-20,2026-11-06,4.5000,2026-08-04,False,0.2574,0.2000,1.0308,1,4.5000
+gpurentalprices,ovhcloud,A100 80GB,neocloud_rate_card,on_demand,A100,89,3.0700,2026-10-20,2026-11-06,3.0700,2026-08-04,False,0.2574,0.0000,0.0000,0,3.0700
+gpurentalprices,ovhcloud,H100 80GB,neocloud_rate_card,on_demand,H100,89,2.9900,2026-10-20,2026-11-06,2.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,2.9900
+gpurentalprices,ovhcloud,H200,neocloud_rate_card,on_demand,H200,89,6.1950,2026-10-20,2026-11-06,6.1950,2026-08-04,False,0.2574,0.0000,0.0000,0,6.1950
+gpurentalprices,ovhcloud,V100,neocloud_rate_card,on_demand,V100,89,0.7700,2026-10-20,2026-11-06,0.7700,2026-08-04,False,0.2574,0.0000,0.0000,0,0.7700
+gpurentalprices,primeintellect,B200,marketplace_ask,on_demand,B200,84,3.4900,2026-10-13,2026-10-31,3.4900,2026-08-04,False,0.2409,0.0000,0.0000,0,3.4900
+gpurentalprices,primeintellect,H100 80GB,marketplace_ask,on_demand,H100,84,2.4300,2026-10-13,2026-10-31,2.4300,2026-08-04,False,0.2409,0.0000,0.0000,0,2.4300
+gpurentalprices,primeintellect,H100 80GB,marketplace_ask,spot,H100,84,0.9400,2026-10-13,2026-10-31,0.9400,2026-08-04,False,0.2409,0.0000,0.0000,0,0.9400
+gpurentalprices,primeintellect,H200,marketplace_ask,on_demand,H200,84,3.1400,2026-10-13,2026-10-31,3.1400,2026-08-04,False,0.2409,0.0000,0.0000,0,3.1400
+gpurentalprices,replicate,A100 80GB,neocloud_rate_card,serverless,A100,89,5.0400,2026-10-20,2026-11-06,5.0400,2026-08-04,False,0.2574,0.0000,0.0000,0,5.0400
+gpurentalprices,replicate,H100 80GB,neocloud_rate_card,serverless,H100,89,5.4900,2026-10-20,2026-11-06,5.4900,2026-08-04,False,0.2574,0.0000,0.0000,0,5.4900
+gpurentalprices,replicate,H200,neocloud_rate_card,serverless,H200,85,5.4900,2026-10-20,2026-11-06,5.4900,2026-08-08,False,0.2464,0.0000,0.0000,0,5.4900
+gpurentalprices,scaleway,H100 80GB,neocloud_rate_card,on_demand,H100,86,3.2138,2026-10-16,2026-11-06,3.3082,2026-08-04,False,0.2574,-0.0285,-0.1064,60,3.3246
+gpurentalprices,scaleway,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,78,3.5736,2026-10-16,2026-11-06,3.8199,2026-08-04,False,0.2574,-0.0645,-0.2282,55,3.8389
+gpurentalprices,sfcompute,H100 80GB,marketplace_ask,spot,H100,55,1.8326,2026-09-14,2026-09-27,1.9200,2026-08-04,False,0.1478,-0.0455,-0.2703,48,1.6326
+gpurentalprices,spheron,A100 80GB,marketplace_ask,on_demand,A100,89,1.4300,2026-10-20,2026-11-06,1.4550,2026-08-04,False,0.2574,-0.0172,-0.0651,28,1.4443
+gpurentalprices,spheron,A100 80GB,marketplace_ask,spot,A100,79,1.1900,2026-10-19,2026-11-06,1.1500,2026-08-04,False,0.2574,0.0348,0.1421,41,1.1544
+gpurentalprices,spheron,B200,marketplace_ask,on_demand,B200,70,11.0600,2026-10-20,2026-11-06,9.3600,2026-08-05,False,0.2546,0.1816,0.9260,37,8.7257
+gpurentalprices,spheron,B200,marketplace_ask,spot,B200,86,5.2500,2026-10-19,2026-11-06,5.3400,2026-08-04,False,0.2574,-0.0169,-0.0639,41,5.0307
+gpurentalprices,spheron,H100 80GB,marketplace_ask,on_demand,H100,89,2.6450,2026-10-20,2026-11-06,2.8150,2026-08-04,False,0.2574,-0.0604,-0.2150,61,2.8621
+gpurentalprices,spheron,H100 80GB,marketplace_ask,spot,H100,88,2.2000,2026-10-19,2026-11-06,2.1000,2026-08-04,False,0.2574,0.0476,0.1981,45,2.0943
+gpurentalprices,spheron,H200,marketplace_ask,on_demand,H200,88,5.5100,2026-10-20,2026-11-06,4.7900,2026-08-04,False,0.2574,0.1503,0.7231,55,4.8100
+gpurentalprices,spheron,H200,marketplace_ask,spot,H200,88,3.3500,2026-10-19,2026-11-06,2.5300,2026-08-04,False,0.2574,0.3241,1.9768,59,2.8650
+gpurentalprices,tensordock,A100 PCIe 80GB,marketplace_ask,on_demand,A100,89,1.5000,2026-10-20,2026-11-06,1.5000,2026-08-04,False,0.2574,0.0000,0.0000,0,1.5000
+gpurentalprices,tensordock,A100 SXM 80GB,marketplace_ask,on_demand,A100,89,1.8000,2026-10-20,2026-11-06,1.8000,2026-08-04,False,0.2574,0.0000,0.0000,0,1.8000
+gpurentalprices,tensordock,H100 SXM 80GB,marketplace_ask,on_demand,H100,89,2.2500,2026-10-20,2026-11-06,2.2500,2026-08-04,False,0.2574,0.0000,0.0000,0,2.2500
+gpurentalprices,tensordock,H100 SXM 80GB,marketplace_ask,spot,H100,89,1.9100,2026-10-20,2026-11-06,1.9100,2026-08-04,False,0.2574,0.0000,0.0000,0,1.9100
+gpurentalprices,tensordock,V100,marketplace_ask,on_demand,V100,89,0.1700,2026-10-20,2026-11-06,0.1700,2026-08-04,False,0.2574,0.0000,0.0000,0,0.1700
+gpurentalprices,thundercompute,A100 80GB,neocloud_rate_card,on_demand,A100,89,1.0900,2026-10-20,2026-11-06,1.0900,2026-08-04,False,0.2574,0.0000,0.0000,0,1.0900
+gpurentalprices,thundercompute,H100 PCIe 80GB,neocloud_rate_card,on_demand,H100,57,3.2000,2026-09-16,2026-09-29,2.1900,2026-08-04,False,0.1533,0.4612,10.8649,2,2.5500
+gpurentalprices,thundercompute,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,32,3.2000,2026-10-20,2026-11-06,3.2000,2026-09-30,False,0.1013,0.0000,0.0000,0,
+gpurentalprices,together,B200,neocloud_rate_card,on_demand,B200,59,8.1900,2026-10-20,2026-11-06,8.1900,2026-08-04,False,0.2574,0.0000,0.0000,0,8.1900
+gpurentalprices,together,B200,neocloud_spot,spot,B200,59,4.0900,2026-10-20,2026-11-06,4.0900,2026-09-03,False,0.1752,0.0000,0.0000,0,
+gpurentalprices,together,H100 80GB,neocloud_rate_card,on_demand,H100,59,3.9900,2026-10-20,2026-11-06,3.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,3.9900
+gpurentalprices,together,H100 80GB,neocloud_spot,spot,H100,59,1.9900,2026-10-20,2026-11-06,1.9900,2026-09-03,False,0.1752,0.0000,0.0000,0,
+gpurentalprices,together,H200,neocloud_rate_card,on_demand,H200,59,5.9900,2026-10-20,2026-11-06,5.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,5.9900
+gpurentalprices,together,H200,neocloud_spot,spot,H200,59,2.9900,2026-10-20,2026-11-06,2.9900,2026-09-03,False,0.1752,0.0000,0.0000,0,
+gpurentalprices,verda,A100 40GB,neocloud_rate_card,on_demand,A100,89,1.5930,2026-10-20,2026-11-06,1.2900,2026-08-04,False,0.2574,0.2349,1.2700,29,1.2900
+gpurentalprices,verda,A100 SXM 80GB,neocloud_rate_card,on_demand,A100,89,2.2150,2026-10-20,2026-11-06,1.7900,2026-08-04,False,0.2574,0.2374,1.2882,36,1.7900
+gpurentalprices,verda,B200,neocloud_rate_card,on_demand,B200,89,8.7375,2026-10-20,2026-11-06,6.1100,2026-08-04,False,0.2574,0.4300,3.0144,40,6.1100
+gpurentalprices,verda,H100 SXM 80GB,neocloud_rate_card,on_demand,H100,89,4.7225,2026-10-20,2026-11-06,3.2500,2026-08-04,False,0.2574,0.4531,3.2716,40,3.2500
+gpurentalprices,verda,H200,neocloud_rate_card,on_demand,H200,89,6.1575,2026-10-20,2026-11-06,4.0000,2026-08-04,False,0.2574,0.5394,4.3451,40,4.0000
+gpurentalprices,verda,V100,neocloud_rate_card,on_demand,V100,89,0.2360,2026-10-20,2026-11-06,0.1700,2026-08-04,False,0.2574,0.3882,2.5773,33,0.1700
+gpurentalprices,voltagepark,H100 80GB,neocloud_rate_card,on_demand,H100,89,1.9900,2026-10-20,2026-11-06,1.9900,2026-08-04,False,0.2574,0.0000,0.0000,0,1.9900
+gpurentalprices,vultr,A100 80GB,neocloud_rate_card,on_demand,A100,89,2.3970,2026-10-20,2026-11-06,2.3970,2026-08-04,False,0.2574,0.0000,0.0000,0,2.3970
+gpurentalprices,vultr,B200,neocloud_spot,spot,B200,89,3.2000,2026-10-20,2026-11-06,3.2000,2026-08-04,False,0.2574,0.0000,0.0000,0,3.2000
+gpurentalprices,vultr,H100 80GB,neocloud_spot,spot,H100,89,2.3000,2026-10-20,2026-11-06,2.3000,2026-08-04,False,0.2574,0.0000,0.0000,0,2.3000
