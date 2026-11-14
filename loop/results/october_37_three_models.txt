@@ -1,0 +1,4 @@
+# October, scored once, on the 37 scored series, after the Jul-Sep pick was fixed. Pooled over all 725 series.
+october sunday37 starter            skill +0.1216 cov 0.62 cells 1522
+october sunday37 trend (aws pick)   skill +0.1014 cov 0.63 cells 1522
+october sunday37 pick37 (band 1.2)  skill +0.1341 cov 0.76 cells 1522

@@ -1,0 +1,4 @@
+october, 37 scored series, 10000 series resamples
+skill model +0.1341 starter +0.1216
+difference +0.0125, 95% interval [-0.0097, +0.0412], share of resamples above 0: 0.856
+series where the model's October loss is lower: 22 of 37

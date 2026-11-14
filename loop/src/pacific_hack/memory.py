@@ -134,6 +134,7 @@ class PastDevMemory:
         api_key: str | None = None,
         identity: str = "pacific-reader",
         _pending: list[str] | None = None,
+        scope: str | None = None,
     ):
         self.api_key = api_key or os.environ.get(PAST_API_KEY_ENV)
         if not self.api_key:
@@ -143,6 +144,10 @@ class PastDevMemory:
                 "with 500,000 credits selected."
             )
         self.identity = identity
+        # One project holds every run. A scope (e.g. "scored37") tags this
+        # run's facts and filters reads to them, so ideas judged on another
+        # series world don't count as history here.
+        self.scope = scope
         self._pending_ingestions = _pending if _pending is not None else []
         self._ensured_audiences: set[str] = set()
 
@@ -153,6 +158,7 @@ class PastDevMemory:
             api_key=self.api_key,
             identity=f"pacific-{agent_name}",
             _pending=self._pending_ingestions,
+            scope=self.scope,
         )
 
     # -- HTTP plumbing ------------------------------------------------------
@@ -213,11 +219,14 @@ class PastDevMemory:
         # critic refutation supersedes a hypothesis instead of coexisting).
         if audience := entry.get("audience"):
             self._ensure_audience(audience)
+        if self.scope:
+            entry = {**entry, "scope": self.scope}
+        key = entry.get("fact_id") or entry["id"]
         market_date = entry.get("market_date") or entry["timestamp"]
         if "T" not in market_date:
             market_date += "T00:00:00Z"
         body = {
-            "id": f"ledger:{entry.get('fact_id') or entry['id']}",
+            "id": f"ledger:{self.scope}:{key}" if self.scope else f"ledger:{key}",
             "content": ledger.render_entry_text(entry),
             "label": f"pacific-hack {entry['kind']}",
             "timestamp": market_date,  # event time = the date the fact describes
@@ -289,18 +298,19 @@ class PastDevMemory:
             "throughput steps per hour runner",
         ):
             for e in self._recall(q, as_of=as_of):
-                seen.setdefault(e["id"], e)
+                if e.get("scope") == self.scope:
+                    seen.setdefault(e["id"], e)
         ordered = sorted(seen.values(), key=lambda e: (e["timestamp"], e["id"]))
         return ledger.latest_per_fact(ordered)
 
     def search(self, query: str, k: int = 10, as_of: str | None = None) -> list[dict]:
         self.drain()
-        return self._recall(query, as_of=as_of)[:k]
+        return [e for e in self._recall(query, as_of=as_of) if e.get("scope") == self.scope][:k]
 
 
-def make_memory(kind: str, path: str | None = None) -> Memory:
+def make_memory(kind: str, path: str | None = None, scope: str | None = None) -> Memory:
     if kind == "jsonl":
-        return JsonlMemory(path or "ledger.jsonl")
+        return JsonlMemory(path or "ledger.jsonl")  # a fresh file is its own scope
     if kind == "past":
-        return PastDevMemory()
+        return PastDevMemory(scope=scope)
     raise ValueError(f"unknown memory backend {kind!r} (use 'jsonl' or 'past')")

@@ -57,6 +57,20 @@ def test_past_backend_sends_query_timestamp_and_event_time(monkeypatch):
     assert "audience" not in ingest
 
 
+
+def test_past_scope_tags_writes_and_hides_other_runs(monkeypatch):
+    mem = PastDevMemory(api_key="test-key", scope="scored37").bound("proposer")
+    calls = record_calls(monkeypatch, mem)
+    mem.append(ledger.make_entry("decision", "killed", "evaluator", market_date=TRAIN_END, fact_id="hyp-idea-001"))
+    ingest = [b for m, p, b in calls if p == "/ingest"][0]
+    assert ingest["id"] == "ledger:scored37:hyp-idea-001"
+    assert ingest["metadata"]["entry"]["scope"] == "scored37"
+
+    ours, other = ingest["metadata"]["entry"], {**ingest["metadata"]["entry"], "id": "x", "scope": None}
+    page = {"results": [{"sources": [{"metadata": {"entry": e}}]} for e in (ours, other)]}
+    monkeypatch.setattr(mem, "_call", lambda method, path, body=None: page)
+    assert [e["id"] for e in mem.entries()] == [ours["id"]]
+
 # 2. Read boundary -----------------------------------------------------------
 
 
