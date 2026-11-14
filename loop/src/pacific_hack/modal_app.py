@@ -15,8 +15,19 @@ from contextlib import contextmanager
 
 import modal
 
+from . import pack
+
+REMOTE_SERIES = "/data/series.npz"
+
 app = modal.App("pacific-hack-backtest")
-image = modal.Image.debian_slim(python_version="3.12").add_local_python_source("pacific_hack")
+image = (
+    modal.Image.debian_slim(python_version="3.12")
+    .pip_install("numpy>=1.26")
+    .env({pack.PATH_ENV: REMOTE_SERIES})
+)
+if pack.path().exists():  # the pack's headline series ride along in the image (~100 KB)
+    image = image.add_local_file(str(pack.path()), REMOTE_SERIES)
+image = image.add_local_python_source("pacific_hack")
 
 
 @app.function(image=image, timeout=600)

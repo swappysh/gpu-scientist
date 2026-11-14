@@ -30,16 +30,18 @@ from .memory import HOLDOUT_AUDIENCE, Memory
 
 # One change at a time: (param, value) pairs the proposer walks through.
 MUTATIONS: list[tuple[str, object]] = [
-    ("lookback_days", 28),
-    ("shrink_to_history", 0.2),
-    ("shrink_to_history", 0.5),
-    ("drift_per_day", -0.005),
-    ("drift_per_day", 0.005),
-    ("lookback_days", 7),
-    ("spread_k", 3.0),
-    ("spread_k", 10.0),
-    ("lookback_days", 60),
-    ("shrink_to_history", 0.8),
+    ("window_days", 90),
+    ("window_days", 45),
+    ("half_life_days", 30.0),
+    ("half_life_days", 14.0),
+    ("band_scale", 0.8),
+    ("band_scale", 1.25),
+    ("drift_weight", 0.5),
+    ("drift_weight", 1.0),
+    ("pool_weight", 0.5),
+    ("pool_weight", 1.0),
+    ("min_samples", 10),
+    ("min_samples", 40),
 ]
 
 GOOD = ("kept", "corroborated")

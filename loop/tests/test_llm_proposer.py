@@ -49,14 +49,14 @@ def proposer(memory, client, **kw):
 
 def test_valid_llm_output_becomes_proposals(memory):
     client = FakeClient({"candidates": [
-        cand("lookback_days", 21, "a longer window smooths noise"),
-        cand("spread_k", 4, "narrower bands"),
+        cand("window_days", 21, "a shorter window tracks regime changes"),
+        cand("band_scale", 1.5, "wider bands"),
     ]})
     out = proposer(memory, client).propose_batch(ForecasterConfig(), k=3)
     assert [(p["change"]["param"], p["change"]["value"]) for p in out] == [
-        ("lookback_days", 21), ("spread_k", 4.0)]
-    assert out[0]["reason"] == "a longer window smooths noise"
-    assert out[0]["previous"] == {"param": "lookback_days", "value": 14}
+        ("window_days", 21), ("band_scale", 1.5)]
+    assert out[0]["reason"] == "a shorter window tracks regime changes"
+    assert out[0]["previous"] == {"param": "window_days", "value": 0}
     assert out[0]["kind"] == "proposal" and out[0]["fact_id"] == f"hyp-{out[0]['idea_id']}"
     assert len(memory.entries()) == 2  # written to the shared ledger
     call = client.calls[0]
@@ -66,34 +66,34 @@ def test_valid_llm_output_becomes_proposals(memory):
 
 def test_model_comes_from_env(memory, monkeypatch):
     monkeypatch.setenv("PROPOSER_MODEL", "my-model")
-    client = FakeClient({"candidates": [cand("spread_k", 4)]})
+    client = FakeClient({"candidates": [cand("band_scale", 1.5)]})
     proposer(memory, client).propose_batch(ForecasterConfig())
     assert client.calls[0]["model"] == "my-model"
 
 
 def test_invalid_and_duplicate_candidates_are_dropped(memory):
     cfg = ForecasterConfig()
-    # An earlier idea already tried lookback_days=28 (killed).
+    # An earlier idea already tried window_days=28 (killed).
     memory.append(ledger.make_entry(
         "decision", "killed", "evaluator", TRAIN_END, idea_id="idea-001",
-        change={"param": "lookback_days", "value": 28}, previous={"param": "lookback_days", "value": 14},
+        change={"param": "window_days", "value": 28}, previous={"param": "window_days", "value": 0},
         scores={"skill_train": 0.1, "d_train": -0.01}, reason="failed the gate",
         fact_id="hyp-idea-001"))
     client = FakeClient({"candidates": [
-        cand("lookback_days", 28),            # already tried
+        cand("window_days", 28),              # already tried
         cand("bogus_field", 1),               # unknown field
-        cand("shrink_to_history", 1.5),       # out of range
-        cand("lookback_days", 10.5),          # int field, fractional value
-        cand("spread_k", "wide"),             # wrong type
-        cand("spread_floor", 0.05),           # no-op (equals current)
-        cand("drift_per_day", 0.005, "  "),   # empty hypothesis
-        cand("drift_per_day", -0.005),        # valid
-        cand("drift_per_day", 0.005),         # second change to the same param
-        cand("shrink_to_history", 0.2),       # valid
+        cand("half_life_days", 150.0),        # out of range
+        cand("window_days", 10.5),            # int field, fractional value
+        cand("band_scale", "wide"),           # wrong type
+        cand("pool_weight", 0.0),             # no-op (equals current)
+        cand("drift_weight", 0.5, "  "),      # empty hypothesis
+        cand("drift_weight", 0.25),           # valid
+        cand("drift_weight", 0.5),            # second change to the same param
+        cand("half_life_days", 14.0),         # valid
     ]})
     out = proposer(memory, client).propose_batch(cfg, k=5)
     assert [(p["change"]["param"], p["change"]["value"]) for p in out] == [
-        ("drift_per_day", -0.005), ("shrink_to_history", 0.2)]
+        ("drift_weight", 0.25), ("half_life_days", 14.0)]
     assert out[0]["idea_id"] == "idea-002"  # continues the ledger numbering
 
 
@@ -108,14 +108,14 @@ def test_holdout_numbers_never_reach_the_prompt(memory):
     secret = 0.987654
     memory.append(ledger.make_entry(
         "decision", "kept", "evaluator", TRAIN_END, idea_id="idea-001",
-        change={"param": "lookback_days", "value": 28}, previous={"param": "lookback_days", "value": 14},
+        change={"param": "window_days", "value": 28}, previous={"param": "window_days", "value": 0},
         scores={"skill_train": 0.25, "d_train": 0.01}, reason="passed the Jul-Sep and held-out gates",
         fact_id="hyp-idea-001"))
     memory.append(ledger.make_entry(
         "result", "kept", "evaluator", HELDOUT_END, idea_id="idea-001",
-        change={"param": "lookback_days", "value": 28},
+        change={"param": "window_days", "value": 28},
         scores={"skill_heldout": secret, "d_heldout": secret}, audience=HOLDOUT_AUDIENCE))
-    client = FakeClient({"candidates": [cand("spread_k", 4)]})
+    client = FakeClient({"candidates": [cand("band_scale", 1.5)]})
     proposer(memory, client).propose_batch(ForecasterConfig())
     prompt = json.dumps(client.calls[0]["messages"])
     assert "0.25" in prompt and "passed the Jul-Sep" in prompt  # public history is there
@@ -125,11 +125,11 @@ def test_holdout_numbers_never_reach_the_prompt(memory):
 def test_public_history_guards_against_audience_entries_even_if_memory_leaks():
     leaked = ledger.make_entry(
         "decision", "kept", "evaluator", TRAIN_END, idea_id="idea-009",
-        change={"param": "spread_k", "value": 3.0}, scores={"skill_heldout": 0.55},
+        change={"param": "band_scale", "value": 3.0}, scores={"skill_heldout": 0.55},
         audience=HOLDOUT_AUDIENCE)
     public = ledger.make_entry(
         "decision", "kept", "evaluator", TRAIN_END, idea_id="idea-001",
-        change={"param": "spread_k", "value": 10.0},
+        change={"param": "band_scale", "value": 2.0},
         scores={"skill_train": 0.2, "d_train": 0.01, "skill_heldout": 0.77}, reason="ok")
     history = public_history([leaked, public])
     assert [h["idea_id"] for h in history] == ["idea-001"]
@@ -162,8 +162,8 @@ def test_full_loop_with_llm_mode_and_no_key(memory, monkeypatch):
 
 
 def test_custom_field_schema_is_used(memory):
-    schema = [{"name": "lookback_days", "type": "int", "min": 5, "max": 20}]
-    client = FakeClient({"candidates": [cand("lookback_days", 40), cand("lookback_days", 18)]})
+    schema = [{"name": "window_days", "type": "int", "min": 5, "max": 20}]
+    client = FakeClient({"candidates": [cand("window_days", 40), cand("window_days", 18)]})
     out = proposer(memory, client, field_schema=schema).propose_batch(ForecasterConfig())
     assert [p["change"]["value"] for p in out] == [18]
     assert json.loads(client.calls[0]["messages"][1]["content"])["field_schema"] == schema

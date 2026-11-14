@@ -26,11 +26,12 @@ FieldSpec = dict
 
 # Allowed range per ForecasterConfig field.
 FORECASTER_RANGES: dict[str, tuple[float, float]] = {
-    "lookback_days": (3, 120),
-    "shrink_to_history": (0.0, 1.0),
-    "drift_per_day": (-0.05, 0.05),
-    "spread_k": (1.0, 20.0),
-    "spread_floor": (0.0, 0.5),
+    "window_days": (0, 120),
+    "half_life_days": (0.0, 90.0),
+    "band_scale": (0.5, 3.0),
+    "drift_weight": (0.0, 1.0),
+    "pool_weight": (0.0, 2.0),
+    "min_samples": (2, 60),
 }
 
 

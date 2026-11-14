@@ -6,7 +6,7 @@ import pytest
 
 from pacific_hack import harness, ledger
 from pacific_hack.agents import Critic, hypothesis_fact_id
-from pacific_hack.data import HELDOUT_END, TRAIN_END, make_series, split
+from pacific_hack.data import HELDOUT_END, TRAIN_END, synthetic_world
 from pacific_hack.forecaster import ForecasterConfig, backtest
 from pacific_hack.memory import HOLDOUT_AUDIENCE, JsonlMemory, PastDevMemory
 from pacific_hack.run import run
@@ -94,8 +94,8 @@ def test_refuted_hypothesis_is_superseded_not_duplicated(memory, monkeypatch):
     fid = hypothesis_fact_id("idea-001")
     kw = dict(
         idea_id="idea-001",
-        change={"param": "lookback_days", "value": 7},
-        previous={"param": "lookback_days", "value": 14},
+        change={"param": "window_days", "value": 45},
+        previous={"param": "window_days", "value": 0},
         fact_id=fid,
     )
     memory.append(ledger.make_entry("proposal", "proposed", "proposer", market_date=TRAIN_END, **kw))
@@ -139,10 +139,9 @@ def test_loop_writes_tens_of_facts_not_rows(memory):
 
 
 def test_backtest_batch_matches_backtest_and_keeps_order():
-    configs = [ForecasterConfig(), ForecasterConfig(lookback_days=7)]
+    configs = [ForecasterConfig(), ForecasterConfig(window_days=45)]
     got = harness.backtest_batch(configs, runner="local", seed=7)
-    train, heldout = split(make_series(seed=7))
-    assert got == [backtest(c, train, heldout) for c in configs]
+    assert got == [backtest(c, synthetic_world(seed=7)) for c in configs]
 
 
 def test_modal_runner_dispatches_to_modal_app(monkeypatch):

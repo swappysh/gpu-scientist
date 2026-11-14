@@ -9,24 +9,41 @@ dates walked, used for the steps-per-hour metric). The loop never calls
 `run_local` maps it in-process, `modal_app.run_batch` maps the same function
 on Modal containers (`.starmap`, one call per job).
 
-`seed` selects the synthetic world today; with the real harness it can
-select a dataset / forecast-date window instead.
+World: the Pacific pack's headline series (`pack.py`), or step-shaped fake
+series when PACIFIC_DATA=synthetic (offline tests). `seed` < 1000 scores
+every series; seed >= 1000 (the critic's alternate worlds) scores a bootstrap
+resample of the series, so a kept change must hold up on other series mixes.
 """
 
 from __future__ import annotations
 
+import os
+import random
 from contextlib import contextmanager
 
-from .data import make_series, split
+from . import pack
+from .data import Series, synthetic_world
 from .forecaster import ForecasterConfig, backtest
 
 RUNNERS = ("local", "modal")
+DATA_ENV = "PACIFIC_DATA"  # "pack" (default) or "synthetic"
+BOOTSTRAP_FROM = 1000
+
+
+def world(seed: int) -> list[Series]:
+    if os.environ.get(DATA_ENV, "pack") == "synthetic":
+        series = synthetic_world(seed=7)
+    else:
+        series = pack.load()
+    if seed < BOOTSTRAP_FROM:
+        return series
+    rng = random.Random(seed)
+    return [series[rng.randrange(len(series))] for _ in series]
 
 
 def backtest_seed(config: dict, seed: int) -> dict:
-    """One job: score one config on the synthetic world `seed`. Runs locally or on Modal."""
-    train, heldout = split(make_series(seed=seed))
-    return backtest(ForecasterConfig(**config), train, heldout)
+    """One job: score one config on world `seed`. Runs locally or on Modal."""
+    return backtest(ForecasterConfig(**config), world(seed))
 
 
 def run_local(jobs: list[tuple[dict, int]]) -> list[dict]:
