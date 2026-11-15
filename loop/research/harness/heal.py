@@ -17,7 +17,7 @@ If the pick did not lose (diff >= 0 and the interval does not sit below 0), it l
      earlier keep steps. Checks that fail, crash or reject too much are dropped and logged.
   d. adopt: passing checks go to harness/healed/round_N.py, which guards.py loads into the
      keep rule and the pick rule. Checks only add rejections, so the locked keep rule never
-     loosens. Then: one meta.tsv row "healing round N, trigger = holdout fail", dev extended to
+     loosens. Then: one meta.tsv row "healing round N, trigger = holdout fail" (or walk-forward week fail), dev extended to
      the last holdout target, and the researchers restarted from the pick's parent and the
      incumbent. --dry-run stops before d's writes and prints what it would do.
 
@@ -93,14 +93,19 @@ def forecaster(commit: str) -> str:
     return git("show", f"{commit}:{REL_AGENT}")
 
 
-def dev_cells(commit: str, text: str, cache: Path | None) -> list:
-    """Per-cell dev rows for one forecaster: from the cache if gpuloop already scored it, else scored here."""
+def dev_cells(commit: str, text: str, cache: Path | None, cutoff: str | None = None) -> list:
+    """Per-cell dev rows for one forecaster: from the cache if gpuloop already scored it, else scored here.
+
+    With a walk-forward cutoff the cache must hold every commit: the locked dev file may run past
+    the cutoff, so scoring on it here could show the director the unseen week."""
     if cache:
         for name in (f"dev_cells_{commit}.json", f"{commit}.json", f"out/dev_cells_{commit}.json"):
             f = cache / name
             if f.exists():
                 d = json.loads(f.read_text())
                 return d["rows"] if isinstance(d, dict) else d
+    if cutoff:
+        sys.exit(f"walk-forward heal: no cached dev cells for {commit} at cutoff {cutoff}")
     sys.path.insert(0, str(RESEARCH))
     from harness import core
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as fh:
@@ -111,15 +116,17 @@ def dev_cells(commit: str, text: str, cache: Path | None) -> list:
         os.unlink(fh.name)
 
 
-def move_rates() -> str:
-    """Share of days a scored line's price moved, mean move size, ups/downs, by source and period (dev rows only)."""
+def move_rates(full_npz: str | None = None, cutoff: str | None = None) -> str:
+    """Share of days a scored line's price moved, mean move size, ups/downs, by source and period (dev rows only).
+
+    Walk-forward: the full build, read only up to the round's cutoff."""
     from collections import defaultdict
 
     import numpy as np
     sys.path.insert(0, str(RESEARCH))
     from harness import core
-    w = core.load()
-    end = core.day(core.TRAIN_END)
+    w = core.load(full_npz) if cutoff else core.load()
+    end = core.day(cutoff or core.TRAIN_END)
     periods = {"before gate": (core.day(core.TRAIN_START), core.day(core.VAL_START) - 1),
                "gate, all but the last 15 days": (core.day(core.VAL_START), end - 15),
                "last 15 dev days": (end - 14, end)}
@@ -136,7 +143,7 @@ def move_rates() -> str:
             row = np.array([1, len(idx), (np.abs(r) > 1e-9).sum(), np.abs(r).sum(), (r > 1e-9).sum()])
             for key in (sid.split(".")[0], "all"):
                 agg[key][p] += row
-    out = [f"dev rows {core.TRAIN_START}..{core.TRAIN_END}; periods: " +
+    out = [f"dev rows {core.TRAIN_START}..{core.iso(end)}; periods: " +
            "; ".join(f"{p} = {core.iso(a)}..{core.iso(b)}" for p, (a, b) in periods.items()),
            "source  period  lines  days  move_share  mean_abs_move  up/down"]
     for key in sorted(agg):
@@ -153,7 +160,8 @@ def build_packet(packet: Path, a, steps, cache: Path | None, rnd_dir: Path) -> d
     (packet / "cells").mkdir(exist_ok=True)
     (packet / "out").mkdir(exist_ok=True)  # mount point for the director's writable out dir
     (packet / "FAILURE.md").write_text(
-        f"The pick {a.pick} lost to the incumbent {a.incumbent} on held-out data it never saw:\n"
+        f"The pick {a.pick} lost to the incumbent {a.incumbent} on held-out data it never saw"
+        + (f" (the week after {a.cutoff}; dev ends on {a.cutoff})" if a.cutoff else "") + ":\n"
         f"skill difference (pick minus incumbent) {a.diff:+.3f}, 95% interval [{a.lo:+.3f}, {a.hi:+.3f}].\n"
         f"The pick's parent (the step before it) is {a.parent}.\n"
         "That is all you get from the holdout. Everything else in this folder is dev data.\n")
@@ -164,10 +172,10 @@ def build_packet(packet: Path, a, steps, cache: Path | None, rnd_dir: Path) -> d
         text = forecaster(c)
         (packet / "forecasters" / f"{c}.py").write_text(text)
         t0 = time.time()
-        cells[c] = dev_cells(c, text, cache)
+        cells[c] = dev_cells(c, text, cache, a.cutoff)
         (packet / "cells" / f"{c}.json").write_text(json.dumps(cells[c]))
         log(rnd_dir, f"packet: dev cells {c} ({len(cells[c])} cells, {time.time() - t0:.0f} s)")
-    (packet / "moves.txt").write_text(move_rates())
+    (packet / "moves.txt").write_text(move_rates(a.full_npz, a.cutoff))
     (packet / "README.md").write_text(
         "cells/<commit>.json: one row per scored dev cell: [series_id, origin (date ordinal), h, truth, "
         "last price at origin, [q10, q50, q90], pinball loss, flat (last-value) loss]. "
@@ -443,6 +451,7 @@ def main() -> None:
     ap.add_argument("--cells-cache", type=Path, help="dir with dev_cells_<commit>.json already scored")
     ap.add_argument("--full-npz", help="private full build, to extend dev (real runs only)")
     ap.add_argument("--dry-run", action="store_true", help="stop before step d's writes; print them")
+    ap.add_argument("--cutoff", help="walk-forward round: dev ends on this day (needs --full-npz and --cells-cache)")
     ap.add_argument("--fake-director", type=Path, help=argparse.SUPPRESS)
     ap.add_argument("--no-sandbox", action="store_true", help=argparse.SUPPRESS)
     a = ap.parse_args()
@@ -450,6 +459,9 @@ def main() -> None:
     a.incumbent = git("rev-parse", "--short", a.incumbent).strip()
     a.parent = git("rev-parse", "--short", a.parent or f"{a.pick}~1").strip()
 
+    trigger = "walk-forward week fail" if a.cutoff else "holdout fail"
+    if a.cutoff and not (a.full_npz and a.cells_cache):
+        sys.exit("--cutoff needs --full-npz and --cells-cache: the director may see nothing after the cutoff")
     if not lost(a.diff, a.lo, a.hi):
         log(None, f"no heal needed: pick {a.pick} vs incumbent {a.incumbent} {a.diff:+.4f} [{a.lo:+.4f}, {a.hi:+.4f}]")
         return
@@ -460,7 +472,7 @@ def main() -> None:
     if rnd_dir.exists():
         sys.exit(f"{rnd_dir} exists: one healing round per number")
     rnd_dir.mkdir(parents=True)
-    log(rnd_dir, f"healing round {rnd}, trigger = holdout fail: pick {a.pick} lost to {a.incumbent} "
+    log(rnd_dir, f"healing round {rnd}, trigger = {trigger}: pick {a.pick} lost to {a.incumbent} "
                  f"{a.diff:+.4f} [{a.lo:+.4f}, {a.hi:+.4f}]{' (dry run)' if a.dry_run else ''}")
 
     steps = chain(a.incumbent, a.pick)
@@ -488,7 +500,7 @@ def main() -> None:
     names = [r["check"] for r in res if r["passed"]]
     log(rnd_dir, f"trial: {len(names)} of {len(res)} checks pass: {', '.join(names) or 'none'}")
 
-    changed = (f"healing round {rnd}, trigger = holdout fail ({a.pick} vs {a.incumbent} {a.diff:+.3f}); "
+    changed = (f"healing round {rnd}, trigger = {trigger} ({a.pick} vs {a.incumbent} {a.diff:+.3f}); "
                f"adopted {', '.join(names) or 'no checks'}; restart from {a.parent} and {a.incumbent}")
     target = HEALED / f"round_{rnd}.py"
     plan = restart_plan(rnd, a)
