@@ -1,8 +1,8 @@
-"""October, scored once at the freeze, by gpuloop only. Read-only.
+"""v8.1 holdout (origins Oct 16-30, targets to Nov 6), scored once at ~20:00 UTC, by gpuloop only. Read-only.
 
     .venv/bin/python research/harness/score_heldout.py <full npz> <final forecaster.py> <v7 forecaster.py>
 
-The full build (with October and the first days of November) lives outside
+The full build (with Oct 16 - Nov 6) lives outside
 the researchers' sandbox. Same worker and scorer as the dev runs. Prints
 October skill and coverage for both files and a series bootstrap of the
 difference (the luck check vs v7).

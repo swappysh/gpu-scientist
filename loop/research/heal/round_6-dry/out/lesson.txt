@@ -1,0 +1,1 @@
+A forecaster that extrapolates a recent move (pace x h, uncapped) must cap the median shift and be judged on the last 15 dev days and per line: b06b208 won September but pushed B200/A100 medians +50-64% outside the old band and lost the holdout.

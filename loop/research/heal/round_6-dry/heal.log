@@ -1,0 +1,34 @@
+18:42:27Z healing round 6, trigger = holdout fail: pick b06b208 lost to 18c491e -0.0800 [-0.1300, -0.0230] (dry run)
+18:42:27Z packet: dev cells 18c491e (2774 cells, 0 s)
+18:42:27Z packet: dev cells 16c9717 (2774 cells, 0 s)
+18:42:27Z packet: dev cells d0396d3 (2774 cells, 0 s)
+18:42:27Z packet: dev cells 9fa57cb (2774 cells, 0 s)
+18:42:27Z packet: dev cells 43fa54e (2774 cells, 0 s)
+18:42:28Z packet: dev cells 69f3ead (2774 cells, 0 s)
+18:42:28Z packet: dev cells b186d4e (2774 cells, 0 s)
+18:42:28Z packet: dev cells f865cde (2774 cells, 0 s)
+18:42:28Z packet: dev cells 1859cd5 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 2969d01 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 1bd0783 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 57281f6 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 99db9d9 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 799b5c4 (2774 cells, 0 s)
+18:42:28Z packet: dev cells 19a5148 (2774 cells, 0 s)
+18:42:28Z packet: dev cells b06b208 (2774 cells, 0 s)
+18:42:35Z packet: 15 chain steps, files ['FAILURE.md', 'README.md', 'cells', 'chain.txt', 'forecasters', 'moves.txt', 'out']
+18:42:35Z director: fresh claude-opus-5-5 session in a sandbox with only the packet (budget $2.5)
+18:46:48Z director: done in 253 s, exit 0, cost $0.78
+18:46:48Z post-mortem lesson: A forecaster that extrapolates a recent move (pace x h, uncapped) must cap the median shift and be judged on the last 15 dev days and per line: b06b208 won September but pushed B200/A100 medians +50-64% outside the old band and lost the holdout.
+18:46:49Z trial check_median_outside_ref_band: PASS (ok) | pick: 341 medians outside ref band, loss change +0.0252 of flat (max +0.01) | keep vs parent: reject | parent as pick: pass | chain rejects 0/14 
+18:46:49Z trial check_single_line_damage: PASS (ok) | pick: worst line fastgpu_daily.neocloud_rate_card.B200.on_demand.median loss change +0.0161 of flat (max +0.01) | keep vs parent: reject | parent as pick: pass | chain rejects 0/14 
+18:46:49Z trial check_recent_window: PASS (ok) | pick: last-15-day skill 0.100 vs ref 0.145 (max drop 0.02) | keep vs parent: reject | parent as pick: pass | chain rejects 0/14 
+18:46:49Z trial: 3 of 3 checks pass: check_median_outside_ref_band, check_single_line_damage, check_recent_window
+18:46:49Z dry run: would write loop/research/harness/healed/round_6.py with ['check_median_outside_ref_band', 'check_single_line_damage', 'check_recent_window'] and add it to the manifest
+18:46:49Z dry run: would append to LESSONS.md: A forecaster that extrapolates a recent move (pace x h, uncapped) must cap the median shift and be judged on the last 15 dev days and per line: b06b208 won September but pushed B200/A100 medians +50-64% outside the old band and lost the holdout.
+18:46:49Z dry run: would log meta.tsv row: healing round 6, trigger = holdout fail (b06b208 vs 18c491e -0.080); adopted check_median_outside_ref_band, check_single_line_damage, check_recent_window; restart from 19a5148 and 18c491e
+18:46:49Z dry run: would extend dev: core.py: TRAIN_END 2026-10-15 -> 2026-11-06; HELDOUT_START 2026-10-16 -> 2026-11-07 (HELDOUT_END, PACK_END wait for new data)
+18:46:49Z dry run: would extend dev: build_dev.py <private full build> /tmp/gs-heal/loop/research/harness/dev_series.npz
+18:46:49Z dry run: would launch pacsci1: git worktree add /tmp/gs-heal6-a -b research/heal6-a; start point 19a5148; tmux new-window -n pacsci1 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci1 /tmp/gs-heal6-a
+18:46:49Z dry run: would launch pacsci2: git worktree add /tmp/gs-heal6-b -b research/heal6-b; start point 19a5148; tmux new-window -n pacsci2 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci2 /tmp/gs-heal6-b
+18:46:49Z dry run: would launch pacsci3: git worktree add /tmp/gs-heal6-c -b research/heal6-c; start point 18c491e; tmux new-window -n pacsci3 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci3 /tmp/gs-heal6-c
+18:46:49Z dry run done; director cost $0.78

@@ -1,4 +1,8 @@
-"""Fixed v8 research harness: data, per-origin history, scorer. Read-only.
+"""Fixed v8.1 research harness: data, per-origin history, scorer. Read-only.
+
+v8.1 (2026-11-15, PREREG-v81.md): dev runs to Oct 15 (gate = origins Sep 1 - Oct 7, all
+targets on or before Oct 15); the holdout is origins Oct 16-30, scored once by gpuloop.
+A dev run also returns per-cell rows, which the post-mortem guards (guards.py) read.
 
 The researcher edits only research/forecaster_agent.py. Its function
 
@@ -27,11 +31,11 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-DEV_NPZ = HERE / "dev_series.npz"  # every series cut at TRAIN_END: no October row exists here
+DEV_NPZ = HERE / "dev_series.npz"  # every series cut at TRAIN_END: no row after Oct 15 exists here
 HORIZONS = (1, 3, 7)
 QUANTILES = (0.1, 0.5, 0.9)
-TRAIN_START, TRAIN_END, VAL_START = "2026-07-01", "2026-09-30", "2026-09-01"
-HELDOUT_START, HELDOUT_END, PACK_END = "2026-10-01", "2026-10-31", "2026-11-06"
+TRAIN_START, TRAIN_END, VAL_START = "2026-07-01", "2026-10-15", "2026-09-01"
+HELDOUT_START, HELDOUT_END, PACK_END = "2026-10-16", "2026-10-31", "2026-11-06"
 ORIGIN_STEP = 2
 TIME_LIMIT_S = 900  # one experiment's forecasts; past this the run counts as a crash
 
@@ -45,7 +49,7 @@ def iso(d: int) -> str:
 
 
 def dev_origins() -> list[int]:
-    """Jul 1 .. Sep 23, every 2 days: all targets on or before Sep 30."""
+    """Jul 1 .. Oct 8, every 2 days: all targets on or before Oct 15."""
     return list(range(day(TRAIN_START), day(TRAIN_END) - max(HORIZONS) + 1, ORIGIN_STEP))
 
 
@@ -223,17 +227,39 @@ def score(world: World, fc: dict, origins: list[int]) -> dict:
             "coverage": inside / n if n else 0.0, "per_series": per}
 
 
+def cells(world: World, fc: dict, origins: list[int]) -> list[list]:
+    """Per scored cell: [series_id, origin, h, truth, last, [q10, q50, q90], loss, flat_loss] (input of guards.py)."""
+    rows = []
+    for sid, d, v, sc in zip(world.sids, world.days, world.vals, world.scored):
+        if not sc:
+            continue
+        truth = dict(zip(d.tolist(), v.tolist()))
+        for o in origins:
+            k = int(np.searchsorted(d, o, side="right"))
+            if k == 0:
+                continue
+            last = float(v[k - 1])
+            for h in HORIZONS:
+                y = truth.get(o + h)
+                if y is None or (sid, o, h) not in fc:
+                    continue
+                q = [float(x) for x in fc[(sid, o, h)]]
+                rows.append([sid, o, h, y, last, q, _pinball_cell(y, q), _pinball_cell(y, (last, last, last))])
+    return rows
+
+
 def evaluate_dev(agent_file: str, world: World | None = None) -> dict:
-    """Jul-Sep (all dev origins) and September (the gate) for one forecaster file."""
+    """Jul 1 - Oct 7 origins (column julsep) and the gate Sep 1 - Oct 7 (column sept) for one forecaster file, plus per-cell rows for the guards."""
     world = world or load(DEV_NPZ)
-    assert max(int(d.max()) for d in world.days if len(d)) <= day(TRAIN_END), "dev file holds rows after Sep 30"
+    assert max(int(d.max()) for d in world.days if len(d)) <= day(TRAIN_END), "dev file holds rows after Oct 15"
     origins = dev_origins()
     fc = forecasts(agent_file, world, origins)
     sept = [o for o in origins if o >= day(VAL_START)]
     js, se = score(world, fc, origins), score(world, fc, sept)
     return {"julsep": js["skill"], "sept": se["skill"], "coverage_julsep": js["coverage"],
             "coverage_sept": se["coverage"], "cells_julsep": js["cells"], "cells_sept": se["cells"],
-            "sept_per_series": {k: list(v) for k, v in se["per_series"].items()}}
+            "sept_per_series": {k: list(v) for k, v in se["per_series"].items()},
+            "cells": cells(world, fc, origins)}
 
 
 def resample_share(cand: dict, best: dict, draws: int = 200, seed: int = 0) -> float:

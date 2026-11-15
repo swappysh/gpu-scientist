@@ -1,4 +1,4 @@
-"""Read the shared notebook: LESSONS.md, then every researcher's rows (local copy + past.dev scope research-v8).
+"""Read the shared notebook: LESSONS.md, then every researcher's rows (local copy + past.dev scope research-v81).
 
     cd loop && .venv/bin/python research/harness/notebook.py [--past]
 

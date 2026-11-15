@@ -1,4 +1,4 @@
-"""Write dev_series.npz: the full build cut at Sep 30 (run once by gpuloop, outside the sandbox)."""
+"""Write dev_series.npz: the full build cut at TRAIN_END (Oct 15 in v8.1) (run once by gpuloop, outside the sandbox)."""
 import sys
 
 import numpy as np

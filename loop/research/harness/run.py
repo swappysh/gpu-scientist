@@ -9,15 +9,17 @@ Steps:
 1. The harness files match the locked SHA-256 manifest, and the only edited
    tracked file is research/forecaster_agent.py.
 2. Leak review of the file (leakcheck.py). A failure is logged as "leak" and reverted.
-3. git commit, then backtest Jul 1 - Sep 23 origins in a locked worker.
+3. git commit, then backtest Jul 1 - Oct 7 origins (v8.1 dev; rows to Oct 15) in a locked worker.
 4. Keep rule vs the current best (state/best.json):
-     keep:   September skill gain >= MIN_GAIN (2x after 3 discards in a row in the
+     keep:   gate (column "sept" = Sep 1 - Oct 7 origins) skill gain >= MIN_GAIN (2x after 3 discards in a row in the
              same family: that family is exhausted), Jul-Sep drop <= MAX_JULSEP_DROP,
              and the gain is positive on >= MIN_SHARE of 200 series resamples.
      simpler: |September gain| < MIN_GAIN, gain >= -SIMPLER_SLACK, Jul-Sep drop <= MAX_JULSEP_DROP,
              and >= 10% fewer code lines than the best.
+     guards (v8.1, guards.py): a keep or keep-simpler must also pass G1-G3 against the
+             best on per-cell dev rows, or it becomes a discard.
      else discard (git reset to the best); a crash is logged and reset too.
-5. One row in research/results.tsv (and the shared notebook: past.dev scope research-v8).
+5. One row in research/results.tsv (and the shared notebook: past.dev scope research-v81).
 """
 
 from __future__ import annotations
@@ -37,7 +39,7 @@ from pathlib import Path
 RESEARCH = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RESEARCH))
 
-from harness import core, leakcheck  # noqa: E402
+from harness import core, guards, leakcheck  # noqa: E402
 
 LOOP = RESEARCH.parent
 AGENT_FILE = RESEARCH / "forecaster_agent.py"
@@ -59,7 +61,7 @@ MAX_JULSEP_DROP = 0.005
 MIN_SHARE = 0.60
 SIMPLER_SLACK = 0.001
 EXHAUSTED_AFTER = 3
-SCOPE = "research-v8"
+SCOPE = "research-v81"
 
 
 def sh(*args, check=True, raw=False) -> str:
@@ -192,7 +194,7 @@ def load_best() -> dict:
     sha = hashlib.sha256(text.encode()).hexdigest()
     if BEST.exists():
         b = json.loads(BEST.read_text())
-        if b.get("sha") == sha:
+        if b.get("sha") == sha and "cells" in b:
             return b
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
         f.write(text)
@@ -231,7 +233,7 @@ def main() -> None:
         sh("git", "reset", "-q", "--keep", a.adopt)
     if a.baseline or a.adopt:
         b = load_best()
-        hyp = f"fork: adopt {a.adopt}" if a.adopt else "baseline: v7 loop pick"
+        hyp = f"fork: adopt {a.adopt}" if a.adopt else f"baseline: start point {b['commit']}"
         row = {"commit": b["commit"], "agent": agent, "hypothesis": hyp,
                "sept": f"{b['sept']:+.4f}", "julsep": f"{b['julsep']:+.4f}", "resample_share": "",
                "status": "fork" if a.adopt else "baseline", "lesson": "starting point"}
@@ -279,6 +281,9 @@ def main() -> None:
                 status = "keep-simpler"
             else:
                 status = "discard"
+            failed = guards.keep_check(r["cells"], best["cells"]) if status.startswith("keep") else []
+            if failed:
+                status = "discard"
             why = []
             if gain < min_gain:
                 why.append(f"gain below {min_gain:.3f}" + (f" ({fam} exhausted)" if min_gain > MIN_GAIN else ""))
@@ -286,6 +291,7 @@ def main() -> None:
                 why.append(f"Jul-Sep fell {jdrop:.4f}")
             if share < MIN_SHARE:
                 why.append(f"resamples {share:.2f} < {MIN_SHARE}")
+            why += failed
             row.update(status=status, lesson=(
                 f"sept {gain:+.4f} vs best {best['sept']:+.4f}; julsep {-jdrop:+.4f}; "
                 f"coverage sept {r['coverage_sept']:.2f}; lines {lines} vs {best['lines']}"
