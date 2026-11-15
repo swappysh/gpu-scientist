@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GPU Price Scientist</title>
-<!-- Round 1 deck. Follows docs/demo.md. Opens offline from a clone: images load by relative path.
+<!-- Submission deck. Follows the 9-point storyline; charts from docs/slides/charts.py. Opens offline from a clone: images load by relative path.
      Keys: right/space next, left back, f full screen. Print to PDF gives one slide per page. -->
 <style>
 :root { --bg:#fbfaf7; --ink:#1d1d1b; --mute:#6b6a66; --accent:#c0392b; --good:#2e7d32; --line:#d9d6cf; }
@@ -22,13 +22,14 @@ ul { margin:0; padding-left:1.2em; }
 .big { font-size:9vh; font-weight:800; line-height:1; }
 .good { color:var(--good); }
 .bad { color:var(--accent); }
-img.fig { max-width:100%; max-height:62vh; object-fit:contain; align-self:center; }
+img.fig { max-width:100%; max-height:58vh; object-fit:contain; align-self:center; }
 .row { display:flex; gap:5vw; align-items:flex-start; }
 .row > div { flex:1; }
 table { border-collapse:collapse; font-size:2.7vh; margin:1vh 0 2vh; }
 th, td { padding:0.8vh 1.6vw; text-align:right; border-bottom:1px solid var(--line); }
 th:first-child, td:first-child { text-align:left; }
 th { font-weight:600; color:var(--mute); }
+.code { font-family:ui-monospace,Menlo,monospace; font-size:2.6vh; background:#efede7; padding:1.6vh 1.6vw; border-radius:6px; }
 .box { border:2px dashed var(--line); border-radius:8px; padding:4vh 3vw; color:var(--mute); font-size:2.6vh; text-align:center; }
 .foot { position:absolute; bottom:2.5vh; left:6vw; right:6vw; display:flex; justify-content:space-between; font-size:1.8vh; color:var(--mute); }
 @media (max-width: 700px) { .row { flex-direction:column; gap:3vh; } }
@@ -43,84 +44,109 @@ th { font-weight:600; color:var(--mute); }
 <body>
 
 <section class="slide">
-  <p class="mute">GPU price scientist</p>
-  <h1>On AWS spot, a six-year-old A100 rents for more than it did at age two.</h1>
-  <p class="mute small">A100 40GB spot: $1.69/hr in Oct 2022, $2.09/hr in Oct 2026.</p>
-  <p style="margin-top:4vh">Two questions:</p>
-  <ul>
-    <li>Can a team of agents improve a price forecaster on its own, without peeking at the month it is judged on?</li>
-    <li>What will an H100 or an A100 be worth in 2028?</li>
-  </ul>
+  <p class="mute">Pacific track, SF AI Research Hackathon, 14&ndash;15 Nov 2026</p>
+  <h1>We built an AI scientist that researches GPU prices, and it also gets better at doing research.</h1>
+  <p>Every claim is checked, even the failures.</p>
+  <p class="mute small" style="margin-top:4vh">Memory on past.dev. Backtests on Modal.</p>
 </section>
 
 <section class="slide">
-  <h2>How the loop works</h2>
-  <img class="fig" src="../loop.png" alt="Loop flowchart: proposer, evaluator on Modal, critic, shared past.dev notebook">
-  <p class="small mute" style="margin-top:2vh">Middle guess = last price. The work is the band around it. Keep a change only if September improves. The proposer sees facts up to September 30; October numbers are critic-only. October is scored once, at the end.</p>
+  <h2>Why it matters: the value is in the range</h2>
+  <p>Lenders, lessors and buyers of reserved GPU capacity need to know how far a rental price can move.</p>
+  <img class="fig" src="img/steps.png" alt="A posted A100 price: flat for weeks, then one jump">
+  <p class="small mute" style="margin-top:1.5vh">Posted prices move in steps, so &ldquo;tomorrow = today&rdquo; is very hard to beat. We forecast the 10%, 50% and 90% levels, 1, 3 and 7 days ahead.</p>
 </section>
 
 <section class="slide">
-  <h2>How we built it</h2>
-  <img class="fig" src="../evolution.png" alt="Timeline of eight versions built on Sat Nov 14">
-  <p class="small mute" style="margin-top:2vh">Two mistakes taught us most: a big win on series Sunday doesn't score, and keep/kill on October. Both fixed before the final tuning.</p>
+  <h2>The scientist: three agents, one notebook</h2>
+  <img class="fig" src="img/agents.png" alt="Suggester, tester and checker read and write one shared notebook on past.dev">
+  <p class="small mute" style="margin-top:1.5vh">The suggester is an LLM (gpt-5-mini). The tester and the checker are code. Each round tries 3 ideas.</p>
 </section>
 
 <section class="slide">
-  <h2>What the loop tried and kept</h2>
-  <img class="fig" id="rounds" src="../../loop/results/loop_rounds.png" alt="Round-by-round chart"
-       onerror="this.outerHTML='<div class=&quot;box&quot;>Round chart lands at loop/results/loop_rounds.png</div>'">
-  <p class="small" style="margin-top:2vh">Last live run: 24 ideas, 7 passed the keep rule, 1 real win (borrow from other series); the search stalled after round 3. Its final settings are our submission.</p>
-</section>
-
-<section class="slide">
-  <h2>Results on October, held out from every loop decision</h2>
+  <h2>past.dev is the memory, and it keeps the agents honest</h2>
   <div class="row">
     <div>
-      <p class="mute">Skill vs last price, submitted</p>
-      <p class="big good">+0.149</p>
-      <p>Starter: +0.122. Gain +0.027, 95% interval +0.008 to +0.055.</p>
-      <p class="small mute">37 series Sunday scores, 1,522 cells. Lower loss on 24 of 37.</p>
+      <p class="big good">0 of 32</p>
+      <p>private October notes reached the suggester in the last run.</p>
     </div>
     <div>
-      <table>
-        <tr><th></th><th>September</th><th>October</th><th>Band held</th></tr>
-        <tr><td>Starter</td><td>+0.127</td><td>+0.122</td><td>62%</td></tr>
-        <tr><td style="white-space:nowrap">Hand-picked (v5)</td><td>+0.172</td><td>+0.134</td><td>76%</td></tr>
-        <tr><td style="white-space:nowrap"><b>Loop (v7), submitted</b></td><td>+0.185</td><td>+0.149</td><td>71%</td></tr>
-      </table>
-      <p>Loop vs hand-picked: +0.015, interval +0.004 to +0.027. Band target: 80%.</p>
-      <p class="small mute">Trend model: +0.36 vs +0.26 on AWS spot, +0.101 vs +0.122 on posted prices.</p>
+      <p>Every idea, verdict and score is a dated note. A new round starts by reading what was tried.</p>
+      <p>October is the test month. Its scores go in private notes that only the checker can read.</p>
+      <p>The suggester reads notes dated up to September 30. The past.dev server applies both cuts, and a live test checks them.</p>
+      <p class="small mute">All three agents share one key. The wall stops honest code; it would not stop an agent that lies about who it is.</p>
     </div>
   </div>
 </section>
 
 <section class="slide">
-  <h2>Resale: forecast rent first</h2>
-  <table>
-    <tr><th>November 2028</th><th>Rent, $/hr</th><th>Resale</th><th>% of launch</th></tr>
-    <tr><td>H100 SXM</td><td>~3.00</td><td>~$4,700</td><td>14% (8–22%)</td></tr>
-    <tr><td>A100 80GB</td><td>~1.50</td><td>~$1,400</td><td>9% (7–15%)</td></tr>
-  </table>
-  <p>Resale = M × rent × 8,760 hours. M is read from used-price prints and falls about 25% a year with age.</p>
-  <p class="small mute">Lease floor at 70% use: about $0.60/hr for an H100, $0.30 for an A100. Details: docs/resale.md.</p>
+  <h2>Modal makes every idea a full backtest</h2>
+  <img class="fig" src="img/modal.png" alt="A batch of ideas fans out to six Modal containers, one idea each">
+  <p style="margin-top:1.5vh">About 100,000 forecast steps an hour once warm. Modal cost under $0.03 for all runs; the whole project, LLM included, under $0.10.</p>
+  <p class="small mute">So the loop can afford a real search: 8 rounds, 24 ideas, each scored on every July&ndash;September day.</p>
 </section>
 
 <section class="slide">
-  <h2>One agent reads another agent's memory</h2>
-  <div class="box">[live terminal]&nbsp; <code>cd loop &amp;&amp; ./demo_read.sh</code></div>
-  <p style="margin-top:3vh">The evaluator writes a verdict. The proposer reads it back, with everything dated up to September 30. The raw server response to the proposer holds no October numbers. The critic sees them.</p>
-  <p class="small mute">Last run: 110 facts, 32 critic-only. The proposer got 0 of the 32.</p>
+  <h2>What it found: borrow from lines of the same kind</h2>
+  <div class="row">
+    <div style="flex:0.8">
+      <p class="big good">+0.149</p>
+      <p>October skill on the 37 scored lines, against +0.122 for the starter.</p>
+      <p class="small">Each line also learns from how lines of the same kind repriced: all neocloud rate cards, say. The loop found this in round 3.</p>
+      <p class="small mute">Its 10&ndash;90% band held the true price 71% of the time; the target is 80%.</p>
+    </div>
+    <div style="flex:1.2">
+      <img class="fig" src="img/gain.png" alt="October gain over the starter with 95% ranges: agents' pick above zero, hand pick crosses zero">
+      <p class="small mute">The luck check resamples the 37 lines 10,000 times. Our own hand pick could be luck. The agents' pick is not.</p>
+    </div>
+  </div>
 </section>
 
 <section class="slide">
-  <h2>Caveats</h2>
+  <h2>What failed, and we say so</h2>
+  <div class="row">
+    <div>
+      <ul>
+        <li><b>Momentum fooled us.</b> On AWS spot it scored +0.36 against +0.26. AWS spot isn't scored. On posted prices it lost.</li>
+        <li><b>Our gate peeked.</b> Until v4, keep or kill looked at October, the test month. We caught it; now September alone decides.</li>
+        <li><b>Most keeps did nothing.</b> 5 of 7 moved skill by less than 0.001. The search stalled after round 3.</li>
+        <li><b>The edge shrank.</b> A September lead of 0.058 became 0.027 in October.</li>
+        <li><b>We chose after looking.</b> We picked the submission after seeing October. The only clean test is November, which no one has seen yet.</li>
+      </ul>
+    </div>
+    <div>
+      <img class="fig" src="img/rounds.png" alt="September skill by round: one jump at round 3, flat after">
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Self-improvement: the scientist rewrites how it does research</h2>
+  <p>The loop stalled turning the same settings. So in v8, three AI researchers rewrite the forecaster's code, and a director rewrites their strategy every hour.</p>
+  <p class="small mute">The scorer is locked and hash-checked. They can change how they search, never how they are judged. The test month stays hidden and scores only the final version.</p>
+  <div class="row" style="margin-top:2vh">
+    <div class="box">Chart after the 10 AM PT freeze:<br>forecast skill over iterations</div>
+    <div class="box">Chart after the 10 AM PT freeze:<br>research hit rate per director round</div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>What a GPU buyer can use</h2>
   <ul>
-    <li>One held-out month on 37 series is small, and we picked the submission after seeing October. Sunday's truth is the clean test.</li>
-    <li>The memory boundary keeps honest code away from October. The agents share one key, so it would not stop one that lies about who it is.</li>
-    <li>The resale view rests on two used-price prints.</li>
-    <li>Everything rebuilds with one command from the public data pack.</li>
+    <li>Price a lease off the 10&ndash;90% range. Posted prices sit still for weeks, then jump.</li>
+    <li>Read a line next to others from the same kind of seller. That was our one real win.</li>
+    <li>Expect seller types to differ. AWS spot moves in small steps that keep going; rate cards jump and stop. That is our reading of the momentum result, not a direct test.</li>
+    <li>Plan for resale: we expect an H100 to rent for about $3/hr and sell for about $4,700 in November 2028.</li>
   </ul>
-  <p style="margin-top:5vh; font-size:4vh">Thank you.</p>
+</section>
+
+<section class="slide">
+  <h2>Reproducible: one command</h2>
+  <p class="code">cd loop &amp;&amp; uv sync --group pack &amp;&amp; ./reproduce.sh &lt;data pack dir&gt;</p>
+  <p>It rebuilds the series, the backtest scores and the submitted forecasts from the public data pack.</p>
+  <p>Every agent session is logged. The cleaned logs come with this submission.</p>
+  <p class="small mute">Code, results and write-up: github.com/swappysh/gpu-scientist (docs/FINDINGS.md)</p>
+  <p style="margin-top:4vh; font-size:4vh">Thank you.</p>
 </section>
 
 <div class="foot"><span>github.com/swappysh/gpu-scientist</span><span class="n" id="n"></span></div>
