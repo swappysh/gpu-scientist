@@ -109,13 +109,13 @@ def gain():
         c = "tab:green" if lo > 0 else "tab:red"
         ax.plot([lo, hi], [y, y], color=c, lw=4)
         ax.plot([g], [y], "o", color=c, ms=13)
-        verdict = "not luck" if lo > 0 else "could be luck"
-        ax.text(hi + 0.002, y, f"{g:+.3f}  ({lo:+.3f} to {hi:+.3f}): {verdict}\nlower loss on {n} of 37 lines",
+        verdict = "beats the starter" if lo > 0 else "no clear gain"
+        ax.text(hi + 0.002, y, f"{verdict}: {g:+.3f}\n95% range {lo:+.3f} to {hi:+.3f}\nlower loss on {n} of 37 lines",
                 va="center", fontsize=12, color=c)
     ax.axvline(0, color="grey", ls="--", lw=1.5)
     ax.text(0.0008, 1.42, "no gain", color="grey", fontsize=11)
     ax.set_yticks([0, 1]); ax.set_yticklabels([labels["model"], labels["loop"]])
-    ax.set_ylim(-0.6, 1.6); ax.set_xlim(-0.015, 0.08)
+    ax.set_ylim(-0.6, 1.6); ax.set_xlim(-0.015, 0.085)
     ax.set_xlabel("October skill gain over the starter (dot) and 95% range from 10,000 resamples")
     ax.spines[["top", "right", "left"]].set_visible(False)
     save(fig, "gain.png")

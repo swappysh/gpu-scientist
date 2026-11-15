@@ -82,7 +82,7 @@ th { font-weight:600; color:var(--mute); }
 <section class="slide">
   <h2>Modal makes every idea a full backtest</h2>
   <img class="fig" src="img/modal.png" alt="A batch of ideas fans out to six Modal containers, one idea each">
-  <p style="margin-top:1.5vh">About 100,000 forecast steps an hour once warm. Modal cost under $0.03 for all runs; the whole project, LLM included, under $0.10.</p>
+  <p style="margin-top:1.5vh">About 100,000 forecast steps an hour once warm. Modal cost under $0.03 for all runs; with the suggester LLM, under $0.10. The Claude agent sessions that built it are separate.</p>
   <p class="small mute">So the loop can afford a real search: 8 rounds, 24 ideas, each scored on every July&ndash;September day.</p>
 </section>
 
@@ -97,7 +97,7 @@ th { font-weight:600; color:var(--mute); }
     </div>
     <div style="flex:1.2">
       <img class="fig" src="img/gain.png" alt="October gain over the starter with 95% ranges: agents' pick above zero, hand pick crosses zero">
-      <p class="small mute">The luck check resamples the 37 lines 10,000 times. Our own hand pick could be luck. The agents' pick is not.</p>
+      <p class="small mute">The luck check resamples the 37 lines 10,000 times. The agents' pick beats the starter in this check; our hand pick does not.</p>
     </div>
   </div>
 </section>
@@ -136,7 +136,7 @@ th { font-weight:600; color:var(--mute); }
     <li>Price a lease off the 10&ndash;90% range. Posted prices sit still for weeks, then jump.</li>
     <li>Read a line next to others from the same kind of seller. That was our one real win.</li>
     <li>Expect seller types to differ. AWS spot moves in small steps that keep going; rate cards jump and stop. That is our reading of the momentum result, not a direct test.</li>
-    <li>Plan for resale: we expect an H100 to rent for about $3/hr and sell for about $4,700 in November 2028.</li>
+    <li>Plan for resale: our mid case has an H100 renting for about $3/hr and selling for about $4,700 in November 2028 (range $2,800 to $7,400). Source: analysis/residual.py, set against two outside used-price reports.</li>
   </ul>
 </section>
 
