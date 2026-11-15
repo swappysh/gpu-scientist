@@ -1,112 +1,147 @@
 # pacific-hack
 
-Self-improving GPU-price forecaster loop (Track 2, Pacific) on shared memory
-(past.dev challenge) with parallel backtests (Modal prize). Prototype: the
-backtest is fake (synthetic step-shaped prices) so the loop runs end to end;
-jinx's real harness plugs in at one seam.
+Three agents tune a GPU-price forecaster one change at a time. They share an experiment ledger on past.dev and run their backtests on Modal. This folder also builds the Sunday submission for Pacific track 2.
 
-## Run
+![the loop](../docs/loop.png)
+
+## Results
+
+All picks were made on Jul–Sep origins. October was scored once, after the pick was fixed.
+
+- *Scored set (the 37 series the 11-06 catalog marks headline).* The model's 10–90 band holds the truth 76% of the time on October, against 62% for the starter. Its October skill is +0.134 vs +0.122. That gain is small for 37 series: a bootstrap over series gives a 95% interval of −0.010 to +0.041. Config: `pool_weight 0.5, half_life_days 14, band_scale 1.2`, in `submit_config.json` under `default`.
+- *AWS spot trend (a finding; no AWS spot series is scored).* Spot prices trend, so a momentum term helps there: October skill +0.36 vs +0.26 for the starter on 80 AWS spot series. The same config scores +0.10 on the 37, below the starter, so the submission uses it for `aws_spot.` series only.
+- *Agent loop.* An 8-round run (`scored37-e`: LLM proposer, past.dev memory, Modal) tried 24 one-parameter changes and kept 7; the critic corroborated all 7. Jul–Sep skill went from +0.096 to +0.157. Almost all of that came from one change in round 3 (`pool_weight 0.7`, +0.062). Four of the seven keeps moved Jul–Sep skill by less than 0.001, and rounds 2 and 4 kept nothing. On October, scored once at the end, the loop's pick gets +0.149 against the starter's +0.122, and its band holds the truth 71% of the time.
+  The submission does not use it. `submit_config` was picked by hand from the Jul–Sep sweep (`results/sweep_julsep_37.txt`) before this run. The pick took `pool_weight 0.5, half_life_days 14` and widened the band (`band_scale 1.2`): Jul–Sep coverage 0.79 instead of 0.76, for 0.007 less Jul–Sep skill. The loop gates on skill alone, so it ends with narrower bands: Jul–Sep coverage 0.76, October 0.71, against 0.79 and 0.76 for the submission. Its October skill is higher (+0.149 vs +0.134), but switching now would mean choosing on October. Chart: `results/loop_rounds.png`. Every idea and every memory read: `results/dashboard.html`.
+
+Skill is the track's: 1 − total pinball loss / total loss of the flat last-value forecast, pooled over every cell. Files:
+
+| File | What |
+| --- | --- |
+| `results/backtest.json` | starter vs model on the 37 and on AWS spot: Jul–Sep, September and October skill, coverage |
+| `results/sweep_julsep_37.txt` | the Jul–Sep sweep the pick came from (no October) |
+| `results/october_37_three_models.txt` | October on the 37 for the three candidate configs |
+| `results/bootstrap_october_37.txt` | the October gain over the starter, resampled over series |
+| `results/history_37.csv` | days of history per scored series |
+| `results/loop_rounds.json`, `.png` | the agent loop, round by round |
+| `results/spend.md` | Modal and OpenAI spend for the runs above |
+
+## Reproduce
 
 ```bash
-uv sync
-uv run python -m pacific_hack.run                       # local JSONL memory, local runner
-uv run python -m pacific_hack.run --runner modal        # same loop, backtests on Modal
-PAST_API_KEY=... uv run python -m pacific_hack.run --memory past -n 2   # past.dev memory
+uv sync --group pack
+./reproduce.sh <unzipped gpu-price-pack-v0.1.1-handover dir>
+```
+
+This builds the series from the pack, writes `results/backtest.json` and writes `submission_2026-11-06.csv` (origin 11-06, horizons 1/3/7, every series in the build). The CSV covers all 725 series; the scorer ignores ids outside its truth file. The sweep and the October table come from `scripts/sweep37.py` and `scripts/october37.py`.
+
+Run the loop:
+
+```bash
+uv run python -m pacific_hack.run                                  # local JSONL ledger, local runner
+set -a; . <your env file with PAST_API_KEY, OPENAI_API_KEY>; set +a
+PACIFIC_SERIES=data/series_scored.npz uv run python -m pacific_hack.run \
+    --memory past --runner modal --proposer llm --scope my-run -n 8 \
+    --trace results/loop_rounds.json
+uv run --with matplotlib python scripts/plot_rounds.py results/loop_rounds.json results/loop_rounds.png
 uv run python -c "import sys,pytest; sys.exit(pytest.main(['-q','tests']))"   # tests, offline
 ```
 
-Flags: `-n` rounds (default 3), `--batch` candidates per round (3), `--seed`,
-`--ledger` (JSONL path), `--memory jsonl|past`, `--runner local|modal`,
-`--proposer rule|llm` (default `rule`).
+The trace is rewritten after every round. If a run stops early, `scripts/finish_trace.py` scores its last config and fills in the final block.
+
+Flags: `-n` rounds (default 3), `--batch` candidates per round (3), `--seed`, `--ledger` (JSONL path), `--memory jsonl|past`, `--runner local|modal`, `--proposer rule|llm` (default `rule`), `--trace` (round-by-round JSON), `--scope` (past.dev run tag). `PACIFIC_SERIES` picks the series build; `PACIFIC_DATA=synthetic` swaps in fake step-shaped series for offline tests.
+
+## The forecaster
+
+Posted GPU prices move in steps, so on most days tomorrow's price is today's. The middle forecast (q50) is the last price. The low and high (q10, q90) come from past h-day log changes of the series. `ForecasterConfig` (`forecaster.py`) adds recency weights, pooling with series of the same kind of seller, a band scale, drift and AR(1) momentum. All defaults off reproduce the starter's `last_value_empirical` exactly.
+
+Pooling sees all 725 series in the build. Only the 37 scored series count toward skill.
 
 ## The loop
 
-Each round, three agents work through one shared `Memory` (`memory.py`):
+Each round, three agents work through one shared ledger (`memory.py`):
 
-1. **Proposer** reads the ledger as of the forecast date (2026-09-30) and writes a
-   batch of one-parameter hypotheses. It skips ideas already tried and ranks params
-   by their kept/killed history, so it learns from what the other agents wrote.
-2. **Evaluator** backtests the whole batch in one `harness.backtest_batch` call
-   (the Modal fan-out) and keeps a change only if it improves September skill
-   (the last dev slice) without regressing Jul-Sep. October never decides
-   anything; a run reports it once, at the end. Writes kept/killed.
-3. **Critic** re-scores kept ideas on resampled series mixes, toggling only that
-   idea's param on the current config, and writes refuted/corroborated from the
-   September delta. Refuted ideas roll the config back.
+1. The *proposer* reads the ledger as of the forecast date (2026-09-30) and writes a batch of one-parameter hypotheses. It skips ideas already tried and ranks params by their kept and killed history.
+2. The *evaluator* backtests the batch in one `harness.backtest_batch` call (the Modal fan-out). It keeps a change only if September skill rises and Jul–Sep skill drops by at most 0.005. It writes kept or killed.
+3. The *critic* re-scores each kept idea on bootstrap resamples of the scored series, toggling only that idea's param on the current config. It writes refuted or corroborated from the September change. A refuted idea rolls the config back.
 
-Everything (tried / kept / killed / refuted, and why) is a ledger entry
-(`ledger.py`). Entries per run stay in the tens, not raw price rows.
+October never decides anything. A run reports it once, for the final config.
+
+## past.dev challenge
+
+Demo: `./demo_read.sh` (needs `PAST_API_KEY`). The evaluator writes a public verdict and a private October score. The proposer reads the verdict and gets nothing private. The critic reads both. The script then shows the raw server response. `./demo_read.sh <scope>` reads a finished run's ledger as the proposer. Every run also writes `results/dashboard.html`, which lists every read and write.
+
+### Agents
+
+Each agent reads and writes as its own past.dev identity. Two of them act on facts another agent wrote.
+
+| Agent | Identity | Audiences it reaches | Writes | Reads |
+| --- | --- | --- | --- | --- |
+| proposer | `pacific-proposer` | none (public only) | hypotheses | as of 2026-09-30: the evaluator's kept/killed and the critic's verdicts. It skips tried ideas and ranks params; the LLM gets them in its prompt. |
+| evaluator | `pacific-evaluator` | none | kept/killed with Jul–Sep numbers (public); per-idea October and September deltas (`holdout-scores`); throughput notes | nothing: it gets the batch in code |
+| critic | `pacific-critic` | `holdout-scores` | refuted/corroborated (public); its resample numbers (`holdout-scores`) | as of 2026-10-31: the evaluator's kept decisions and private results, to pick what to re-check |
+
+The loop itself writes one public baseline note and the baseline's October score (`holdout-scores`). The evaluator writes into `holdout-scores` but cannot read it back.
+
+### Layers
+
+Memory is split four ways. Each split keeps one agent from using a number it should not see.
+
+- *Public ledger.* Hypotheses, decisions and verdicts, with Jul–Sep numbers and a one-line reason. One data point per idea (`ledger:<scope>:hyp-<idea>`), re-sent as it moves from proposed to kept to refuted, so past.dev supersedes the old claim. Why: the proposer needs the history to avoid repeats and to rank params.
+- *Holdout layer.* October numbers live in the fixed audience `holdout-scores`, whose only member is `pacific-critic`. Why: the proposer must never tune on October, and the critic needs it to judge.
+- *Time.* Each fact's past.dev `timestamp` is the market date it describes. Reads send `queryTimestamp` = the reader's forecast date. Why: a read as of September 30 cannot see later facts.
+- *Run.* `--scope` tags every fact and leads its text; reads keep only that run. Why: an idea judged on another series world is not evidence here.
+
+Enforcement: past.dev applies the audience and the date cut on the server, and the client filters both again (`memory.py`). `tests/test_pastdev_live.py` checks the server side against the live API. Offline tests check the client side, with a server that wrongly returns private and later facts.
+
+Data in past.dev: everything above, one data point per ledger fact. The full entry rides in `metadata.entry`; `content` is an English sentence.
+
+Data in local files:
+
+- the price series (`data/*.npz`, built from the pack; git-ignored)
+- the configs (`submit_config.json`) and the submission CSV
+- `results/`: backtests, the loop trace with its read/write log, charts, the dashboard, spend
+- the LLM prompt (`llm_proposer.py`)
+- the ledger itself when run with `--memory jsonl` (`ledger.jsonl`)
+- inside one process: the current config, and the ids of ideas the proposer wrote (see Caveats)
+
+API use: `POST /ingest` to write and `GET /ingest/{id}` to wait for it, `POST /recall` to read (with `identity`, `queryTimestamp`, `limit`), and `PUT /audiences/holdout-scores` to set up the private layer.
+
+### Results
+
+Run `scored37-e` used live past.dev end to end, with three identities and scope `scored37-e`. The trace (`results/loop_rounds.json`, `memory_log`) records:
+
+- *Writes:* 110 facts. 78 public: 24 hypotheses, 24 evaluator decisions, 7 critic verdicts, 22 throughput notes, 1 baseline note. 32 private (`holdout-scores`): the evaluator's and critic's October numbers and the baseline's.
+- *Reads across agents:* the proposer read the ledger once a round and got 89 evaluator facts and 68 critic facts. It used them to skip tried ideas and to rank params; the LLM saw them in its prompt. It got 0 private facts. The critic read 221 evaluator facts, private ones included, to pick what to re-check.
+- *No repeats:* 24 ideas, 24 distinct ids and 24 distinct changes.
+- *Server enforcement:* `tests/test_pastdev_live.py` writes a private fact and a later fact, then reads as each agent. It passes against the live API.
+
+The dashboard shows the same counts per agent and layer, plus a line for every read and write.
+
+### Caveats
+
+- *Identity is not a credential.* All three agents share one project key, and the identity is a field in each request. The boundary keeps honest code from seeing October numbers. It does not stop an agent that lies about who it is.
+- *Recall cannot list or filter by run.* past.dev has no list route, and recall ranks over the whole project. `entries()` runs four broad recalls and keeps this run's facts. As the project filled with older runs, recall started returning only a few facts from the current one. In run `scored37-d` the proposer saw 2 of 3 ideas, reused an idea id, and overwrote a kept idea's fact; we stopped that run. Fixes: the scope now leads every fact and query, and the proposer keeps the ids it wrote in this process, so ids stay unique. It also logs how many of its ideas the ledger shows each round. In `scored37-e` the proposer's read returned every idea so far in 7 of 8 rounds. In round 8 it missed 1 of 21 (`idea-020`, kept one round earlier); the ids it kept in memory stopped a repeat.
+- *Only October is private.* Public facts are visible to every identity in the project, including other runs' agents. Per-agent private notes do not exist.
+- *A re-send without an audience makes a fact public* (a past.dev rule). Private results use their own ids and are never re-sent public; nothing tests this beyond code review.
+- *We read back our own records, not past.dev's extracted memories.* Readers rebuild entries from `metadata.entry`. past.dev's claim extraction runs, but the loop does not depend on it.
+- *No memory ablation.* We did not run the loop without memory, so we have no number for how much memory adds.
+- *Network failures.* The VM's DNS and Modal connection dropped several times. Run `scored37-a` died in round 3, `scored37-b` after round 6 (its final score came from `scripts/finish_trace.py`), and `scored37-c` before round 1; `scored37-d` was stopped for the bug above. Their facts stay in the project under their scopes. Calls now retry for about 3 minutes.
+- *Small scale.* A run writes tens of facts. Nothing here tests past.dev at volume.
 
 ## LLM proposer (`--proposer llm`)
 
-`llm_proposer.py` sits behind `Proposer.propose_batch`. It sends OpenAI
-(Chat Completions, strict JSON schema output) the current config, a field schema
-and the public ledger history (kept/killed/refuted/corroborated, reasons, Jul-Sep
-numbers only; holdout entries are hidden by the read boundary and also filtered
-out of the prompt). It returns up to `--batch` single-field changes, each with a
-one-line hypothesis, written as `proposal` entries. Every candidate is validated
-against the schema; unknown fields, out-of-range values, no-ops, ideas already in
-the ledger and a second change to the same param are dropped. If the key is
-missing, the call fails or nothing valid comes back, the rule-based proposer runs.
+`llm_proposer.py` sends OpenAI (Chat Completions, strict JSON schema output) the current config, a field schema and the public ledger history: decisions, verdicts, reasons and Jul–Sep numbers. October entries are hidden by the read boundary and filtered out of the prompt again. It returns up to `--batch` single-field changes, each with a one-line hypothesis. Unknown fields, out-of-range values, no-ops, ideas already in the ledger and a second change to one param are dropped. If the key is missing, the call fails or nothing valid comes back, the rule-based proposer runs instead.
 
-Env: `OPENAI_API_KEY` (read by the `openai` SDK), `PROPOSER_MODEL` (default `gpt-5-mini`).
-Real config fields: pass `Proposer(..., field_schema=[{"name": ..., "type": "int"|"float"|"str",
-"min": .., "max": ..} or {"name": ..., "type": "str", "choices": [...]}])`; the default
-is `schema_from_config(ForecasterConfig())`.
+Env: `OPENAI_API_KEY`, `PROPOSER_MODEL` (default `gpt-5-mini`).
 
-## How past.dev sits in the loop
+## Modal
 
-past.dev Memory API, base `https://api.past.dev/api/v1`, `Authorization: Bearer $PAST_API_KEY`
-(`past_sk_` project key; hackathon credits: sign up at past.dev, pick 500,000 credits,
-code `SFAIHACK500`, then create a key). Docs: https://past.dev/docs/memory-api/overview,
-`/quickstart`, `/concepts`, `/sending-data`, `/authentication`, `/api-reference`.
-`PastDevMemory` uses stdlib HTTP only and fails loudly without a key. **Not yet
-verified against the live API** (no key was used building this); the first
-`--memory past -n 1` run is the check.
+The evaluator's batch (current config plus every candidate) and the critic's resample checks go through `harness.backtest_batch(configs, runner, seed)`. With `--runner modal`, `modal_app.run_batch` maps `backtest_remote.starmap(jobs)` over containers, one job per (config, seed). The series build rides in the image. `harness.session` keeps one app open for the whole loop. Each batch writes a throughput note (`runner`, `steps`, `seconds`, `steps_per_hour`), where a step is one forecast date walked for one config. The Modal SDK reads its own token; the code never touches credentials.
 
-| Need | How it maps |
-| --- | --- |
-| Write a fact | `POST /ingest`, one data point per ledger entry. `content` is an English sentence, full entry in `metadata.entry`. Ingestion is async; `GET /ingest/{id}` is polled before reads (`drain`). |
-| No peeking at the future | `timestamp` = the entry's `market_date`; reads send `queryTimestamp` = the agent's forecast date, so later facts are not eligible. The JSONL backend filters `market_date <= as_of`. |
-| Read boundary | October holdout scores are written with `audience: "holdout-scores"`, a `fixed` audience (`PUT /audiences/holdout-scores`) listing only `pacific-critic`. Proposer/evaluator read as `pacific-proposer` / `pacific-evaluator`, so they get kept/killed decisions and Jul-Sep numbers, never holdout numbers. |
-| Revise a fact | A hypothesis is data point `ledger:hyp-<idea>`. The evaluator and then the critic re-send the same id (kept, then refuted), so past.dev supersedes it (`artifact.supersededAt` on recall). JSONL keeps the newest revision per `fact_id` on read and every revision in the file. |
-| Several writers/readers | proposer, evaluator, critic and the loop all write; each reads under its own identity and uses facts written by the others. |
+With warm containers a batch runs about 100,000 steps per hour; a cold start manages about 7,500. Each loop run cost under a cent of Modal time; `results/spend.md` has the bill.
 
-Memory vs other techniques: the ledger facts (hypotheses, decisions, verdicts,
-metrics) live in past.dev; the config being tuned and the price series stay in
-code/data files; no RAG. `PastDevMemory.entries()` has no list-all route to use,
-so it runs a few broad recalls and dedupes by id; recall is semantic and capped
-by `level` (`medium` = 16k tokens), so for long runs prefer targeted `search`.
+## Limits
 
-## How Modal sits in the loop
-
-The evaluator's batch (current config + every candidate) and the critic's
-alternate-world checks go through `harness.backtest_batch(configs, runner, seed)`.
-With `--runner modal`, `modal_app.run_batch` maps `backtest_remote.starmap(jobs)`
-over Modal containers, one job per (config, seed). The Modal SDK reads its own
-token (`modal token set` or `MODAL_TOKEN_ID/SECRET`); the code never touches
-credentials. Each batch also writes a `note` to the ledger with
-`runner`, `steps`, `seconds`, `steps_per_hour`, so running once with `--runner local`
-and once with `--runner modal` against the same ledger gives the comparison.
-A "step" = one forecast date walked for one config. `harness.session` keeps one
-Modal app open for the whole loop. Not yet run on Modal (no token here).
-With the fake backtest (milliseconds) local will win; the point of Modal is the
-real harness (~20 dates x ~100 series per config).
-
-## Plugging in the real harness
-
-Replace `harness.backtest_seed(config: dict, seed: int) -> dict`. Return
-`{"skill_train", "skill_val", "skill_heldout"}` (skill = 1 - model error / flat-baseline error;
-add `"steps"` = forecast dates walked for the steps/hour metric). Both runners map
-that one function, so Modal picks up the change with no edit to `modal_app.py`.
-If the harness needs a different unit of work (one Modal call per forecast date),
-change `run_local` / `modal_app.run_batch`; `backtest_batch(configs, runner, seed)`
-and the agents stay as they are. Also swap `data.py` dates (`TRAIN_END`,
-`HELDOUT_END`) for the real split, and `forecaster.ForecasterConfig` for the real
-config; `Proposer`'s `MUTATIONS` list (or an LLM in `propose_batch`) generates changes.
-
-## Known simplifications
-
-- Each idea in a batch is scored against the pre-batch config; kept changes then
-  apply together (distinct params per batch, so interactions are small but real).
-- The default proposer is rule-based; the LLM proposer is opt-in (`--proposer llm`).
+- 20 of the 37 scored series have only 23 days of Jul–Sep history (`results/history_37.csv`), so their bands rest on pooled changes from similar series.
+- Ideas in one batch are each scored against the pre-batch config, then kept changes apply together. Params differ within a batch, so interactions are small but real.
+- The 10–90 band covers 76% on October, short of the nominal 80%. A wider band (1.3) reached 0.80 on Jul–Sep but cost 0.021 skill there, so the pick stops at 1.2.

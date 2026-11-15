@@ -13,3 +13,6 @@ uv run python -m pacific_hack.evaluate --config submit_config.json \
     --scored data/series_scored.npz --headline data/series.npz --out results/backtest.json
 uv run python -m pacific_hack.submit --config submit_config.json --series data/series_scored.npz \
     --origin 2026-11-06 --out submission_2026-11-06.csv
+# The loop's dashboard, rebuilt from the committed trace (the loop itself
+# rewrites both after every round).
+uv run python -m pacific_hack.dashboard results/loop_rounds.json results/dashboard.html

@@ -1,0 +1,1607 @@
+{
+  "proposer": "llm",
+  "memory": "PastDevMemory",
+  "scope": "scored37-e",
+  "runner": "modal",
+  "updated": "2026-11-15 02:12:20",
+  "rounds": [
+    {
+      "round": 0,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 0.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.0,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.09607411330675864,
+      "skill_val": 0.12724329389935907,
+      "ideas": []
+    },
+    {
+      "round": 1,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.0,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.09529661396701106,
+      "skill_val": 0.14590744453953453,
+      "ideas": [
+        {
+          "idea_id": "idea-001",
+          "param": "window_days",
+          "value": 30,
+          "status": "killed",
+          "d_train": -0.010745044762240585
+        },
+        {
+          "idea_id": "idea-002",
+          "param": "half_life_days",
+          "value": 14.0,
+          "status": "kept",
+          "d_train": -0.0007774993397472452,
+          "critic": "corroborated"
+        },
+        {
+          "idea_id": "idea-003",
+          "param": "momentum",
+          "value": 0.6,
+          "status": "killed",
+          "d_train": -0.11461263211278061
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.0,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.0
+      },
+      "skill_train": 0.09529661396701106,
+      "skill_val": 0.1459074445395342,
+      "ideas": [
+        {
+          "idea_id": "idea-004",
+          "param": "band_scale",
+          "value": 1.5,
+          "status": "killed",
+          "d_train": -0.036155978847473236
+        },
+        {
+          "idea_id": "idea-005",
+          "param": "drift_weight",
+          "value": 0.1,
+          "status": "killed",
+          "d_train": -0.0006783389292466246
+        },
+        {
+          "idea_id": "idea-006",
+          "param": "momentum",
+          "value": 0.15,
+          "status": "killed",
+          "d_train": -0.0131370505649131
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.7,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.15737945117964458,
+      "skill_val": 0.1853089012936574,
+      "ideas": [
+        {
+          "idea_id": "idea-007",
+          "param": "pool_weight",
+          "value": 0.7,
+          "status": "kept",
+          "d_train": 0.06187917457306935,
+          "critic": "corroborated"
+        },
+        {
+          "idea_id": "idea-008",
+          "param": "min_samples",
+          "value": 30,
+          "status": "killed",
+          "d_train": -0.022084088812427738
+        },
+        {
+          "idea_id": "idea-009",
+          "param": "momentum_fit",
+          "value": 0.2,
+          "status": "kept",
+          "d_train": 0.00015501426899933168,
+          "critic": "corroborated"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.0,
+        "pool_weight": 0.7,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.15737945117964458,
+      "skill_val": 0.1853089012936573,
+      "ideas": [
+        {
+          "idea_id": "idea-010",
+          "param": "window_days",
+          "value": 7,
+          "status": "killed",
+          "d_train": -0.040186902683982395
+        },
+        {
+          "idea_id": "idea-011",
+          "param": "band_scale",
+          "value": 0.8,
+          "status": "killed",
+          "d_train": -0.0044142486783911306
+        },
+        {
+          "idea_id": "idea-012",
+          "param": "min_samples",
+          "value": 10,
+          "status": "killed",
+          "d_train": 0.0
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.02,
+        "pool_weight": 0.7,
+        "min_samples": 20,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.15731727808163698,
+      "skill_val": 0.18532759023074485,
+      "ideas": [
+        {
+          "idea_id": "idea-013",
+          "param": "drift_weight",
+          "value": 0.02,
+          "status": "kept",
+          "d_train": -6.217309800760074e-05,
+          "critic": "corroborated"
+        },
+        {
+          "idea_id": "idea-014",
+          "param": "band_scale",
+          "value": 2.0,
+          "status": "killed",
+          "d_train": -0.0958260275151206
+        },
+        {
+          "idea_id": "idea-015",
+          "param": "min_samples",
+          "value": 40,
+          "status": "killed",
+          "d_train": 0.0
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.02,
+        "pool_weight": 0.7,
+        "min_samples": 5,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.15731727808163698,
+      "skill_val": 0.18532759023074485,
+      "ideas": [
+        {
+          "idea_id": "idea-016",
+          "param": "window_days",
+          "value": 1,
+          "status": "killed",
+          "d_train": -0.11052087841321179
+        },
+        {
+          "idea_id": "idea-017",
+          "param": "min_samples",
+          "value": 5,
+          "status": "kept",
+          "d_train": 0.0,
+          "critic": "corroborated"
+        },
+        {
+          "idea_id": "idea-018",
+          "param": "band_scale",
+          "value": 0.5,
+          "status": "killed",
+          "d_train": -0.029685131436987255
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.02,
+        "pool_weight": 0.7,
+        "min_samples": 6,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.15731727808163698,
+      "skill_val": 0.18532759023074485,
+      "ideas": [
+        {
+          "idea_id": "idea-019",
+          "param": "band_scale",
+          "value": 1.1,
+          "status": "killed",
+          "d_train": -0.0029930327577613047
+        },
+        {
+          "idea_id": "idea-020",
+          "param": "min_samples",
+          "value": 6,
+          "status": "kept",
+          "d_train": 0.0,
+          "critic": "corroborated"
+        },
+        {
+          "idea_id": "idea-021",
+          "param": "momentum",
+          "value": 0.05,
+          "status": "killed",
+          "d_train": -0.004057981701575786
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "config": {
+        "window_days": 0,
+        "half_life_days": 14.0,
+        "band_scale": 1.0,
+        "drift_weight": 0.03,
+        "pool_weight": 0.7,
+        "min_samples": 6,
+        "momentum": 0.0,
+        "momentum_fit": 0.2
+      },
+      "skill_train": 0.1572862586092978,
+      "skill_val": 0.18533695432971342,
+      "ideas": [
+        {
+          "idea_id": "idea-022",
+          "param": "min_samples",
+          "value": 4,
+          "status": "killed",
+          "d_train": 0.0
+        },
+        {
+          "idea_id": "idea-023",
+          "param": "momentum",
+          "value": 0.02,
+          "status": "killed",
+          "d_train": -0.0015659636484580686
+        },
+        {
+          "idea_id": "idea-024",
+          "param": "drift_weight",
+          "value": 0.03,
+          "status": "kept",
+          "d_train": -3.101947233918878e-05,
+          "critic": "corroborated"
+        }
+      ]
+    }
+  ],
+  "final": {
+    "config": {
+      "window_days": 0,
+      "half_life_days": 14.0,
+      "band_scale": 1.0,
+      "drift_weight": 0.03,
+      "pool_weight": 0.7,
+      "min_samples": 6,
+      "momentum": 0.0,
+      "momentum_fit": 0.2
+    },
+    "skill_train": 0.1572862586092978,
+    "skill_val": 0.18533695432971342,
+    "skill_heldout": 0.14876216088082073,
+    "coverage_train": 0.7572139303482587,
+    "coverage_heldout": 0.7115637319316689,
+    "baseline_skill_heldout": 0.12163146997622509
+  },
+  "memory_log": [
+    {
+      "op": "write",
+      "at": "2026-11-15T01:14:44Z",
+      "agent": "loop",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:14:51Z",
+      "agent": "loop",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:15:42Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 1,
+      "authors": {
+        "loop": 1
+      },
+      "layers": {
+        "public": 1
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:16:56Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-001"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:16:59Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-002"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:01Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-003"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:15Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:20Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-001"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:23Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-001"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:26Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-002"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:28Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-002"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:31Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-003"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:17:33Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-003"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:18:59Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 9,
+      "authors": {
+        "loop": 2,
+        "evaluator": 7
+      },
+      "layers": {
+        "public": 5,
+        "holdout-scores": 4
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:19:13Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:19:17Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:19:21Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-002"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:19:23Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-002"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:20:16Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 7,
+      "authors": {
+        "loop": 1,
+        "evaluator": 3,
+        "critic": 3
+      },
+      "layers": {
+        "public": 7
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:21:41Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-004"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:21:44Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-005"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:21:46Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-006"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:01Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:04Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-004"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:07Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-004"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:10Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-005"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:12Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-005"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:15Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-006"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:22:17Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-006"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:24:01Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 19,
+      "authors": {
+        "loop": 2,
+        "evaluator": 13,
+        "critic": 4
+      },
+      "layers": {
+        "public": 11,
+        "holdout-scores": 8
+      }
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:25:24Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 11,
+      "authors": {
+        "loop": 1,
+        "evaluator": 7,
+        "critic": 3
+      },
+      "layers": {
+        "public": 11
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:26:42Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-007"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:26:44Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-008"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:26:47Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-009"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:03Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:07Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-007"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:12Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-007"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:14Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-008"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:16Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-008"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:18Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-009"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:27:27Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-009"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:28:55Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 26,
+      "authors": {
+        "loop": 2,
+        "evaluator": 20,
+        "critic": 4
+      },
+      "layers": {
+        "public": 15,
+        "holdout-scores": 11
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:29:34Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:30:04Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:30:08Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-007"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:30:10Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-007"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:30:41Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:30:58Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:31:01Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-009"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:31:03Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-009"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:32:11Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 19,
+      "authors": {
+        "loop": 1,
+        "evaluator": 9,
+        "critic": 9
+      },
+      "layers": {
+        "public": 19
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:33:32Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-010"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:33:34Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-011"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:33:36Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-012"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:28Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:30Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-010"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:33Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-010"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:46Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-011"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:48Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-011"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:51Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-012"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:35:53Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-012"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:37:14Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 39,
+      "authors": {
+        "loop": 2,
+        "evaluator": 25,
+        "critic": 12
+      },
+      "layers": {
+        "public": 23,
+        "holdout-scores": 16
+      }
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:37:44Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 23,
+      "authors": {
+        "loop": 1,
+        "evaluator": 13,
+        "critic": 9
+      },
+      "layers": {
+        "public": 23
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:06Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-013"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:09Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-014"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:11Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-015"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:40Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:45Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-013"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:54Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-013"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:39:56Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-014"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:40:02Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-014"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:40:05Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-015"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:40:17Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-015"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:41:46Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 46,
+      "authors": {
+        "loop": 2,
+        "evaluator": 32,
+        "critic": 12
+      },
+      "layers": {
+        "public": 27,
+        "holdout-scores": 19
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:42:40Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:43:02Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:43:05Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-013"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:43:08Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-013"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:44:14Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 29,
+      "authors": {
+        "loop": 1,
+        "evaluator": 16,
+        "critic": 12
+      },
+      "layers": {
+        "public": 29
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:45:36Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-016"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:45:42Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-017"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:45:45Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-018"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:23Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:26Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-016"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:30Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-016"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:32Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-017"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:36Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-017"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:41Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-018"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:46:44Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-018"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T01:57:03Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 55,
+      "authors": {
+        "loop": 2,
+        "evaluator": 38,
+        "critic": 15
+      },
+      "layers": {
+        "public": 32,
+        "holdout-scores": 23
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:57:48Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:58:04Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:58:06Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-017"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T01:58:09Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-017"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T02:00:23Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 35,
+      "authors": {
+        "loop": 1,
+        "evaluator": 19,
+        "critic": 15
+      },
+      "layers": {
+        "public": 35
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:01:08Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-019"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:01:12Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-020"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:01:40Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-021"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:02:29Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:02:56Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-019"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:03:00Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-019"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:03:04Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-020"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:03:08Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-020"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:03:12Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-021"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:03:42Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-021"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T02:06:14Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 62,
+      "authors": {
+        "loop": 2,
+        "evaluator": 42,
+        "critic": 18
+      },
+      "layers": {
+        "public": 36,
+        "holdout-scores": 26
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:06:47Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:07:01Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:07:04Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-020"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:07:06Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-020"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T02:07:53Z",
+      "agent": "proposer",
+      "as_of": "2026-09-30",
+      "query": null,
+      "facts": 40,
+      "authors": {
+        "loop": 1,
+        "evaluator": 22,
+        "critic": 17
+      },
+      "layers": {
+        "public": 40
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:08:25Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-022"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:08:30Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-023"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:08:35Z",
+      "agent": "proposer",
+      "layer": "public",
+      "kind": "proposal",
+      "status": "proposed",
+      "idea_id": "idea-024"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:05Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:07Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-022"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:09Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-022"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:13Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "killed",
+      "idea_id": "idea-023"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:15Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "killed",
+      "idea_id": "idea-023"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:17Z",
+      "agent": "evaluator",
+      "layer": "holdout-scores",
+      "kind": "result",
+      "status": "kept",
+      "idea_id": "idea-024"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:09:20Z",
+      "agent": "evaluator",
+      "layer": "public",
+      "kind": "decision",
+      "status": "kept",
+      "idea_id": "idea-024"
+    },
+    {
+      "op": "read",
+      "at": "2026-11-15T02:11:05Z",
+      "agent": "critic",
+      "as_of": "2026-10-31",
+      "query": null,
+      "facts": 67,
+      "authors": {
+        "loop": 2,
+        "evaluator": 44,
+        "critic": 21
+      },
+      "layers": {
+        "public": 38,
+        "holdout-scores": 29
+      }
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:11:39Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:11:53Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "note",
+      "status": "proposed",
+      "idea_id": null
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:11:55Z",
+      "agent": "critic",
+      "layer": "holdout-scores",
+      "kind": "verdict",
+      "status": "corroborated",
+      "idea_id": "idea-024"
+    },
+    {
+      "op": "write",
+      "at": "2026-11-15T02:11:58Z",
+      "agent": "critic",
+      "layer": "public",
+      "kind": "decision",
+      "status": "corroborated",
+      "idea_id": "idea-024"
+    }
+  ]
+}
