@@ -56,7 +56,7 @@ SCOPE = "research-v8"
 
 
 def sh(*args, check=True, raw=False) -> str:
-    r = subprocess.run(args, cwd=LOOP, capture_output=True, text=True)
+    r = subprocess.run(args, cwd=LOOP.parent, capture_output=True, text=True)  # repo root: paths below are root-relative
     if check and r.returncode:
         sys.exit(f"{' '.join(args)} failed: {r.stderr.strip()}")
     return r.stdout if raw else r.stdout.strip()
