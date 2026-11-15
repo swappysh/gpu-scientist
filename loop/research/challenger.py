@@ -1,7 +1,6 @@
 """Forecast CSV from a research forecaster (forecaster_agent.py) at one origin, every series.
 
-    git show origin/research/v81-pick:loop/research/forecaster_agent.py > /tmp/fa_870891d.py
-    uv run python research/challenger.py /tmp/fa_870891d.py data/series_scored.npz 2026-11-06 challenger_v81_2026-11-06.csv "v8.1 pick 870891d"
+    uv run python research/challenger.py research/forecaster_agent_v81.py data/series_scored.npz 2026-11-06 challenger_v81_2026-11-06.csv "v8.1 pick 870891d"
 
 Same worker as the research harness (core.forecasts: the forecaster sees only rows dated on
 or before the origin), with every series in the build forecast, not just the scored ones, so

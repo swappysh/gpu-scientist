@@ -8,4 +8,4 @@ Three researchers ran 18:36–20:00Z on the v8.1 split (dev to Oct 15, guards G1
 - orderck_v81.jsonl: order check on Modal for 19a5148, v7, 870891d, c9804cc (all pass).
 - results-a/b/c.tsv, LEARNED-a/b/c.md: per-researcher experiment logs and notes (pacsci1/2/3).
 - notebook.tsv, LESSONS.md, meta.tsv: shared notebook, lessons (v8 and v8.1, incl. the b06b208 post-mortem), director rounds.
-- The pick's code is on branch research/v81-pick.
+- The pick's code (870891d) is in loop/research/forecaster_agent_v81.py.
