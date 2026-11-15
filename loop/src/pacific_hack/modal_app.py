@@ -11,9 +11,11 @@ or prints them. Run the loop with `--runner modal`.
 
 from __future__ import annotations
 
+import time
 from contextlib import contextmanager
 
 import modal
+import modal.exception
 
 from . import pack
 
@@ -43,6 +45,18 @@ def session():
         yield
 
 
+RETRIES = 6  # backoff 2, 4, 8, 16, 30, 30 s
+
+
 def run_batch(jobs: list[tuple[dict, int]]) -> list[dict]:
-    """Run jobs on Modal in parallel; must be called inside `session()`."""
-    return list(backtest_remote.starmap(jobs))
+    """Run jobs on Modal in parallel; must be called inside `session()`.
+
+    A backtest is pure, so a batch cut off by a network error is re-run whole.
+    """
+    for attempt in range(RETRIES + 1):
+        try:
+            return list(backtest_remote.starmap(jobs))
+        except (modal.exception.ConnectionError, ConnectionError, TimeoutError):
+            if attempt == RETRIES:
+                raise
+            time.sleep(min(2 ** (attempt + 1), 30))

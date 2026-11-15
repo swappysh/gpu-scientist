@@ -21,11 +21,11 @@ import argparse
 import json
 from pathlib import Path
 
-from . import harness, ledger
+from . import dashboard, harness, ledger
 from .agents import Critic, Evaluator, Proposer
 from .data import HELDOUT_END, TRAIN_END
 from .forecaster import ForecasterConfig
-from .memory import HOLDOUT_AUDIENCE, Memory, make_memory
+from .memory import ACCESS_LOG, HOLDOUT_AUDIENCE, Memory, make_memory
 
 
 def run(
@@ -38,6 +38,7 @@ def run(
     proposer_mode: str = "rule",
     trace: str | None = None,
 ) -> ForecasterConfig:
+    ACCESS_LOG.clear()  # this run's reads and writes only
     # One bound view per agent: reads are attributed (past.dev identity) and
     # filtered (holdout audience) per agent.
     proposer = Proposer(memory.bound("proposer"), seed=seed + 1, mode=proposer_mode)
@@ -101,17 +102,16 @@ def run(
             if trace:
                 (cur,) = harness.backtest_batch([config], runner=runner, seed=seed)
                 rounds_log.append(_round_entry(r + 1, config, cur, ideas))
+                _write_trace(trace, proposer_mode, memory, runner, rounds_log)  # a crash keeps the rounds so far
 
         (final,) = harness.backtest_batch([config], runner=runner, seed=seed)
         if trace:
-            out = {"proposer": proposer_mode, "memory": type(memory).__name__, "runner": runner,
-                   "rounds": rounds_log,
-                   "final": {"config": config.to_dict(), "skill_train": final["skill_train"],
-                             "skill_val": final["skill_val"], "skill_heldout": final["skill_heldout"],
-                             "baseline_skill_heldout": base["skill_heldout"]}}
-            Path(trace).parent.mkdir(parents=True, exist_ok=True)
-            with open(trace, "w") as fh:
-                fh.write(json.dumps(out, indent=2) + "\n")
+            _write_trace(trace, proposer_mode, memory, runner, rounds_log,
+                         final={"config": config.to_dict(), "skill_train": final["skill_train"],
+                                "skill_val": final["skill_val"], "skill_heldout": final["skill_heldout"],
+                                "coverage_train": final["coverage_train"],
+                                "coverage_heldout": final["coverage_heldout"],
+                                "baseline_skill_heldout": base["skill_heldout"]})
 
     if verbose:
         print(f"final     config={json.dumps(config.to_dict())}")
@@ -126,6 +126,18 @@ def run(
                 s = e["scores"]
                 print(f"throughput {e['agent']}: {s['runner']} {s['steps']} steps in {s['seconds']}s = {s['steps_per_hour']:,} steps/hour")
     return config
+
+
+def _write_trace(path: str, proposer_mode: str, memory: Memory, runner: str, rounds_log: list[dict],
+                 final: dict | None = None) -> None:
+    """Write the trace and, next to it, the dashboard (dashboard.html)."""
+    out = {"proposer": proposer_mode, "memory": type(memory).__name__, "scope": getattr(memory, "scope", None),
+           "runner": runner, "updated": ledger.utcnow()[:19].replace("T", " "),
+           "rounds": rounds_log, "final": final, "memory_log": ACCESS_LOG}
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as fh:
+        fh.write(json.dumps(out, indent=2) + "\n")
+    dashboard.write(path, Path(path).with_name("dashboard.html"))
 
 
 def _round_entry(r: int, config: ForecasterConfig, res: dict, ideas: list[dict]) -> dict:

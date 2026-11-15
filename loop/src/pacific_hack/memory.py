@@ -51,11 +51,38 @@ from typing import Protocol
 from . import ledger
 
 PAST_API_BASE = os.environ.get("PAST_API_BASE", "https://api.past.dev/api/v1")
+RETRIES = 10  # backoff 1, 2, 4, 8, 16, then 30 s: about 3 minutes before a network error surfaces
 PAST_API_KEY_ENV = "PAST_API_KEY"
 
 # The audience holding October holdout scores; only the critic reads it.
 HOLDOUT_AUDIENCE = "holdout-scores"
 AUDIENCES: dict[str, set[str]] = {HOLDOUT_AUDIENCE: {"critic"}}
+
+
+# Every read and write this process makes through either backend, in order.
+# The loop's trace and dashboard show it as the memory evidence.
+ACCESS_LOG: list[dict] = []
+
+
+def _log_write(entry: dict) -> None:
+    ACCESS_LOG.append({
+        "op": "write", "at": ledger.utcnow(), "agent": entry["agent"],
+        "layer": entry.get("audience") or "public", "kind": entry["kind"],
+        "status": entry["status"], "idea_id": entry.get("idea_id"),
+    })
+
+
+def _log_read(reader: str | None, as_of: str | None, entries: list[dict], query: str | None = None) -> None:
+    authors: dict[str, int] = {}
+    layers: dict[str, int] = {}
+    for e in entries:
+        authors[e["agent"]] = authors.get(e["agent"], 0) + 1
+        layer = e.get("audience") or "public"
+        layers[layer] = layers.get(layer, 0) + 1
+    ACCESS_LOG.append({
+        "op": "read", "at": ledger.utcnow(), "agent": reader or "loop", "as_of": as_of,
+        "query": query, "facts": len(entries), "authors": authors, "layers": layers,
+    })
 
 
 def _visible(entry: dict, reader: str | None) -> bool:
@@ -97,23 +124,31 @@ class JsonlMemory:
             fcntl.flock(fh, fcntl.LOCK_EX)
             fh.write(ledger.entry_to_json(entry) + "\n")
             fcntl.flock(fh, fcntl.LOCK_UN)
+        _log_write(entry)
 
-    def entries(self, as_of: str | None = None) -> list[dict]:
+    def _entries(self, as_of: str | None) -> list[dict]:
         with open(self.path) as fh:
             raw = [ledger.entry_from_json(line) for line in fh if line.strip()]
         visible = [e for e in raw if _visible(e, self.reader) and _in_time(e, as_of)]
         return ledger.latest_per_fact(visible)
 
+    def entries(self, as_of: str | None = None) -> list[dict]:
+        out = self._entries(as_of)
+        _log_read(self.reader, as_of, out)
+        return out
+
     def search(self, query: str, k: int = 10, as_of: str | None = None) -> list[dict]:
         terms = {t.lower() for t in query.split() if len(t) > 2}
         scored = []
-        for e in self.entries(as_of=as_of):
+        for e in self._entries(as_of):
             text = ledger.entry_to_json(e).lower()
             score = sum(text.count(t) for t in terms)
             if score:
                 scored.append((score, e))
         scored.sort(key=lambda x: x[0], reverse=True)
-        return [e for _, e in scored[:k]]
+        out = [e for _, e in scored[:k]]
+        _log_read(self.reader, as_of, out, query)
+        return out
 
 
 class PastDevError(RuntimeError):
@@ -135,6 +170,7 @@ class PastDevMemory:
         identity: str = "pacific-reader",
         _pending: list[str] | None = None,
         scope: str | None = None,
+        reader: str | None = None,
     ):
         self.api_key = api_key or os.environ.get(PAST_API_KEY_ENV)
         if not self.api_key:
@@ -144,6 +180,10 @@ class PastDevMemory:
                 "with 500,000 credits selected."
             )
         self.identity = identity
+        # The agent name behind the identity ("critic"). Recall results are
+        # filtered by audience and market date here too, so a private or
+        # later fact never reaches an agent even if the server returned it.
+        self.reader = reader
         # One project holds every run. A scope (e.g. "scored37") tags this
         # run's facts and filters reads to them, so ideas judged on another
         # series world don't count as history here.
@@ -159,6 +199,7 @@ class PastDevMemory:
             identity=f"pacific-{agent_name}",
             _pending=self._pending_ingestions,
             scope=self.scope,
+            reader=agent_name,
         )
 
     # -- HTTP plumbing ------------------------------------------------------
@@ -173,13 +214,24 @@ class PastDevMemory:
             },
             data=json.dumps(body).encode() if body is not None else None,
         )
-        try:
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                raw = resp.read()
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode(errors="replace")[:400]
-            raise PastDevError(f"{method} {path} -> {exc.code}: {detail}") from exc
-        return json.loads(raw) if raw else {}
+        # Network blips (DNS, resets, 5xx, 429) are retried with backoff. A
+        # re-sent ingest is safe: the data point id is fixed, so past.dev
+        # supersedes the copy.
+        for attempt in range(RETRIES + 1):
+            try:
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    raw = resp.read()
+                return json.loads(raw) if raw else {}
+            except urllib.error.HTTPError as exc:
+                if (exc.code >= 500 or exc.code == 429) and attempt < RETRIES:
+                    time.sleep(min(2 ** attempt, 30))
+                    continue
+                detail = exc.read().decode(errors="replace")[:400]
+                raise PastDevError(f"{method} {path} -> {exc.code}: {detail}") from exc
+            except (urllib.error.URLError, TimeoutError, ConnectionError):
+                if attempt == RETRIES:
+                    raise
+                time.sleep(min(2 ** attempt, 30))
 
     def _wait(self, ingestion_id: str, timeout: float = 60.0) -> None:
         """Poll GET /ingest/{id} until completed/failed (polls are free)."""
@@ -227,7 +279,7 @@ class PastDevMemory:
             market_date += "T00:00:00Z"
         body = {
             "id": f"ledger:{self.scope}:{key}" if self.scope else f"ledger:{key}",
-            "content": ledger.render_entry_text(entry),
+            "content": (f"Run {self.scope}. " if self.scope else "") + ledger.render_entry_text(entry),
             "label": f"pacific-hack {entry['kind']}",
             "timestamp": market_date,  # event time = the date the fact describes
             "metadata": {"entry": entry, "kind": entry["kind"], "agent": entry["agent"]},
@@ -235,6 +287,7 @@ class PastDevMemory:
         if audience:
             body["audience"] = audience
         receipt = self._call("POST", "/ingest", body)
+        _log_write(entry)
         if ingestion_id := receipt.get("ingestionId"):
             if wait:
                 self._wait(ingestion_id)
@@ -250,7 +303,11 @@ class PastDevMemory:
         time.sleep(0.5)  # recall settles a moment after completion
 
     def _recall(self, query: str, as_of: str | None = None, level: str = "medium") -> list[dict]:
-        body: dict = {"query": query, "identity": self.identity, "level": level}
+        # Recall ranks over the whole project and cannot filter by run, so the
+        # scope leads both the content and the query to rank this run first.
+        if self.scope:
+            query = f"Run {self.scope}. {query}"
+        body: dict = {"query": query, "identity": self.identity, "level": level, "limit": 200}
         if as_of is not None:
             # Point-in-time read: only facts true/known as of this market date.
             body["queryTimestamp"] = as_of if "T" in as_of else as_of + "T00:00:00Z"
@@ -283,7 +340,7 @@ class PastDevMemory:
                     "fact_id": None,
                 }
             )
-        return out
+        return [e for e in out if _visible(e, self.reader) and _in_time(e, as_of)]
 
     def entries(self, as_of: str | None = None) -> list[dict]:
         """All ledger entries visible to this identity. past.dev has no
@@ -301,11 +358,15 @@ class PastDevMemory:
                 if e.get("scope") == self.scope:
                     seen.setdefault(e["id"], e)
         ordered = sorted(seen.values(), key=lambda e: (e["timestamp"], e["id"]))
-        return ledger.latest_per_fact(ordered)
+        out = ledger.latest_per_fact(ordered)
+        _log_read(self.reader, as_of, out)
+        return out
 
     def search(self, query: str, k: int = 10, as_of: str | None = None) -> list[dict]:
         self.drain()
-        return [e for e in self._recall(query, as_of=as_of) if e.get("scope") == self.scope][:k]
+        out = [e for e in self._recall(query, as_of=as_of) if e.get("scope") == self.scope][:k]
+        _log_read(self.reader, as_of, out, query)
+        return out
 
 
 def make_memory(kind: str, path: str | None = None, scope: str | None = None) -> Memory:

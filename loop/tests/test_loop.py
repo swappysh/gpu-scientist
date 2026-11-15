@@ -93,6 +93,27 @@ def test_past_backend_creates_critic_only_audience(monkeypatch):
     assert ingest["audience"] == HOLDOUT_AUDIENCE
 
 
+def test_past_backend_drops_private_facts_the_server_returns_to_others(monkeypatch):
+    private = fact(HELDOUT_END, scores={"skill_heldout": 0.31}, audience=HOLDOUT_AUDIENCE)
+    public = fact(TRAIN_END, scores={"skill_train": 0.12})
+    page = {"results": [{"sources": [{"metadata": {"entry": e}}]} for e in (private, public)]}
+    base = PastDevMemory(api_key="test-key")
+    for reader, expected in (("proposer", [public]), ("evaluator", [public]), ("critic", [private, public])):
+        mem = base.bound(reader)
+        monkeypatch.setattr(mem, "_call", lambda method, path, body=None: page)
+        assert mem.search("skill", as_of=HELDOUT_END) == expected, reader
+    monkeypatch.setattr(base, "_call", lambda method, path, body=None: page)
+    assert base.search("skill") == [public]  # unbound reader
+
+
+def test_past_backend_drops_later_facts_the_server_returns(monkeypatch):
+    early, late = fact("2026-09-15"), fact("2026-10-20")
+    page = {"results": [{"sources": [{"metadata": {"entry": e}}]} for e in (early, late)]}
+    mem = PastDevMemory(api_key="test-key").bound("proposer")
+    monkeypatch.setattr(mem, "_call", lambda method, path, body=None: page)
+    assert mem.search("note", as_of=TRAIN_END) == [early]
+
+
 def test_proposer_never_sees_holdout_numbers_in_full_loop(memory):
     run(memory, rounds=4, seed=7, verbose=False)
     for reader in ("proposer", "evaluator"):
@@ -247,3 +268,15 @@ def test_scored_subset_pools_over_the_whole_world():
     got = backtest(cfg, world, score_on=world[:2])
     assert got["skill_train"] == score(cfg, world[:2], dev_origins(), changes=Changes(world))["skill"]
     assert got["skill_train"] != backtest(cfg, world[:2])["skill_train"]  # neighbours matter
+
+
+def test_trace_logs_cross_agent_reads_and_writes_dashboard(memory, tmp_path):
+    trace = tmp_path / "loop_rounds.json"
+    run(memory, rounds=2, seed=7, verbose=False, trace=str(trace))
+    log = json.loads(trace.read_text())["memory_log"]
+    proposer_reads = [a for a in log if a["op"] == "read" and a["agent"] == "proposer"]
+    assert any("evaluator" in a["authors"] for a in proposer_reads[1:])  # round 2 reads round 1's verdicts
+    assert all("holdout-scores" not in a["layers"] for a in proposer_reads)
+    assert any(a["op"] == "write" and a["layer"] == "holdout-scores" for a in log)
+    page = (tmp_path / "dashboard.html").read_text()
+    assert "Skill per round" in page and "whose data each agent read" in page

@@ -1,5 +1,5 @@
 # Jul-Sep sweep on the 37 scored series (pooled pinball skill vs last value; no October).
-# fit = origins Jul 1-Aug 24, val = Sep 1-23, train = both. Pooling over all 725 series. Script: scripts/sweep37.py < scripts/sweep_julsep_37.jsonl
+# fit = origins Jul 1-Aug 24, val = Sep 1-23, train = both. Pooling over all 725 series. Script: scripts/sweep37.py < scripts/sweep_julsep_37.configs
 {}                                                                       fit +0.056 val +0.127 train +0.098 cov 0.69 cells 1857
 {"half_life_days": 7.0, "momentum": 0.65, "momentum_fit": 1.0, "band_scale": 0.8, "pool_weight": 0.25} fit +0.089 val +0.167 train +0.136 cov 0.73 cells 1857
 {"min_samples": 5}                                                       fit +0.080 val +0.150 train +0.122 cov 0.71 cells 1857

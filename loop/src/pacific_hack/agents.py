@@ -115,6 +115,10 @@ class Proposer:
         self.as_of = as_of  # forecast date: the proposer cannot read later facts
         self.mode = mode
         self.field_schema = field_schema  # default: schema_from_config(current)
+        # Ideas this proposer wrote in this process: idea_id -> (param, value).
+        # past.dev recall can miss a fact, so ids keep counting from here and
+        # an idea we wrote counts as tried even when recall drops it.
+        self.issued: dict[str, tuple] = {}
         self.llm_client = llm_client
 
     def propose_batch(self, current: ForecasterConfig, k: int = 3) -> list[dict]:
@@ -124,11 +128,20 @@ class Proposer:
         the key is missing, the call fails, or no valid candidate comes back.
         """
         entries = self.memory.entries(as_of=self.as_of)
+        seen = set(_ideas(entries))
+        missed = sorted(set(self.issued) - seen)
+        print(f"proposer: ledger shows {len(seen)} of {len(self.issued)} ideas written so far"
+              + (f" (missing {', '.join(missed)})" if missed else ""), file=sys.stderr)
         if self.mode == "llm":
             proposals = self._propose_llm(current, k, entries)
             if proposals:
                 return proposals
         return self._propose_rule(current, k, entries)
+
+    def _next_idea_id(self, entries: list[dict]) -> str:
+        known = list(_ideas(entries)) + list(self.issued)
+        n = max((int(i.rsplit("-", 1)[1]) for i in known if i.rsplit("-", 1)[-1].isdigit()), default=0)
+        return f"idea-{n + 1:03d}"
 
     def _propose_llm(self, current: ForecasterConfig, k: int, entries: list[dict]) -> list[dict]:
         try:
@@ -142,10 +155,11 @@ class Proposer:
         except Exception as exc:  # any failure -> rule-based fallback; never print the message (may echo a key)
             print(f"proposer: LLM unavailable ({type(exc).__name__}), using rules", file=sys.stderr)
             return []
-        n_ideas = len(_ideas(entries))
         proposals = []
         for c in candidates:
-            idea_id = f"idea-{n_ideas + len(proposals) + 1:03d}"
+            if (c["param"], c["value"]) in self.issued.values():
+                continue
+            idea_id = self._next_idea_id(entries)
             entry = ledger.make_entry(
                 "proposal",
                 "proposed",
@@ -158,6 +172,7 @@ class Proposer:
                 fact_id=hypothesis_fact_id(idea_id),
             )
             self.memory.append(entry)
+            self.issued[idea_id] = (entry["change"]["param"], entry["change"]["value"])
             proposals.append(entry)
         return proposals
 
@@ -165,7 +180,7 @@ class Proposer:
         ideas = _ideas(entries)
         tried = {
             (i["change"]["param"], i["change"]["value"]) for i in ideas.values() if i.get("change")
-        }
+        } | set(self.issued.values())
         # Learn from the ledger: params with kept/corroborated history rank
         # first, params with killed/refuted history rank last.
         param_score: dict[str, int] = {}
@@ -184,7 +199,7 @@ class Proposer:
             if param in used_params:
                 continue
             used_params.add(param)
-            idea_id = f"idea-{len(ideas) + len(proposals) + 1:03d}"
+            idea_id = self._next_idea_id(entries)
             entry = ledger.make_entry(
                 "proposal",
                 "proposed",
@@ -197,6 +212,7 @@ class Proposer:
                 fact_id=hypothesis_fact_id(idea_id),
             )
             self.memory.append(entry)
+            self.issued[idea_id] = (entry["change"]["param"], entry["change"]["value"])
             proposals.append(entry)
             if len(proposals) == k:
                 break

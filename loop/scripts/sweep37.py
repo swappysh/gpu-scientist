@@ -3,7 +3,7 @@
 Pooling sees every series in the build (as in submit.py); only the scored
 series count. fit = origins Jul 1 - Aug 24, val = Sep 1 - 23, train = both.
 
-    uv run python scripts/sweep37.py data/series_scored.npz < scripts/sweep_julsep_37.jsonl
+    uv run python scripts/sweep37.py data/series_scored.npz < scripts/sweep_julsep_37.configs
 """
 import json
 import sys
