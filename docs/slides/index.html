@@ -141,11 +141,13 @@ th { font-weight:600; color:var(--mute); }
         <tr><td>v8 pick</td><td>+0.155</td><td>+0.333</td><td class="bad">+0.069</td></tr>
       </table>
       <p>v8 beat v7 on the months it tuned on and lost on held-out October: &minus;0.080, 95% range &minus;0.130 to &minus;0.023. It has lower loss on only 13 of 37 lines. <b>v7 stays submitted.</b></p>
+      <p class="small mute"><b>Next time:</b> cap how far a forecast can move, reject gains that come from one line, and require a margin to keep a change.</p>
     </div>
     <div>
       <ul>
         <li>What stopped us was our pre-registered held-out test: the pick rule was written down before October was opened, and October was run once.</li>
         <li>The pick passed that rule's July&ndash;August guard and still lost. The gain was fitted to the months we tuned on.</li>
+        <li><b>Why:</b> the last change pushed forecasts along a price run with no cap. September was quiet (lines moved on 27% of days); October was busy (47%, mostly up), so it overshot, e.g. a B200 forecast of 11.30 when the price was 7.42. That one change cost &minus;0.078 of the &minus;0.080 gap.</li>
         <li>With other sources' prices a day late, its September skill is +0.330. We can't tell from this data whether sources backfill rows.</li>
       </ul>
     </div>
