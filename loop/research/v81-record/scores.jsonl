@@ -1,0 +1,16 @@
+{"name": "v7", "who": "start", "gate": 0.16, "dev": 0.1523, "julaug": 0.1221, "lines": 102}
+{"name": "19a5148", "who": "start", "gate": 0.2168, "dev": 0.2048, "julaug": 0.1574, "lines": 289}
+{"name": "487353c", "who": "pacsci3 LATE", "gate": 0.1634, "dev": 0.1612, "julaug": 0.1526, "lines": 102}
+{"name": "7bffdb3", "who": "pacsci3 LATE", "gate": 0.167, "dev": 0.164, "julaug": 0.1526, "lines": 80}
+{"name": "7100b8c", "who": "pacsci1", "gate": 0.2236, "dev": 0.2096, "julaug": 0.1544, "lines": 310}
+{"name": "4add042", "who": "pacsci1", "gate": 0.2267, "dev": 0.2134, "julaug": 0.1609, "lines": 335}
+{"name": "870891d", "who": "pacsci1", "gate": 0.2315, "dev": 0.2173, "julaug": 0.1615, "lines": 340}
+{"name": "dde369c", "who": "pacsci2", "gate": 0.2207, "dev": 0.2094, "julaug": 0.1651, "lines": 287}
+{"name": "5aa136a", "who": "pacsci2", "gate": 0.2207, "dev": 0.2094, "julaug": 0.1649, "lines": 263}
+{"name": "c9804cc", "who": "pacsci2", "gate": 0.2274, "dev": 0.2147, "julaug": 0.1649, "lines": 268}
+{"name": "194be78", "who": "pacsci3", "gate": 0.1851, "dev": 0.1757, "julaug": 0.1387, "lines": 94}
+{"name": "48b2c8f", "who": "pacsci3", "gate": 0.1912, "dev": 0.1799, "julaug": 0.1352, "lines": 105}
+{"name": "5d33567", "who": "pacsci3", "gate": 0.1947, "dev": 0.1893, "julaug": 0.1682, "lines": 150}
+{"name": "d2da6d0", "who": "pacsci3", "gate": 0.1986, "dev": 0.1894, "julaug": 0.1532, "lines": 178}
+{"name": "e0a624a", "who": "pacsci3", "gate": 0.2091, "dev": 0.201, "julaug": 0.1688, "lines": 186}
+{"name": "4fda766", "who": "pacsci3", "gate": 0.2125, "dev": 0.202, "julaug": 0.1606, "lines": 196}
