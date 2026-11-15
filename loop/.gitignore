@@ -3,3 +3,6 @@ __pycache__/
 *.jsonl
 .pytest_cache/
 data/
+research/results.tsv
+research/state/
+research/LEARNED.tmp
