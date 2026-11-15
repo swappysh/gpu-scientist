@@ -18,7 +18,9 @@ Three agents improve it through one shared memory on past.dev:
 - an evaluator backtests each batch in parallel on Modal and keeps a change only if it raises September skill without lowering July to September skill;
 - a critic re-scores kept changes on resampled series mixes and rolls back the ones that don't hold.
 
-October scores sit behind a read boundary. Only the critic can see them, and no decision uses them.
+October scores sit behind a read boundary, and no decision uses them. Each fact in the memory has a date. The proposer reads as of September 30, and the past.dev server applies that cut. October numbers carry a critic-only audience, which the server leaves out of proposer and evaluator reads. A live test against the server checks both (tests/test_pastdev_live.py). The client filters again on top, and on the local JSONL backend the client does all the filtering.
+
+All three agents share one past.dev project key and name themselves in each request. So the boundary keeps honest code away from October numbers. It would not stop an agent that lies about its identity.
 
 The final configuration differs from the start in three settings. It weights recent repricing more (14-day half-life). It borrows repricing behavior from all 725 series in the pack at half weight. And it widens the band by 20%. Configs: loop/submit_config.json. Rebuild: loop/reproduce.sh.
 
@@ -44,6 +46,12 @@ October has 1,522 cells; Jul-Sep has 2,010. Source: loop/results/backtest.json, 
 The interval comes from resampling the 37 series 10,000 times; 86% of resamples put the difference above zero. The final configuration has the lower loss on 22 of the 37 series. Source: loop/results/bootstrap_october_37.txt, script loop/scripts/bootstrap_october37.py.
 
 TODO (Sunday): skill on the frozen truth for 7, 9 and 13 November, pooled, mean, median and geometric mean, with coverage.
+
+## How the framework changed while we built it
+
+![How the forecasting framework evolved on Sat Nov 14](evolution.png)
+
+We built the system in one afternoon, in eight versions (docs/evolution.png, rebuilt by docs/evolution.py). Two mistakes shaped it most. At v3 a trend model won big on AWS spot, which Sunday does not score, so we moved tuning to the 37 scored series. Until v4 the loop kept or killed changes on October, the month we report as held out. From v4 on, keep and kill use September only, and October is scored once at the end.
 
 ## What the loop learned across rounds
 
@@ -78,4 +86,5 @@ We expect an H100 to rent for about $3/hr and sell for about $4,700 in November 
 - One month of October origins on 37 series is a small held-out set, and the October gain over the start is small.
 - Most posted series have short histories: the pack's rental panels start in January 2026 or later, and many start in August.
 - The resale view rests on two used-price prints and a handful of rate cards that span all of 2026.
-- TODO (gpuloop): past.dev memory runs verified against the live API, or not.
+- The memory boundary relies on each agent naming itself honestly (see Method).
+- TODO (gpuloop): whether the final 8-round run used the live past.dev API end to end.

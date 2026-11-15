@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPU Price Scientist</title>
+<!-- Round 1 deck. Follows docs/demo.md. Opens offline from a clone: images load by relative path.
+     Keys: right/space next, left back, f full screen. Print to PDF gives one slide per page. -->
+<style>
+:root { --bg:#fbfaf7; --ink:#1d1d1b; --mute:#6b6a66; --accent:#c0392b; --good:#2e7d32; --line:#d9d6cf; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.slide { display:none; position:absolute; inset:0; padding:5vh 6vw; flex-direction:column; justify-content:center; }
+.slide.on { display:flex; }
+h1 { font-size:5.2vh; line-height:1.15; margin:0 0 3vh; font-weight:700; }
+h2 { font-size:4.2vh; margin:0 0 2.5vh; font-weight:700; }
+p, li { font-size:3vh; line-height:1.4; margin:0 0 1.4vh; }
+ul { margin:0; padding-left:1.2em; }
+.mute { color:var(--mute); }
+.small { font-size:2.2vh; }
+.big { font-size:9vh; font-weight:800; line-height:1; }
+.good { color:var(--good); }
+.bad { color:var(--accent); }
+img.fig { max-width:100%; max-height:62vh; object-fit:contain; align-self:center; }
+.row { display:flex; gap:5vw; align-items:flex-start; }
+.row > div { flex:1; }
+table { border-collapse:collapse; font-size:2.7vh; margin:1vh 0 2vh; }
+th, td { padding:0.8vh 1.6vw; text-align:right; border-bottom:1px solid var(--line); }
+th:first-child, td:first-child { text-align:left; }
+th { font-weight:600; color:var(--mute); }
+.box { border:2px dashed var(--line); border-radius:8px; padding:4vh 3vw; color:var(--mute); font-size:2.6vh; text-align:center; }
+.foot { position:absolute; bottom:2.5vh; left:6vw; right:6vw; display:flex; justify-content:space-between; font-size:1.8vh; color:var(--mute); }
+@media (max-width: 700px) { .row { flex-direction:column; gap:3vh; } }
+@media print {
+  @page { size: 16in 9in; margin:0; }
+  .slide { display:flex !important; position:relative; width:16in; height:9in; page-break-after:always; }
+  .foot .n { display:none; }
+}
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <p class="mute">GPU price scientist</p>
+  <h1>On AWS spot, a six-year-old A100 rents for more than it did at age two.</h1>
+  <p class="mute small">A100 40GB spot: $1.69/hr in Oct 2022, $2.09/hr in Oct 2026.</p>
+  <p style="margin-top:4vh">Two questions:</p>
+  <ul>
+    <li>Can a team of agents improve a price forecaster on its own, without peeking at the month it is judged on?</li>
+    <li>What will an H100 or an A100 be worth in 2028?</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>How the loop works</h2>
+  <img class="fig" src="../loop.png" alt="Loop flowchart: proposer, evaluator on Modal, critic, shared past.dev notebook">
+  <p class="small mute" style="margin-top:2vh">Middle guess = last price. The work is the band around it. Keep a change only if September improves. The proposer sees facts up to September 30; October numbers are critic-only. October is scored once, at the end.</p>
+</section>
+
+<section class="slide">
+  <h2>How we built it</h2>
+  <img class="fig" src="../evolution.png" alt="Timeline of eight versions built on Sat Nov 14">
+  <p class="small mute" style="margin-top:2vh">Two mistakes taught us most: a big win on series Sunday doesn't score, and keep/kill on October. Both fixed before the final tuning.</p>
+</section>
+
+<section class="slide">
+  <h2>What the loop tried and kept</h2>
+  <img class="fig" id="rounds" src="../../loop/results/loop_rounds.png" alt="Round-by-round chart"
+       onerror="this.outerHTML='<div class=&quot;box&quot;>Round chart lands at loop/results/loop_rounds.png</div>'">
+  <p class="small" style="margin-top:2vh">Sweep of 38 settings, July to September: borrowing repricing behavior from all 725 series raised September skill from +0.127 to +0.162. Doubling the band cut it to +0.041.</p>
+</section>
+
+<section class="slide">
+  <h2>Results on October, which no decision saw</h2>
+  <div class="row">
+    <div>
+      <p class="mute">Band held the true price</p>
+      <p class="big good">76%</p>
+      <p>Start: 62%. Target: 80%.</p>
+      <p class="small mute">37 series Sunday scores, 1,522 cells.</p>
+    </div>
+    <div>
+      <p class="mute">Skill vs last price</p>
+      <table>
+        <tr><th></th><th>September</th><th>October</th></tr>
+        <tr><td>Start</td><td>+0.127</td><td>+0.122</td></tr>
+        <tr><td>Final</td><td>+0.172</td><td>+0.134</td></tr>
+      </table>
+      <p>Gain not significant: +0.0125, 95% interval −0.0097 to +0.0412.</p>
+      <p class="small mute">Trend model: +0.36 vs +0.26 on AWS spot, +0.101 vs +0.122 on posted prices.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Resale: forecast rent first</h2>
+  <table>
+    <tr><th>November 2028</th><th>Rent, $/hr</th><th>Resale</th><th>% of launch</th></tr>
+    <tr><td>H100 SXM</td><td>~3.00</td><td>~$4,700</td><td>14% (8–22%)</td></tr>
+    <tr><td>A100 80GB</td><td>~1.50</td><td>~$1,400</td><td>9% (7–15%)</td></tr>
+  </table>
+  <p>Resale = M × rent × 8,760 hours. M is read from used-price prints and falls about 25% a year with age.</p>
+  <p class="small mute">Lease floor at 70% use: about $0.60/hr for an H100, $0.30 for an A100. Details: docs/resale.md.</p>
+</section>
+
+<section class="slide">
+  <h2>One agent reads another agent's memory</h2>
+  <div class="box">[live terminal]&nbsp; <code>cd loop &amp;&amp; ./demo_read.sh</code></div>
+  <p style="margin-top:3vh">The evaluator writes a verdict. The proposer reads it back, with everything dated up to September 30. The raw server response to the proposer holds no October numbers. The critic sees them.</p>
+</section>
+
+<section class="slide">
+  <h2>Caveats</h2>
+  <ul>
+    <li>One held-out month on 37 series is small. The skill gain could be noise; the calibration gain is large.</li>
+    <li>The memory boundary keeps honest code away from October. The agents share one key, so it would not stop one that lies about who it is.</li>
+    <li>The resale view rests on two used-price prints.</li>
+    <li>Everything rebuilds with one command from the public data pack.</li>
+  </ul>
+  <p style="margin-top:5vh; font-size:4vh">Thank you.</p>
+</section>
+
+<div class="foot"><span>github.com/swappysh/gpu-scientist</span><span class="n" id="n"></span></div>
+
+<script>
+const s = [...document.querySelectorAll('.slide')];
+let i = Math.max(0, Math.min(s.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+function show(k) {
+  i = Math.max(0, Math.min(s.length - 1, k));
+  s.forEach((e, j) => e.classList.toggle('on', j === i));
+  document.getElementById('n').textContent = (i + 1) + ' / ' + s.length;
+  history.replaceState(null, '', '#' + (i + 1));
+}
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) show(i + 1);
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) show(i - 1);
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(s.length - 1);
+  else if (e.key === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+});
+addEventListener('click', e => { if (e.target.tagName !== 'A') show(e.clientX > innerWidth / 3 ? i + 1 : i - 1); });
+show(i);
+</script>
+</body>
+</html>

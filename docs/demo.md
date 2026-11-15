@@ -1,4 +1,4 @@
-# Demo script, Round 1 (about 3.5 minutes)
+# Demo script, Round 1 (about 3.75 minutes)
 
 Spoken text is plain. Lines in [brackets] are what to show. Times are cumulative.
 
@@ -20,11 +20,15 @@ The forecaster's middle guess is the last price. The real work is the band aroun
 
 Three agents share one lab notebook, which is a past.dev memory. A proposer suggests one change to the forecaster. An evaluator backtests it on Modal and keeps it only if September improves. A critic re-tests every kept change on reshuffled series and kills the ones that don't hold.
 
-Each fact goes into the notebook with a date and a list of who may read it. The proposer asks only for facts dated September 30 or earlier. October scores go to a list it is not on. October is scored once, at the end.
+Each fact in the notebook has a date. The proposer sees only facts dated September 30 or earlier, and the server enforces that cut. October numbers sit in a part of the notebook only the critic can read. October is scored once, at the end.
 
-TODO: match these three sentences to gpuloop's read-scoping check. Cut any part the memory layer does not enforce.
+## 1:10 How we built it
 
-## 1:15 What the loop tried and kept
+[docs/evolution.png]
+
+We built this in one afternoon, in eight versions. Two mistakes taught us the most. A trend model won big on AWS spot, which Sunday does not score. And at first the loop kept or killed changes using October, the month it is judged on. We fixed both before the final tuning.
+
+## 1:30 What the loop tried and kept
 
 [TODO: round chart from gpuloop, loop/results/loop_rounds.png]
 
@@ -32,7 +36,7 @@ TODO: one sentence per round, from loop_rounds.json: what was tried, what was ke
 
 In a sweep of 38 settings on July to September, one idea mattered most: borrowing repricing behavior from all 725 series in the pack. Doubling the band width cut September skill by two thirds.
 
-## 1:50 Results, honestly
+## 2:00 Results, honestly
 
 [Table from docs/FINDINGS.md]
 
@@ -42,22 +46,20 @@ The skill gain is small, and it is not significant. We score +0.134 against +0.1
 
 One thing we learned: a trend setting helps a lot on AWS spot, and does not help on posted rental prices. We think that is because AWS moves its spot price in small steps, while rental sellers jump rarely.
 
-## 2:30 Resale in one line
+## 2:40 Resale in one line
 
 [docs/resale.md, the view table]
 
 Remember the six-year-old A100. Rent holds up, so we forecast rent first. Our view: an H100 sells for about $4,700 in November 2028, 14% of its launch price, with a range of 8 to 22%.
 
-## 2:50 One agent reads another agent's memory
+## 3:00 One agent reads another agent's memory
 
-[TODO: live command from gpuloop]
+[Terminal: `cd loop && ./demo_read.sh`. Needs PAST_API_KEY. `./demo_read.sh <scope>` replays a finished run instead.]
 
-Here the proposer starts a new round. It asks the notebook what was tried. It gets back the evaluator's verdicts and the critic's refutations, all dated before September 30. It skips ideas that already failed. The October scores never come back.
+Here the evaluator writes a verdict into the notebook. The proposer reads it back, with the earlier verdicts and the critic's refutations, all dated September 30 or earlier. The last lines are the raw server response to the proposer. It holds no October numbers. The critic reads the same notebook and does see them.
 
-TODO: same read-scoping check as at 0:30 before saying the last two sentences live.
+## 3:30 Caveats
 
-## 3:20 Caveats
-
-One month of held-out data on 37 series is small. The skill gain could be noise; the calibration gain is large. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
+One month of held-out data on 37 series is small. The skill gain could be noise; the calibration gain is large. The memory boundary keeps honest code away from October; all three agents share one key, so it would not stop an agent that lies about who it is. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
 
 Thank you.
