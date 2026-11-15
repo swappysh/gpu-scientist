@@ -18,15 +18,57 @@ Rebuild the results and the submission in one command:
 cd loop && uv sync --group pack && ./reproduce.sh <unzipped gpu-price-pack-v0.1.1-handover dir>
 ```
 
-## Memory on past.dev
-- *Three identities.* The proposer, evaluator and critic each read and write as their own past.dev identity.
-- *Public ledger, private October.* Every hypothesis, keep-or-kill decision and critic verdict is public. October scores go to a private audience whose only member is the critic. In run `scored37-e` the proposer got 0 of the 32 private facts.
-- *Point-in-time reads.* Each fact is dated by the market day it describes, and each read sends the reader's forecast date. A read as of 30 September sees nothing later.
-- *Enforced on the server.* past.dev applies the audience and date rules itself; `loop/tests/test_pastdev_live.py` checks this against the live API, and the client filters again.
-- *v8.* Every researcher experiment is also written to past.dev (scope `research-v8`, as that researcher's identity). The researchers work from a local shared notebook and read past.dev only with `--past`. In v8, past.dev is a mirror and audit trail, not the working memory.
-- *Caveats.* All agents share one project key, so an identity is a label, not a credential. We ran no memory ablation, so we have no number for how much memory adds.
+## past.dev challenge
+Short version below. The full one, with every count and the API calls, is in [`loop/README.md`](loop/README.md#pastdev-challenge). Demo: `loop/demo_read.sh`.
 
-Details and the full counts are in [`loop/README.md`](loop/README.md#pastdev-challenge).
+### Agents
+Each agent reads and writes as its own past.dev identity.
+
+| Agent | Identity | Audiences | Writes | Reads |
+| --- | --- | --- | --- | --- |
+| proposer | `pacific-proposer` | public only | hypotheses | as of 30 Sep: the evaluator's decisions and the critic's verdicts, to skip tried ideas and rank params |
+| evaluator | `pacific-evaluator` | writes to `holdout-scores`, cannot read it | keep or kill with Jul–Sep numbers (public); October scores (private) | nothing |
+| critic | `pacific-critic` | `holdout-scores` (its only member) | verdicts (public); its resample numbers (private) | as of 31 Oct: the evaluator's decisions and private scores, to pick what to re-check |
+| v8 researchers | `pacsci1`, `pacsci2`, `pacsci3` | public only | one fact per experiment, scope `research-v8` | past.dev only when run with `--past` |
+
+In v8 the researchers work from a local shared notebook. past.dev is their mirror and audit trail, not their working memory.
+
+### Layers
+- *Working:* each agent's task, in its prompt. Not shared.
+- *Public ledger:* hypotheses, decisions and verdicts. Why: the proposer needs the history so it doesn't repeat ideas.
+- *Private October:* the audience `holdout-scores`. Why: the proposer must never tune on October, and the critic needs it to judge.
+- *Time:* each fact is dated by the market day it describes, and each read sends the reader's forecast date. Why: a read as of 30 September sees nothing later.
+- *Run:* a scope tags every fact. Why: an idea judged in another run is not evidence here.
+
+past.dev enforces the audience and the date cut on the server, and the client filters both again. `loop/tests/test_pastdev_live.py` checks the server side against the live API.
+
+### Results
+- Run `scored37-e` wrote 110 facts: 78 public and 32 private.
+- The proposer read 89 evaluator facts and 68 critic facts, and used them to skip tried ideas. It got 0 of the 32 private facts.
+- 24 ideas, with no repeats.
+- In v8, every researcher experiment is also written to past.dev as that researcher.
+
+### Caveats
+- *One shared key.* All agents use one project key, so an identity is a label, not a credential.
+- *No memory ablation.* We never ran the loop without memory, so we have no number for what memory adds.
+- *Recall can't list or filter by run.* In run `scored37-d` the proposer missed one of its ideas, reused its id and overwrote a kept idea's fact. We stopped that run and fixed it.
+- *Only October is private.* There are no per-agent private notes.
+- *Small scale.* A run writes tens of facts (v8: one per experiment).
+- *v8 tests past.dev only as a mirror.* Its working memory was a local notebook.
 
 ## Data
 Pacific gpu-price-pack v0.1.1-handover (CC BY 4.0, data cutoff 6 Nov 2026). Not committed here; see `data/README.md` for how to fetch and verify it.
+
+## Targets
+Each target is one series from the pack's catalog: one collector, one instrument class, one GPU model and one pricing tier. Its value is the median USD per GPU-hour over that collector's offers on the UTC day, all regions pooled, with no commitment term (the catalog's benchmark contract). We forecast all 725 series. Sunday scores the 37 that the catalog marks headline:
+
+| Collector | Instrument | Tier | Scored series |
+| --- | --- | --- | --- |
+| afhubbard | hyperscaler spot price | spot | 4 |
+| fastgpu | hyperscaler spot price | spot | 2 |
+| fastgpu | neocloud rate card | on-demand | 11 |
+| fastgpu | neocloud spot price | spot | 7 |
+| gpurentalprices | neocloud rate card | on-demand | 12 |
+| gpurentalprices | marketplace ask | spot | 1 |
+
+We never chain instruments. Each forecast starts from its own series' last value. The band may borrow past price changes from other series of the same instrument class, from any collector, but never from another class. No list prices are in the scored set, and no index, resale or launch price is used as a target or an input.
