@@ -8,7 +8,7 @@ An AI scientist that forecasts GPU rental prices for the Pacific track at the SF
 Posted GPU rental prices move in steps, so on most days tomorrow's price equals today's. The middle forecast is the last price. The low and high come from how often each kind of seller reprices, and by how much. A team of agents improves the forecaster one change at a time. A change counts only if it wins on September origins; October is scored once, at the end.
 
 ## Results
-On the 37 series that are scored, the model's 10–90 band holds the truth 76% of the time on October, against 62% for the starter. October skill is +0.134 vs +0.122 for the starter, a small gain on 37 series. Details, the agent loop's rounds and what lives in past.dev are in [`loop/README.md`](loop/README.md).
+The submission uses the agent loop's pick. On the 37 series that are scored, its October skill is +0.149 vs +0.122 for the starter, and its 10–90 band holds the truth 71% of the time, against 62% for the starter. We picked it after seeing October, so that October number is optimistic. Details, the agent loop's rounds and what lives in past.dev are in [`loop/README.md`](loop/README.md).
 
 Rebuild the results and the submission in one command:
 

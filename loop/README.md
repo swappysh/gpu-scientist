@@ -8,7 +8,7 @@ Three agents tune a GPU-price forecaster one change at a time. They share an exp
 
 All picks were made on Jul–Sep origins. October was scored once, after the pick was fixed.
 
-- *Scored set (the 37 series the 11-06 catalog marks headline).* The model's 10–90 band holds the truth 76% of the time on October, against 62% for the starter. Its October skill is +0.134 vs +0.122. That gain is small for 37 series: a bootstrap over series gives a 95% interval of −0.010 to +0.041. Config: `pool_weight 0.5, half_life_days 14, band_scale 1.2`, in `submit_config.json` under `default`.
+- *Scored set (the 37 series the 11-06 catalog marks headline).* The submission uses the loop's final pick: `half_life_days 14, drift_weight 0.03, pool_weight 0.7, min_samples 6, momentum_fit 0.2`, in `submit_config.json` under `default`. Its October skill is +0.149 vs +0.122 for the starter. Its 10–90 band holds the October truth 71% of the time, against 62% for the starter. The earlier hand pick (`pool_weight 0.5, half_life_days 14, band_scale 1.2`) scored +0.134.
 - *AWS spot trend (a finding; no AWS spot series is scored).* Spot prices trend, so a momentum term helps there: October skill +0.36 vs +0.26 for the starter on 80 AWS spot series. The same config scores +0.10 on the 37, below the starter, so the submission uses it for `aws_spot.` series only.
 - *Agent loop.* One change did the real work, and the search stalled after round 3. An 8-round run (`scored37-e`: LLM proposer, past.dev memory, Modal) tried 24 one-parameter changes. 7 passed the gate and the critic corroborated all 7, but replaying them one at a time (`results/keeps_scored37e.txt`) shows:
   - *1 real win:* `pool_weight 0.7` in round 3, +0.062 Jul–Sep and +0.039 September.
@@ -17,9 +17,9 @@ All picks were made on Jul–Sep origins. October was scored once, after the pic
 
   Rounds 4 to 8 found nothing new. They kept retrying the same few params (`min_samples` every round, then `band_scale`, `drift_weight`, `momentum`, `window_days`) and never revisited `pool_weight` or `half_life_days`. Jul–Sep skill went from +0.096 to +0.157, and all of that was in place by round 3.
 
-  On October, scored once at the end, the loop's pick gets +0.149 against the starter's +0.122. A bootstrap over the 37 series (`results/bootstrap_october_37.txt`, 10,000 resamples) puts the difference at +0.027, 95% interval +0.008 to +0.055, above zero in 99.8% of resamples. Against `submit_config` it is +0.015 (+0.004 to +0.027, 99.8%). The resamples are of series, over one month, so they say nothing about a different month. The loop's band holds the October truth 71% of the time, against 76% for `submit_config`.
+  On October, scored once at the end, the loop's pick gets +0.149 against the starter's +0.122. A bootstrap over the 37 series (`results/bootstrap_october_37.txt`, 10,000 resamples) puts the difference at +0.027, 95% interval +0.008 to +0.055, above zero in 99.8% of resamples. Against the hand pick it is +0.015 (+0.004 to +0.027, 99.8%). The resamples are of series, over one month, so they say nothing about a different month. The loop's band holds the October truth 71% of the time, against 76% for the hand pick.
 
-  The submission is `submit_config`. It was picked by hand from the Jul–Sep sweep (`results/sweep_julsep_37.txt`) before this run. The pick took `pool_weight 0.5, half_life_days 14` and widened the band (`band_scale 1.2`): Jul–Sep coverage 0.79 instead of 0.76, for 0.007 less Jul–Sep skill. The loop gates on skill alone, so it ends with narrower bands (Jul–Sep coverage 0.76). Switching to the loop's pick now would mean choosing on October. Chart: `results/loop_rounds.png`. Every idea and every memory read: `results/dashboard.html`.
+  The hand pick came from the Jul–Sep sweep (`results/sweep_julsep_37.txt`) before this run. It widened the band (`band_scale 1.2`): Jul–Sep coverage 0.79 instead of 0.76, for 0.007 less Jul–Sep skill. The loop gates on skill alone, so it ends with narrower bands. We switched the submission from the hand pick to the loop's pick after seeing October, so that choice used October. Chart: `results/loop_rounds.png`. Every idea and every memory read: `results/dashboard.html`.
 
 Skill is the track's: 1 − total pinball loss / total loss of the flat last-value forecast, pooled over every cell. Files:
 
@@ -28,7 +28,7 @@ Skill is the track's: 1 − total pinball loss / total loss of the flat last-val
 | `results/backtest.json` | starter vs model on the 37 and on AWS spot: Jul–Sep, September and October skill, coverage |
 | `results/sweep_julsep_37.txt` | the Jul–Sep sweep the pick came from (no October) |
 | `results/october_37_three_models.txt` | October on the 37 for the three candidate configs |
-| `results/bootstrap_october_37.txt` | the October gains of `submit_config` and the loop's pick over the starter, resampled over series |
+| `results/bootstrap_october_37.txt` | the October gains of the hand pick and the loop's pick (now `submit_config`) over the starter, resampled over series |
 | `results/keeps_scored37e.txt` | each change the loop kept, replayed one at a time on Jul–Sep (`scripts/keeps37.py`) |
 | `results/history_37.csv` | days of history per scored series |
 | `results/loop_rounds.json`, `.png` | the agent loop, round by round |

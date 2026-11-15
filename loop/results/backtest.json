@@ -24,18 +24,18 @@
       "config": {
         "window_days": 0,
         "half_life_days": 14.0,
-        "band_scale": 1.2,
-        "drift_weight": 0.0,
-        "pool_weight": 0.5,
-        "min_samples": 20,
+        "band_scale": 1.0,
+        "drift_weight": 0.03,
+        "pool_weight": 0.7,
+        "min_samples": 6,
         "momentum": 0.0,
-        "momentum_fit": 0.0
+        "momentum_fit": 0.2
       },
-      "skill_train": 0.14398010712155196,
-      "skill_val": 0.17239987029098014,
-      "skill_heldout": 0.13412810916206708,
-      "coverage_train": 0.7895522388059701,
-      "coverage_heldout": 0.759526938239159,
+      "skill_train": 0.1572862586092978,
+      "skill_val": 0.18533695432971387,
+      "skill_heldout": 0.14876216088082095,
+      "coverage_train": 0.7572139303482587,
+      "coverage_heldout": 0.7115637319316689,
       "cells_train": 2010,
       "cells_heldout": 1522
     }
