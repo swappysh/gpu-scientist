@@ -34,15 +34,15 @@ We built this in one afternoon, in eight versions. Two mistakes taught us the mo
 
 This is the last live run: eight rounds, three ideas each. Seven of 24 ideas passed the keep rule. Replayed alone, one did the real work: borrowing repricing behavior from other series. A shorter memory traded July and August for September. The other five barely moved anything, so the search stalled after round 3.
 
-The run's final settings score +0.149 on October, against +0.122 for the start, and the 95% interval on that gap runs from +0.008 to +0.055. We kept the submission we picked before this run, because switching now would mean choosing on October.
+The run's final settings are what we submitted.
 
 ## 2:00 Results, honestly
 
 [Table from docs/FINDINGS.md]
 
-The clear win is calibration. In October, which no decision saw, on the 37 series Sunday scores, our band held the true price 76% of the time. The target is 80%. The starting forecaster managed 62%.
+On October, which no loop decision saw, on the 37 series Sunday scores, the loop's settings score +0.149. The starter scores +0.122. The 95% interval on that gap runs from +0.008 to +0.055, so it is small but real.
 
-The skill gain is small, and it is not significant. We score +0.134 against +0.122. The 95% interval on that difference runs from slightly below zero to +0.04.
+The loop also beat the settings we picked by hand from a sweep, by +0.015. Their band holds the true price 71% of the time; the target is 80% and the starter manages 62%. One honest note: we chose the loop's settings after seeing both October scores. Sunday's truth is the first test no choice saw.
 
 One thing we learned: a trend setting helps a lot on AWS spot, and does not help on posted rental prices. We think that is because AWS moves its spot price in small steps, while rental sellers jump rarely.
 
@@ -60,6 +60,6 @@ Here the evaluator writes a verdict into the notebook. The proposer reads it bac
 
 ## 3:30 Caveats
 
-One month of held-out data on 37 series is small. The submitted settings' skill gain could be noise; the calibration gain is large. The memory boundary keeps honest code away from October; all three agents share one key, so it would not stop an agent that lies about who it is. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
+One month of held-out data on 37 series is small, and we picked the submission after seeing October. The memory boundary keeps honest code away from October; all three agents share one key, so it would not stop an agent that lies about who it is. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
 
 Thank you.

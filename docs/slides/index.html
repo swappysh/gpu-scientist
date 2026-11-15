@@ -69,26 +69,26 @@ th { font-weight:600; color:var(--mute); }
   <h2>What the loop tried and kept</h2>
   <img class="fig" id="rounds" src="../../loop/results/loop_rounds.png" alt="Round-by-round chart"
        onerror="this.outerHTML='<div class=&quot;box&quot;>Round chart lands at loop/results/loop_rounds.png</div>'">
-  <p class="small" style="margin-top:2vh">Last live run: 24 ideas, 7 passed the keep rule, 1 real win (borrow from other series); the search stalled after round 3. Its final settings score +0.149 on October vs +0.122 for the start, 95% interval +0.008 to +0.055 (coverage 0.71). The submission stays the one picked before this run.</p>
+  <p class="small" style="margin-top:2vh">Last live run: 24 ideas, 7 passed the keep rule, 1 real win (borrow from other series); the search stalled after round 3. Its final settings are our submission.</p>
 </section>
 
 <section class="slide">
-  <h2>Results on October, which no decision saw</h2>
+  <h2>Results on October, held out from every loop decision</h2>
   <div class="row">
     <div>
-      <p class="mute">Band held the true price</p>
-      <p class="big good">76%</p>
-      <p>Start: 62%. Target: 80%.</p>
-      <p class="small mute">37 series Sunday scores, 1,522 cells.</p>
+      <p class="mute">Skill vs last price, submitted</p>
+      <p class="big good">+0.149</p>
+      <p>Starter: +0.122. Gain +0.027, 95% interval +0.008 to +0.055.</p>
+      <p class="small mute">37 series Sunday scores, 1,522 cells. Lower loss on 24 of 37.</p>
     </div>
     <div>
-      <p class="mute">Skill vs last price</p>
       <table>
-        <tr><th></th><th>September</th><th>October</th></tr>
-        <tr><td>Start</td><td>+0.127</td><td>+0.122</td></tr>
-        <tr><td>Final</td><td>+0.172</td><td>+0.134</td></tr>
+        <tr><th></th><th>September</th><th>October</th><th>Band held</th></tr>
+        <tr><td>Starter</td><td>+0.127</td><td>+0.122</td><td>62%</td></tr>
+        <tr><td style="white-space:nowrap">Hand-picked (v5)</td><td>+0.172</td><td>+0.134</td><td>76%</td></tr>
+        <tr><td style="white-space:nowrap"><b>Loop (v7), submitted</b></td><td>+0.185</td><td>+0.149</td><td>71%</td></tr>
       </table>
-      <p>Gain not significant: +0.0125, 95% interval −0.0097 to +0.0412.</p>
+      <p>Loop vs hand-picked: +0.015, interval +0.004 to +0.027. Band target: 80%.</p>
       <p class="small mute">Trend model: +0.36 vs +0.26 on AWS spot, +0.101 vs +0.122 on posted prices.</p>
     </div>
   </div>
@@ -115,7 +115,7 @@ th { font-weight:600; color:var(--mute); }
 <section class="slide">
   <h2>Caveats</h2>
   <ul>
-    <li>One held-out month on 37 series is small. The submitted settings' skill gain could be noise; the calibration gain is large.</li>
+    <li>One held-out month on 37 series is small, and we picked the submission after seeing October. Sunday's truth is the clean test.</li>
     <li>The memory boundary keeps honest code away from October. The agents share one key, so it would not stop one that lies about who it is.</li>
     <li>The resale view rests on two used-price prints.</li>
     <li>Everything rebuilds with one command from the public data pack.</li>

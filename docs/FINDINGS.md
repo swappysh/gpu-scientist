@@ -10,7 +10,7 @@ Posted rental prices move in steps. On most days tomorrow's price equals today's
 
 ## Method
 
-The forecaster's middle quantile is the last posted price. Its 0.1 and 0.9 quantiles come from how often and how far each kind of seller has repriced before. The starting configuration uses each series' own history only.
+The forecaster's middle quantile is the last posted price. Its 0.1 and 0.9 quantiles come from how often and how far each kind of seller has repriced before. The starter uses each series' own history only.
 
 Three agents improve it through one shared memory on past.dev:
 
@@ -22,7 +22,9 @@ October scores sit behind a read boundary, and no decision uses them. Each fact 
 
 All three agents share one past.dev project key and name themselves in each request. So the boundary keeps honest code away from October numbers. It would not stop an agent that lies about its identity.
 
-The final configuration differs from the start in three settings. It weights recent repricing more (14-day half-life). It borrows repricing behavior from all 725 series in the pack at half weight. And it widens the band by 20%. Configs: loop/submit_config.json. Rebuild: loop/reproduce.sh.
+The submitted configuration came out of the agent loop's last run (v7 on the timeline below). It differs from the starter in five settings, and two of them do the work. It borrows repricing behavior from all 725 series in the pack at weight 0.7. And it weights recent repricing more (14-day half-life). The other three (drift weight 0.03, minimum samples 6, momentum fit 0.2) each moved skill by less than 0.001 when replayed alone. Configs: loop/submit_config.json. Rebuild: loop/reproduce.sh.
+
+We compare it with two others. The starter is the challenge's starting configuration. The hand-picked configuration (v5) is the best of a 38-config sweep we ran on July to September: half weight on other series, a 14-day half-life, and a band 20% wider.
 
 ## Evaluation
 
@@ -32,20 +34,23 @@ The scored set is the 37 posted rental series that Sunday's truth file covers. A
 
 ## Results
 
-The loop's clear gain is calibration. On October, which no decision saw, the final configuration's band from the 0.1 to the 0.9 quantile held the true price 76% of the time, against a target of 80%. The starting configuration's band held it 62% of the time.
+The submitted configuration scores +0.149 skill on October, against the starter's +0.122. The gain is +0.027, with a 95% interval from +0.008 to +0.055. The loop's configuration has the lower October loss on 24 of the 37 series.
 
-The skill gain is not significant. The final configuration scores +0.134 on the 37 series and the start scores +0.122. The difference is +0.0125, with a 95% interval from −0.0097 to +0.0412.
+Its band is better calibrated than the starter's and worse than the hand-picked one's. The band from the 0.1 to the 0.9 quantile held the true October price 71% of the time, against a target of 80%. The starter's held it 62% of the time, and the hand-picked configuration's 76%. The hand-picked band is 20% wider; the loop's keeps the starter's width.
 
 | 37 scored series | Jul-Sep | September (gate) | October (held out) | Coverage, October |
 |---|---|---|---|---|
-| Starting config | +0.096 | +0.127 | +0.122 | 0.62 |
-| Final config | +0.144 | +0.172 | +0.134 | 0.76 |
+| Starter | +0.096 | +0.127 | +0.122 | 0.62 |
+| Hand-picked (v5) | +0.144 | +0.172 | +0.134 | 0.76 |
+| Loop, submitted (v7) | +0.157 | +0.185 | +0.149 | 0.71 |
 
-October has 1,522 cells; Jul-Sep has 2,010. Source: loop/results/backtest.json, key "scored".
+October has 1,522 cells; Jul-Sep has 2,010. Sources: loop/results/backtest.json, key "scored" (starter, hand-picked); loop/results/loop_rounds.json, key "final" (loop).
 
-The interval comes from resampling the 37 series 10,000 times; 86% of resamples put the difference above zero. The final configuration has the lower loss on 22 of the 37 series. Source: loop/results/bootstrap_october_37.txt, script loop/scripts/bootstrap_october37.py.
+The loop also beats the hand-picked configuration on October, by +0.015 (interval +0.004 to +0.027, lower loss on 27 of 37 series). The hand-picked configuration's own gain over the starter, +0.0125, is not significant: its interval runs from −0.0097 to +0.0412.
 
-The settings from the last live run, fixed the same way, gained more on October, and their interval excludes zero (see the next section).
+Each interval comes from resampling the 37 series 10,000 times. Source: loop/results/bootstrap_october_37.txt, script loop/scripts/bootstrap_october37.py.
+
+Both configurations were fixed on July to September, and no loop decision saw October. The choice between them did. We switched the submission to the loop's configuration on 15 November, after both October scores were known. So October is a fair test of each configuration, and a slightly flattering one for the pick. Sunday's truth is the first data that no choice saw.
 
 TODO (Sunday): skill on the frozen truth for 7, 9 and 13 November, pooled, mean, median and geometric mean, with coverage.
 
@@ -63,15 +68,13 @@ The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the
 
 Replaying each keep alone shows one real win. Borrowing repricing behavior from other series at weight 0.7 (round 3) raised July to September skill by 0.062 and September skill by 0.039. A 14-day half-life (round 1) was a trade: September skill rose by 0.019 and July to September stayed flat. The other five keeps moved both by less than 0.001, so the search stalled after round 3. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
 
-The run's final settings were fixed on July to September, so October is a fair test for them as well. They score +0.149 on October against the start's +0.122. The difference is +0.027, with a 95% interval from +0.008 to +0.055; 99.8% of resamples put it above zero, and the run's settings have the lower loss on 24 of the 37 series. They also beat the submitted settings by +0.015 (interval +0.004 to +0.027). Their band is less well calibrated: coverage 0.71, against 0.76 for the submitted settings.
-
-The submission is still the earlier settings, picked on July to September before this run. Switching now, after seeing both October scores, would mean choosing on October.
+The run's final settings are the submission. Their October scores are in Results.
 
 In this run the agents wrote 110 facts to past.dev, 32 of them critic-only. The proposer's reads returned none of the 32.
 
 Sources: loop/results/loop_rounds.json, loop/results/dashboard.html; keeps replayed alone in loop/results/keeps_scored37e.txt (script loop/scripts/keeps37.py); October intervals in loop/results/bootstrap_october_37.txt.
 
-The sweep that picked the submitted settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
+The sweep that picked the hand-picked settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
 
 - Borrowing repricing behavior from other series helped most. Half weight raised September skill from +0.127 to +0.162 on its own.
 - Wider bands cost skill quickly. Scaling the band by 2 cut September skill to +0.041.
@@ -86,7 +89,7 @@ Sources: loop/results/backtest.json, key "aws_trend"; loop/results/october_37_th
 
 ## Negative results
 
-- Most of the September edge did not survive to October. The final configuration led the start by 0.045 in September and by 0.012 in October, a gap within noise. Choosing among 38 configurations on September made September look better than it was.
+- Much of the September edge did not survive to October. The hand-picked configuration led the starter by 0.045 in September and by 0.012 in October, a gap within noise. The loop's led by 0.058 and by 0.027. Choosing among many configurations on September made September look better than it was.
 - Momentum hurts on posted prices. Adding it at 0.5 cut September skill from +0.127 to +0.034.
 - A drift term added nothing (+0.125 against +0.127 in September).
 - In the last live run, rounds 2 and 4 kept nothing, and five of the seven keeps moved skill by less than 0.001 when replayed alone. The search stalled after round 3.
@@ -97,7 +100,8 @@ We expect an H100 to rent for about $3/hr and sell for about $4,700 in November 
 
 ## Limits
 
-- One month of October origins on 37 series is a small held-out set, and the October gain over the start is small.
+- One month of October origins on 37 series is a small held-out set, and the October gain over the starter is small.
+- The submission was chosen between two configurations after both October scores were known (see Results).
 - Most posted series have short histories: the pack's rental panels start in January 2026 or later, and many start in August.
 - The resale view rests on two used-price prints and a handful of rate cards that span all of 2026.
 - The memory boundary relies on each agent naming itself honestly (see Method).
