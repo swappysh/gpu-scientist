@@ -116,3 +116,11 @@ def test_a_lost_week_starts_heal_with_dev_cells_only(tmp_path, monkeypatch):
     for name in ("i0", "p1", "k2"):
         cut = json.loads((tmp_path / "cells" / f"dev_cells_{name}.json").read_text())
         assert cut and max(x[1] + x[2] for x in cut) <= c
+
+
+def test_heal_extends_dev_only_through_the_lost_week():
+    """After a lost walk-forward week, the restart's dev ends with that week; later weeks stay unseen."""
+    from harness import heal
+    end, cmds = heal.extend_dev_plan("full.npz", "2026-10-14")
+    assert end == "2026-10-14" and "TRAIN_END 2026-10-15 -> 2026-10-14" in cmds[0] and "-> 2026-10-15 " in cmds[0]
+    assert heal.extend_dev_plan("full.npz")[0] == core.PACK_END  # holdout mode unchanged

@@ -327,18 +327,18 @@ def run_trial(packet: Path, out: Path, a, steps, rnd_dir: Path, sandbox: bool) -
 
 def adopted_file(rnd: int, checks_text: str, names: list[str], a) -> str:
     head = (f'"""Healing round {rnd} (heal.py, {datetime.now(timezone.utc):%Y-%m-%d %H:%MZ}): checks a fresh director proposed after\n'
-            f"pick {a.pick} lost to incumbent {a.incumbent} on the holdout ({a.diff:+.3f}, 95% [{a.lo:+.3f}, {a.hi:+.3f}]).\n"
+            f"pick {a.pick} lost to incumbent {a.incumbent} on the {'week after ' + a.cutoff if a.cutoff else 'holdout'} ({a.diff:+.3f}, 95% [{a.lo:+.3f}, {a.hi:+.3f}]).\n"
             f"Adopted after the trial (each rejects the pick, passes the incumbent): {', '.join(names)}. Read-only.\n"
             '"""\n\n')
     body = re.sub(r"(?m)^ADOPTED\s*=.*$", "", checks_text).rstrip()
     return head + body + f"\n\nADOPTED = {names!r}\n"
 
 
-def extend_dev_plan(full_npz: str | None) -> tuple[str, list[str]]:
-    """New dev end = the last holdout target. Only the date constants in core.py move."""
+def extend_dev_plan(full_npz: str | None, end: str | None = None) -> tuple[str, list[str]]:
+    """New dev end = the last holdout target, or in walk-forward the end of the lost week. Only core.py's dates move."""
     sys.path.insert(0, str(RESEARCH))
     from harness import core
-    new_end = core.PACK_END
+    new_end = end or core.PACK_END
     nxt = core.iso(core.day(new_end) + 1)
     cmds = [f"core.py: TRAIN_END {core.TRAIN_END} -> {new_end}; HELDOUT_START {core.HELDOUT_START} -> {nxt} "
             f"(HELDOUT_END, PACK_END wait for new data)",
@@ -346,20 +346,21 @@ def extend_dev_plan(full_npz: str | None) -> tuple[str, list[str]]:
     return new_end, cmds
 
 
-def extend_dev(full_npz: str, rnd_dir: Path) -> None:
+def extend_dev(full_npz: str, rnd_dir: Path, end: str | None = None) -> None:
     sys.path.insert(0, str(RESEARCH))
     from harness import core
+    end = end or core.PACK_END
     f = HERE / "core.py"
     src = f.read_text()
     old = f'TRAIN_START, TRAIN_END, VAL_START = "{core.TRAIN_START}", "{core.TRAIN_END}", "{core.VAL_START}"'
-    new = f'TRAIN_START, TRAIN_END, VAL_START = "{core.TRAIN_START}", "{core.PACK_END}", "{core.VAL_START}"'
+    new = f'TRAIN_START, TRAIN_END, VAL_START = "{core.TRAIN_START}", "{end}", "{core.VAL_START}"'
     old2 = f'HELDOUT_START, HELDOUT_END, PACK_END = "{core.HELDOUT_START}"'
-    new2 = f'HELDOUT_START, HELDOUT_END, PACK_END = "{core.iso(core.day(core.PACK_END) + 1)}"'
+    new2 = f'HELDOUT_START, HELDOUT_END, PACK_END = "{core.iso(core.day(end) + 1)}"'
     if src.count(old) != 1 or src.count(old2) != 1:
         sys.exit("core.py date constants not in the expected form: extend dev by hand")
     f.write_text(src.replace(old, new).replace(old2, new2))
     subprocess.run([sys.executable, str(HERE / "build_dev.py"), full_npz, str(core.DEV_NPZ)], cwd=HERE, check=True)
-    log(rnd_dir, f"adopt: dev extended to {core.PACK_END}")
+    log(rnd_dir, f"adopt: dev extended to {end}")
 
 
 def restart_plan(rnd: int, a) -> list[tuple[str, str, str, str]]:
@@ -504,7 +505,11 @@ def main() -> None:
                f"adopted {', '.join(names) or 'no checks'}; restart from {a.parent} and {a.incumbent}")
     target = HEALED / f"round_{rnd}.py"
     plan = restart_plan(rnd, a)
-    new_end, dev_cmds = extend_dev_plan(a.full_npz)
+    # walk-forward: the lost week is scored and joins dev; later weeks stay unseen (WALKFORWARD.md step 6)
+    sys.path.insert(0, str(RESEARCH))
+    from harness import core
+    wf_end = core.iso(core.day(a.cutoff) + 7) if a.cutoff else None
+    new_end, dev_cmds = extend_dev_plan(a.full_npz, wf_end)
     if a.dry_run:
         log(rnd_dir, f"dry run: would write {target.relative_to(REPO)} with {names}, commit it and rehash the manifest")
         log(rnd_dir, f"dry run: would append to LESSONS.md: {lesson}")
@@ -529,7 +534,7 @@ def main() -> None:
         note("director", f"healing round {rnd}: {lesson}")
     write_meta(meta_row(rnd, changed))
     if a.full_npz:
-        extend_dev(a.full_npz, rnd_dir)
+        extend_dev(a.full_npz, rnd_dir, wf_end)
     else:
         log(rnd_dir, "adopt: no --full-npz given, dev not extended")
     commit_harness(rnd, changed)
