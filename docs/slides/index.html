@@ -158,7 +158,7 @@ th { font-weight:600; color:var(--mute); }
 
 <section class="slide">
   <h2>Inside: how data flows, and who can read it</h2>
-  <img class="fig" style="max-height:80vh" src="img/data_flow.png" alt="Data flow: the pack is split by date into a tuning file and a locked holdout. Researchers in sandboxes edit only forecaster_agent.py. A locked harness, scorer and keep rule judge each change; git keeps or reverts it; results go to a shared notebook, results.tsv and past.dev. A director reads all tries and rewrites the strategy. A pre-registered pick runs once on the holdout: if it loses, heal.py adds checks to the keep rule; if it wins and the owner says yes, it becomes the submission.">
+  <img class="fig" style="max-height:80vh" src="img/data_flow.png" alt="Data flow: price data to Oct 15 feeds 3 AI researchers who edit the forecaster. A locked judge backtests, scores and keeps or reverts each change; every result goes to a shared notebook on past.dev, which a director reads to rewrite the plan hourly. The best keep is scored once on sealed October; if it loses, a lesson and new checks go back to the notebook.">
 </section>
 
 <section class="slide">

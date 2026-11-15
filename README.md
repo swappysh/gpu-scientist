@@ -6,6 +6,8 @@ An AI scientist that forecasts GPU rental prices for the Pacific track at the SF
 
 ![the loop](docs/loop.png)
 
+Data flow, and who can read what: [`docs/data-flow-v2.png`](docs/data-flow-v2.png) (full detail: [`docs/data-flow.png`](docs/data-flow.png)).
+
 ## Idea
 Posted GPU rental prices move in steps, so on most days tomorrow's price equals today's. The middle forecast is the last price. The low and high come from how often each kind of seller reprices, and by how much. A team of agents improves the forecaster one change at a time. A change counts only if it wins on September origins; October is scored once, at the end.
 
