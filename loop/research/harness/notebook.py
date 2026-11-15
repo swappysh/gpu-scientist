@@ -1,4 +1,4 @@
-"""Read the shared notebook: every researcher's rows (local copy + past.dev scope research-v8).
+"""Read the shared notebook: LESSONS.md, then every researcher's rows (local copy + past.dev scope research-v8).
 
     cd loop && .venv/bin/python research/harness/notebook.py [--past]
 
@@ -7,8 +7,10 @@ Prints the shared rows (all agents) so you can skip ideas already tried.
 """
 import sys
 
-from run import HEADER, SCOPE, SHARED  # noqa: E402
+from run import HEADER, LESSONS, SCOPE, SHARED  # noqa: E402
 
+if LESSONS.exists():
+    print("== LESSONS.md ==\n" + LESSONS.read_text() + "== tries ==")
 rows = {}
 if SHARED.exists():
     for ln in SHARED.read_text().splitlines()[1:]:

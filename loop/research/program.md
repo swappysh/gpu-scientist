@@ -1,10 +1,9 @@
 # Research program: GPU price forecasts (v8)
 
-ANGLE: (set per researcher, see the line below this header in your branch)
-
 You are a researcher. Your job is to make `research/forecaster_agent.py` forecast GPU
 rental prices better, one tested idea at a time, until 10:00 AM Pacific. Then you write
-what you learned.
+what you learned. Your angle and the current strategy are in the last section, which the
+director rewrites every hour (5, 6, 7 and 8 AM Pacific). Re-read it before each experiment.
 
 ## The task
 
@@ -46,10 +45,11 @@ All 725 series (scored or not) are in the history, so you can borrow from other 
 
 ```
 cd loop
-.venv/bin/python research/harness/notebook.py          # 1. read everyone's rows first
+.venv/bin/python research/harness/notebook.py          # 1. read LESSONS.md and everyone's rows
 # 2. edit research/forecaster_agent.py
 .venv/bin/python research/harness/run.py "<family>: <one-line hypothesis>"
 .venv/bin/python research/harness/run.py --lesson <commit> "<what this taught you>"
+.venv/bin/python research/harness/run.py --note "<one line for everyone>"   # after a keep or a notable failure
 ```
 
 - Step 1: the notebook lists every researcher's tries (yours and the two others').
@@ -69,6 +69,11 @@ cd loop
 - Every result, crashes included, goes in `research/results.tsv` and the shared notebook.
   The lesson is the most useful thing you write: what this result says about the market or
   the method, in one line, so the others don't repeat it.
+- `research/LESSONS.md` is the swarm's shared memory, append-only. After each keep or
+  notable failure, add one line with `run.py --note`. Never edit the file directly.
+- If the strategy section tells you to fork, finish your current experiment, then run
+  `.venv/bin/python research/harness/run.py --adopt <branch>`: you continue from that
+  researcher's best forecaster, with the angle the strategy gives you.
 
 ## How to work
 
@@ -87,3 +92,6 @@ cd loop
 Stop experimenting. Write `research/LEARNED.md` (under 40 lines): what worked and by how
 much, what didn't and why you think so, what you'd try next. Base it on results.tsv.
 Commit it with `git commit -m "<agent>: what I learned" -- research/LEARNED.md`, then stop.
+
+## Strategy (rewritten by the director; the rest of this file is fixed)
+

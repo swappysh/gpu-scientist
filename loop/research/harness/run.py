@@ -2,6 +2,8 @@
 
     cd loop && .venv/bin/python research/harness/run.py "<family>: <one-line hypothesis>"
     cd loop && .venv/bin/python research/harness/run.py --lesson <commit> "<what you learned>"
+    cd loop && .venv/bin/python research/harness/run.py --note "<one line for LESSONS.md>"
+    cd loop && .venv/bin/python research/harness/run.py --adopt <branch>   (director's fork order)
 
 Steps:
 1. The harness files match the locked SHA-256 manifest, and the only edited
@@ -40,6 +42,7 @@ from harness import core, leakcheck  # noqa: E402
 LOOP = RESEARCH.parent
 AGENT_FILE = RESEARCH / "forecaster_agent.py"
 REL_AGENT = "loop/research/forecaster_agent.py"
+DIRECTOR_FILES = {"loop/research/program.md"}  # the director rewrites the strategy part; never committed here
 TSV = RESEARCH / "results.tsv"
 STATE = RESEARCH / "state"
 BEST = STATE / "best.json"
@@ -47,6 +50,7 @@ HEADER = ["commit", "agent", "hypothesis", "sept", "julsep", "resample_share", "
 MANIFESTS = [Path("/tmp/pac-v8-lock/harness.sha256"),
              Path.home() / "swappybot/lanes/pac-v8/harness.sha256"]
 SHARED = Path("/tmp/pac-v8-shared/notebook.tsv")  # the 3 researchers' rows, read by notebook.py
+LESSONS = SHARED.parent / "LESSONS.md"  # shared, append-only memory (research/LESSONS.md links here)
 MIN_GAIN = 0.003
 MAX_JULSEP_DROP = 0.005
 MIN_SHARE = 0.60
@@ -128,6 +132,15 @@ def rewrite_lesson(commit: str, lesson: str) -> dict | None:
     return hit
 
 
+def note(agent: str, text: str) -> None:
+    """One line appended to the shared LESSONS.md, under a lock."""
+    LESSONS.parent.mkdir(exist_ok=True)
+    head = sh("git", "rev-parse", "--short", "HEAD")
+    with open(LESSONS, "a") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        f.write(f"- {time.strftime('%H:%M', time.gmtime())}Z {agent} @{head}: {clean(text)}\n")
+
+
 def post(row: dict) -> None:
     """Same fact to past.dev (shared notebook). Never fails the experiment."""
     try:
@@ -193,6 +206,8 @@ def main() -> None:
     ap.add_argument("hypothesis", nargs="?")
     ap.add_argument("--lesson", nargs=2, metavar=("COMMIT", "TEXT"))
     ap.add_argument("--baseline", action="store_true", help="log HEAD's forecaster as the starting row")
+    ap.add_argument("--note", metavar="TEXT", help="add one line to the shared LESSONS.md")
+    ap.add_argument("--adopt", metavar="BRANCH", help="fork: continue from another researcher's best")
     a = ap.parse_args()
     agent = os.environ.get("PAC_AGENT", "gpuloop")
     verify_manifest()
@@ -203,11 +218,20 @@ def main() -> None:
         post(hit)
         print(f"lesson saved for {a.lesson[0]}")
         return
-    if a.baseline:
+    if a.note:
+        note(agent, a.note)
+        print("noted in LESSONS.md")
+        return
+    if a.adopt:
+        if sh("git", "status", "--porcelain", "--untracked-files=no", "--", REL_AGENT):
+            sys.exit(f"{REL_AGENT} has uncommitted edits: finish or undo them first")
+        sh("git", "reset", "-q", "--keep", a.adopt)
+    if a.baseline or a.adopt:
         b = load_best()
-        row = {"commit": b["commit"], "agent": agent, "hypothesis": "baseline: v7 loop pick",
+        hyp = f"fork: adopt {a.adopt}" if a.adopt else "baseline: v7 loop pick"
+        row = {"commit": b["commit"], "agent": agent, "hypothesis": hyp,
                "sept": f"{b['sept']:+.4f}", "julsep": f"{b['julsep']:+.4f}", "resample_share": "",
-               "status": "baseline", "lesson": "starting point"}
+               "status": "fork" if a.adopt else "baseline", "lesson": "starting point"}
         append_row(row)
         post(row)
         print(row)
@@ -216,7 +240,7 @@ def main() -> None:
     if not hyp:
         sys.exit('give a one-line hypothesis: run.py "<family>: <hypothesis>"')
     dirty = [ln[3:] for ln in sh("git", "status", "--porcelain", "--untracked-files=no", raw=True).splitlines()]
-    others = [p for p in dirty if p != REL_AGENT]
+    others = [p for p in dirty if p != REL_AGENT and p not in DIRECTOR_FILES]
     if others:
         sys.exit(f"only {REL_AGENT} may change; also changed: {others}")
     if REL_AGENT not in dirty:
