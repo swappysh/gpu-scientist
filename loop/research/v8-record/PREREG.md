@@ -1,6 +1,6 @@
 # v8 final pick: pre-registration
 
-Written 2026-11-15T12:07Z (4:07 AM PT) by gpuloop, agreed with iterate. October has not been opened on any v8 model. The authoritative copy is ~/swappybot/lanes/pac-v8/PREREG.md, committed in the swappybot repo (the commit time is the timestamp). /tmp/pac-v8-shared/PREREG.md is a read copy for the researchers.
+Written 2026-11-15T12:07Z (4:07 AM PT) by gpuloop, agreed with iterate. October has not been opened on any v8 model. The rule was first committed at 2026-11-15T12:07:45Z in our private working repo, and that commit time is the timestamp; later additions below carry their own times. The researchers read a copy.
 
 ## Why
 September (the keep gate) and July-August disagree. The cross-source changes raise September but lower July-August below the seed. The keep rule's Jul-Sep guard can't see this, because September is 54% of the Jul-Sep cells. The keep rule stays locked; this rule only picks the final among kept models.

@@ -47,8 +47,8 @@ TSV = RESEARCH / "results.tsv"
 STATE = RESEARCH / "state"
 BEST = STATE / "best.json"
 HEADER = ["commit", "agent", "hypothesis", "sept", "julsep", "resample_share", "status", "lesson"]
-MANIFESTS = [Path("/tmp/pac-v8-lock/harness.sha256"),
-             Path.home() / "swappybot/lanes/pac-v8/harness.sha256"]
+# HARNESS_MANIFEST points at a locked copy kept outside the worktree; the repo copy is the fallback
+MANIFESTS = [Path(os.environ.get("HARNESS_MANIFEST") or RESEARCH / "harness.sha256")]
 SHARED = Path("/tmp/pac-v8-shared/notebook.tsv")  # the 3 researchers' rows, read by notebook.py
 LESSONS = SHARED.parent / "LESSONS.md"  # shared, append-only memory (research/LESSONS.md links here)
 MIN_GAIN = 0.003
