@@ -55,11 +55,11 @@ EXHAUSTED_AFTER = 3
 SCOPE = "research-v8"
 
 
-def sh(*args, check=True) -> str:
+def sh(*args, check=True, raw=False) -> str:
     r = subprocess.run(args, cwd=LOOP, capture_output=True, text=True)
     if check and r.returncode:
         sys.exit(f"{' '.join(args)} failed: {r.stderr.strip()}")
-    return r.stdout.strip()
+    return r.stdout if raw else r.stdout.strip()
 
 
 def verify_manifest() -> None:
@@ -172,7 +172,7 @@ def score_file(path: str) -> dict:
 def load_best() -> dict:
     """The best so far = HEAD's forecaster. Re-scored if the cache doesn't match it."""
     text = AGENT_FILE.read_text() if not sh("git", "status", "--porcelain", "--", REL_AGENT) else \
-        sh("git", "show", f"HEAD:{REL_AGENT}")
+        sh("git", "show", f"HEAD:{REL_AGENT}", raw=True)
     sha = hashlib.sha256(text.encode()).hexdigest()
     if BEST.exists():
         b = json.loads(BEST.read_text())
@@ -215,7 +215,7 @@ def main() -> None:
     hyp = clean(a.hypothesis or "")
     if not hyp:
         sys.exit('give a one-line hypothesis: run.py "<family>: <hypothesis>"')
-    dirty = [ln[3:] for ln in sh("git", "status", "--porcelain", "--untracked-files=no").splitlines()]
+    dirty = [ln[3:] for ln in sh("git", "status", "--porcelain", "--untracked-files=no", raw=True).splitlines()]
     others = [p for p in dirty if p != REL_AGENT]
     if others:
         sys.exit(f"only {REL_AGENT} may change; also changed: {others}")
