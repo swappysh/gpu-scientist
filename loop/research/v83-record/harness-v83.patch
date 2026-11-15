@@ -1,0 +1,115 @@
+diff --git a/loop/research/harness/build_dev.py b/loop/research/harness/build_dev.py
+index ed6c520..7af90e6 100644
+--- a/loop/research/harness/build_dev.py
++++ b/loop/research/harness/build_dev.py
+@@ -1,4 +1,4 @@
+-"""Write dev_series.npz: the full build cut at TRAIN_END (Oct 15 in v8.1) (run once by gpuloop, outside the sandbox)."""
++"""Write dev_series.npz: the full build cut at TRAIN_END (Nov 6 in v8.2: the whole pack) (run once by gpuloop, outside the sandbox)."""
+ import sys
+ 
+ import numpy as np
+diff --git a/loop/research/harness/core.py b/loop/research/harness/core.py
+index 71fb28a..b4585bd 100644
+--- a/loop/research/harness/core.py
++++ b/loop/research/harness/core.py
+@@ -1,7 +1,8 @@
+ """Fixed v8.1 research harness: data, per-origin history, scorer. Read-only.
+ 
+-v8.1 (2026-11-15, PREREG-v81.md): dev runs to Oct 15 (gate = origins Sep 1 - Oct 7, all
+-targets on or before Oct 15); the holdout is origins Oct 16-30, scored once by gpuloop.
++v8.2 (2026-11-15, PREREG-v82.md): dev runs to Nov 6, the end of the pack (gate = origins
++Sep 1 - Oct 29, all targets on or before Nov 5). The v8.1 holdout (origins Oct 16-30) was
++spent once on the v8.1 pick; it is now dev. No unseen weeks remain, so there is no holdout.
+ A dev run also returns per-cell rows, which the post-mortem guards (guards.py) read.
+ 
+ The researcher edits only research/forecaster_agent.py. Its function
+@@ -31,11 +32,11 @@ from pathlib import Path
+ import numpy as np
+ 
+ HERE = Path(__file__).resolve().parent
+-DEV_NPZ = HERE / "dev_series.npz"  # every series cut at TRAIN_END: no row after Oct 15 exists here
++DEV_NPZ = HERE / "dev_series.npz"  # every series cut at TRAIN_END: the whole pack, to Nov 6
+ HORIZONS = (1, 3, 7)
+ QUANTILES = (0.1, 0.5, 0.9)
+-TRAIN_START, TRAIN_END, VAL_START = "2026-07-01", "2026-10-15", "2026-09-01"
+-HELDOUT_START, HELDOUT_END, PACK_END = "2026-10-16", "2026-10-31", "2026-11-06"
++TRAIN_START, TRAIN_END, VAL_START = "2026-07-01", "2026-11-06", "2026-09-01"
++HELDOUT_START, HELDOUT_END, PACK_END = "2026-11-07", "2026-11-06", "2026-11-06"  # no holdout: empty
+ ORIGIN_STEP = 2
+ TIME_LIMIT_S = 900  # one experiment's forecasts; past this the run counts as a crash
+ 
+@@ -49,7 +50,7 @@ def iso(d: int) -> str:
+ 
+ 
+ def dev_origins() -> list[int]:
+-    """Jul 1 .. Oct 8, every 2 days: all targets on or before Oct 15."""
++    """Jul 1 .. Oct 29, every 2 days: all targets on or before Nov 5."""
+     return list(range(day(TRAIN_START), day(TRAIN_END) - max(HORIZONS) + 1, ORIGIN_STEP))
+ 
+ 
+@@ -249,9 +250,9 @@ def cells(world: World, fc: dict, origins: list[int]) -> list[list]:
+ 
+ 
+ def evaluate_dev(agent_file: str, world: World | None = None) -> dict:
+-    """Jul 1 - Oct 7 origins (column julsep) and the gate Sep 1 - Oct 7 (column sept) for one forecaster file, plus per-cell rows for the guards."""
++    """Jul 1 - Oct 29 origins (column julsep) and the gate Sep 1 - Oct 29 (column sept) for one forecaster file, plus per-cell rows for the guards."""
+     world = world or load(DEV_NPZ)
+-    assert max(int(d.max()) for d in world.days if len(d)) <= day(TRAIN_END), "dev file holds rows after Oct 15"
++    assert max(int(d.max()) for d in world.days if len(d)) <= day(TRAIN_END), "dev file holds rows after Nov 6"
+     origins = dev_origins()
+     fc = forecasts(agent_file, world, origins)
+     sept = [o for o in origins if o >= day(VAL_START)]
+diff --git a/loop/research/harness/notebook.py b/loop/research/harness/notebook.py
+index f64e336..92c7e12 100644
+--- a/loop/research/harness/notebook.py
++++ b/loop/research/harness/notebook.py
+@@ -1,4 +1,4 @@
+-"""Read the shared notebook: LESSONS.md, then every researcher's rows (local copy + past.dev scope research-v81).
++"""Read the shared notebook: LESSONS.md, then every researcher's rows (local copy + past.dev scope research-v82).
+ 
+     cd loop && .venv/bin/python research/harness/notebook.py [--past]
+ 
+diff --git a/loop/research/harness/run.py b/loop/research/harness/run.py
+index 25e5494..732c6af 100644
+--- a/loop/research/harness/run.py
++++ b/loop/research/harness/run.py
+@@ -9,9 +9,9 @@ Steps:
+ 1. The harness files match the locked SHA-256 manifest, and the only edited
+    tracked file is research/forecaster_agent.py.
+ 2. Leak review of the file (leakcheck.py). A failure is logged as "leak" and reverted.
+-3. git commit, then backtest Jul 1 - Oct 7 origins (v8.1 dev; rows to Oct 15) in a locked worker.
++3. git commit, then backtest Jul 1 - Oct 29 origins (v8.2 dev; rows to Nov 6) in a locked worker.
+ 4. Keep rule vs the current best (state/best.json):
+-     keep:   gate (column "sept" = Sep 1 - Oct 7 origins) skill gain >= MIN_GAIN (2x after 3 discards in a row in the
++     keep:   gate (column "sept" = Sep 1 - Oct 29 origins) skill gain >= MIN_GAIN (2x after 3 discards in a row in the
+              same family: that family is exhausted), Jul-Sep drop <= MAX_JULSEP_DROP,
+              and the gain is positive on >= MIN_SHARE of 200 series resamples.
+      simpler: |September gain| < MIN_GAIN, gain >= -SIMPLER_SLACK, Jul-Sep drop <= MAX_JULSEP_DROP,
+@@ -19,7 +19,7 @@ Steps:
+      guards (v8.1, guards.py): a keep or keep-simpler must also pass G1-G3 against the
+              best on per-cell dev rows, or it becomes a discard.
+      else discard (git reset to the best); a crash is logged and reset too.
+-5. One row in research/results.tsv (and the shared notebook: past.dev scope research-v81).
++5. One row in research/results.tsv (and the shared notebook: past.dev scope research-v82).
+ """
+ 
+ from __future__ import annotations
+@@ -61,7 +61,7 @@ MAX_JULSEP_DROP = 0.005
+ MIN_SHARE = 0.60
+ SIMPLER_SLACK = 0.001
+ EXHAUSTED_AFTER = 3
+-SCOPE = "research-v81"
++SCOPE = "research-v82"
+ 
+ 
+ def sh(*args, check=True, raw=False) -> str:
+diff --git a/loop/research/harness/score_heldout.py b/loop/research/harness/score_heldout.py
+index 22fdd81..faaef4a 100644
+--- a/loop/research/harness/score_heldout.py
++++ b/loop/research/harness/score_heldout.py
+@@ -1,4 +1,4 @@
+-"""v8.1 holdout (origins Oct 16-30, targets to Nov 6), scored once at ~20:00 UTC, by gpuloop only. Read-only.
++"""v8.1 holdout (origins Oct 16-30, targets to Nov 6), scored once at ~20:00 UTC, by gpuloop only. Read-only. v8.2 has no holdout (core.heldout_origins() is empty).
+ 
+     .venv/bin/python research/harness/score_heldout.py <full npz> <final forecaster.py> <v7 forecaster.py>
+ 
