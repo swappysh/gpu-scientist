@@ -26,7 +26,7 @@ Every fact in the notebook carries a date and a list of who may read it. The pro
 
 TODO: one sentence per round, from loop_rounds.json: what was tried, what was kept, what was killed.
 
-Across all rounds, one idea mattered most: borrowing repricing behavior from all 725 series in the pack. Doubling the band width cut September skill by two thirds.
+In a sweep of 38 settings on July to September, one idea mattered most: borrowing repricing behavior from all 725 series in the pack. Doubling the band width cut September skill by two thirds.
 
 ## 1:50 Results, honestly
 
