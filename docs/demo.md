@@ -32,9 +32,9 @@ We built this in one afternoon, in eight versions. Two mistakes taught us the mo
 
 [loop/results/loop_rounds.png]
 
-This is the last live run: eight rounds, three ideas each. The loop kept 7 of 24. Almost all the September gain came from two of them: weighting recent repricing more, and borrowing repricing behavior from other series. Momentum weights, band changes and window changes were killed every time.
+This is the last live run: eight rounds, three ideas each. Seven of 24 ideas passed the keep rule. Replayed alone, one did the real work: borrowing repricing behavior from other series. A shorter memory traded July and August for September. The other five barely moved anything, so the search stalled after round 3.
 
-The run's final settings score +0.149 on October, against +0.122 for the start. That gap is not yet tested. We kept the submission we picked before this run, because switching now would mean choosing on October.
+The run's final settings score +0.149 on October, against +0.122 for the start, and the 95% interval on that gap runs from +0.008 to +0.055. We kept the submission we picked before this run, because switching now would mean choosing on October.
 
 ## 2:00 Results, honestly
 
@@ -60,6 +60,6 @@ Here the evaluator writes a verdict into the notebook. The proposer reads it bac
 
 ## 3:30 Caveats
 
-One month of held-out data on 37 series is small. The skill gain could be noise; the calibration gain is large. The memory boundary keeps honest code away from October; all three agents share one key, so it would not stop an agent that lies about who it is. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
+One month of held-out data on 37 series is small. The submitted settings' skill gain could be noise; the calibration gain is large. The memory boundary keeps honest code away from October; all three agents share one key, so it would not stop an agent that lies about who it is. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
 
 Thank you.

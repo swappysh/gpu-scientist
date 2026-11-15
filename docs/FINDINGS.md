@@ -45,6 +45,8 @@ October has 1,522 cells; Jul-Sep has 2,010. Source: loop/results/backtest.json, 
 
 The interval comes from resampling the 37 series 10,000 times; 86% of resamples put the difference above zero. The final configuration has the lower loss on 22 of the 37 series. Source: loop/results/bootstrap_october_37.txt, script loop/scripts/bootstrap_october37.py.
 
+The settings from the last live run, fixed the same way, gained more on October, and their interval excludes zero (see the next section).
+
 TODO (Sunday): skill on the frozen truth for 7, 9 and 13 November, pooled, mean, median and geometric mean, with coverage.
 
 ## How the framework changed while we built it
@@ -57,15 +59,17 @@ We built the system in one afternoon, in eight versions (docs/evolution.png, reb
 
 ![Agent loop rounds](../loop/results/loop_rounds.png)
 
-The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the LLM proposer, the live past.dev memory and Modal backtests. It ran 8 rounds of 3 ideas each and kept 7 of the 24 ideas. Rounds 2 and 4 kept nothing. The critic corroborated all 7 kept ideas, so in this run it never reversed a decision.
+The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the LLM proposer, the live past.dev memory and Modal backtests. It ran 8 rounds of 3 ideas each. Seven of the 24 ideas passed the keep rule, and rounds 2 and 4 passed none. The critic corroborated all seven, so in this run it never reversed a decision.
 
-Almost all the September gain came in two rounds. Round 1 kept a 14-day half-life, which raised September skill from +0.127 to +0.146 and left July to September skill flat. Round 3 kept borrowing repricing behavior from other series at weight 0.7, which raised July to September skill from +0.095 to +0.157 and September skill to +0.185. The four ideas kept after round 3 moved September skill by less than 0.001. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
+Replaying each keep alone shows one real win. Borrowing repricing behavior from other series at weight 0.7 (round 3) raised July to September skill by 0.062 and September skill by 0.039. A 14-day half-life (round 1) was a trade: September skill rose by 0.019 and July to September stayed flat. The other five keeps moved both by less than 0.001, so the search stalled after round 3. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
 
-The run's final settings score +0.149 on October against the start's +0.122, with coverage 0.71. We did not switch the submission to them. The submission was picked on July to September before this run, and switching after seeing October would mean choosing on October. This October gap is not yet tested for significance.
+The run's final settings were fixed on July to September, so October is a fair test for them as well. They score +0.149 on October against the start's +0.122. The difference is +0.027, with a 95% interval from +0.008 to +0.055; 99.8% of resamples put it above zero, and the run's settings have the lower loss on 24 of the 37 series. They also beat the submitted settings by +0.015 (interval +0.004 to +0.027). Their band is less well calibrated: coverage 0.71, against 0.76 for the submitted settings.
+
+The submission is still the earlier settings, picked on July to September before this run. Switching now, after seeing both October scores, would mean choosing on October.
 
 In this run the agents wrote 110 facts to past.dev, 32 of them critic-only. The proposer's reads returned none of the 32.
 
-Sources: loop/results/loop_rounds.json, loop/results/dashboard.html.
+Sources: loop/results/loop_rounds.json, loop/results/dashboard.html; keeps replayed alone in loop/results/keeps_scored37e.txt (script loop/scripts/keeps37.py); October intervals in loop/results/bootstrap_october_37.txt.
 
 The sweep that picked the submitted settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
 
@@ -85,7 +89,7 @@ Sources: loop/results/backtest.json, key "aws_trend"; loop/results/october_37_th
 - Most of the September edge did not survive to October. The final configuration led the start by 0.045 in September and by 0.012 in October, a gap within noise. Choosing among 38 configurations on September made September look better than it was.
 - Momentum hurts on posted prices. Adding it at 0.5 cut September skill from +0.127 to +0.034.
 - A drift term added nothing (+0.125 against +0.127 in September).
-- In the last live run, rounds 2 and 4 kept nothing, and the four ideas kept after round 3 changed September skill by less than 0.001.
+- In the last live run, rounds 2 and 4 kept nothing, and five of the seven keeps moved skill by less than 0.001 when replayed alone. The search stalled after round 3.
 
 ## Rent and resale in 2028 and 2029
 

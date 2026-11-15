@@ -16,7 +16,7 @@ steps = [
  ("3:49 PM", "v4  leak fixed", "keep/kill on September,\nnot October; critic re-tests\nthe current config"),
  ("4:43 PM", "v5  right target", "tune on the 37 scored series;\nranges hold 76% of prices\n(starter 62%)"),
  ("4:54 PM", "v6  honest + traced", "bootstrap: score gain may be\nluck; every round logged\n(ideas, kept, killed)"),
- ("5:14 PM", "v7  live run", "8 rounds: LLM + past.dev\n+ Modal; kept 7 of 24;\nproposer saw 0 of 32\nprivate facts"),
+ ("5:14 PM", "v7  live run", "8 rounds: LLM + past.dev\n+ Modal; 24 ideas, 1 real win;\nproposer saw 0 of 32\nprivate facts"),
 ]
 xs = range(len(steps))
 ax.plot([0, len(steps)-1], [0, 0], color="k", lw=2.5)
@@ -33,5 +33,5 @@ ax.text(3, -1.45, "oops: a big win\non the wrong series", ha="center", va="top",
 ax.set_xlim(-0.7, len(steps)-0.3); ax.set_ylim(-1.85, 1.25)
 ax.axis("off")
 ax.set_title("HOW OUR FORECASTING FRAMEWORK EVOLVED (SAT NOV 14, PT)", fontsize=15)
-fig.text(0.99, 0.01, "commits on gpu-scientist main: 96bc708 ... 5777795", ha="right", fontsize=7, color="grey")
+fig.text(0.99, 0.01, "commits on gpu-scientist main: 96bc708 ... 5743afc", ha="right", fontsize=7, color="grey")
 fig.tight_layout(); fig.savefig(sys.argv[1] if len(sys.argv) > 1 else "docs/evolution.png", dpi=150)

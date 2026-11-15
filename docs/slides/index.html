@@ -69,7 +69,7 @@ th { font-weight:600; color:var(--mute); }
   <h2>What the loop tried and kept</h2>
   <img class="fig" id="rounds" src="../../loop/results/loop_rounds.png" alt="Round-by-round chart"
        onerror="this.outerHTML='<div class=&quot;box&quot;>Round chart lands at loop/results/loop_rounds.png</div>'">
-  <p class="small" style="margin-top:2vh">Last live run: 8 rounds, 7 of 24 ideas kept, September gains in rounds 1 and 3. Its final settings score +0.149 on October vs +0.122 for the start (coverage 0.71), not yet tested. The submission stays the one picked before this run.</p>
+  <p class="small" style="margin-top:2vh">Last live run: 24 ideas, 7 passed the keep rule, 1 real win (borrow from other series); the search stalled after round 3. Its final settings score +0.149 on October vs +0.122 for the start, 95% interval +0.008 to +0.055 (coverage 0.71). The submission stays the one picked before this run.</p>
 </section>
 
 <section class="slide">
@@ -115,7 +115,7 @@ th { font-weight:600; color:var(--mute); }
 <section class="slide">
   <h2>Caveats</h2>
   <ul>
-    <li>One held-out month on 37 series is small. The skill gain could be noise; the calibration gain is large.</li>
+    <li>One held-out month on 37 series is small. The submitted settings' skill gain could be noise; the calibration gain is large.</li>
     <li>The memory boundary keeps honest code away from October. The agents share one key, so it would not stop one that lies about who it is.</li>
     <li>The resale view rests on two used-price prints.</li>
     <li>Everything rebuilds with one command from the public data pack.</li>
