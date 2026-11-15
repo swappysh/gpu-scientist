@@ -16,5 +16,15 @@ Rebuild the results and the submission in one command:
 cd loop && uv sync --group pack && ./reproduce.sh <unzipped gpu-price-pack-v0.1.1-handover dir>
 ```
 
+## Memory on past.dev
+- *Three identities.* The proposer, evaluator and critic each read and write as their own past.dev identity.
+- *Public ledger, private October.* Every hypothesis, keep-or-kill decision and critic verdict is public. October scores go to a private audience whose only member is the critic. In run `scored37-e` the proposer got 0 of the 32 private facts.
+- *Point-in-time reads.* Each fact is dated by the market day it describes, and each read sends the reader's forecast date. A read as of 30 September sees nothing later.
+- *Enforced on the server.* past.dev applies the audience and date rules itself; `loop/tests/test_pastdev_live.py` checks this against the live API, and the client filters again.
+- *v8.* Every researcher experiment is also written to past.dev (scope `research-v8`, as that researcher's identity). The researchers work from a local shared notebook and read past.dev only with `--past`. In v8, past.dev is a mirror and audit trail, not the working memory.
+- *Caveats.* All agents share one project key, so an identity is a label, not a credential. We ran no memory ablation, so we have no number for how much memory adds.
+
+Details and the full counts are in [`loop/README.md`](loop/README.md#pastdev-challenge).
+
 ## Data
 Pacific gpu-price-pack v0.1.1-handover (CC BY 4.0, data cutoff 6 Nov 2026). Not committed here; see `data/README.md` for how to fetch and verify it.
