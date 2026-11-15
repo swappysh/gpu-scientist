@@ -1,4 +1,6 @@
+# October, scored once, on the 37 scored series, after each pick was fixed on Jul-Sep. Pooled over all 725 series. Script: scripts/bootstrap_october37.py (seed 0). model = submit_config default; loop = final config of run scored37-e.
 october, 37 scored series, 10000 series resamples
-skill model +0.1341 starter +0.1216
-difference +0.0125, 95% interval [-0.0097, +0.0412], share of resamples above 0: 0.856
-series where the model's October loss is lower: 22 of 37
+skill starter +0.1216 model +0.1341 loop +0.1488
+model - starter: +0.0125, 95% interval [-0.0097, +0.0412], share of resamples above 0: 0.856, series with lower October loss: 22 of 37
+loop - starter: +0.0271, 95% interval [+0.0083, +0.0546], share of resamples above 0: 0.998, series with lower October loss: 24 of 37
+loop - model: +0.0146, 95% interval [+0.0041, +0.0268], share of resamples above 0: 0.998, series with lower October loss: 27 of 37

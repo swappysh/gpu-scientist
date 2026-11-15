@@ -73,6 +73,7 @@ def run(
         if verbose:
             print(f"baseline  skill_train={base['skill_train']:+.4f} skill_heldout={base['skill_heldout']:+.4f}")
         rounds_log = [_round_entry(0, config, base, [])]
+        kept_ideas: list[dict] = []
 
         for r in range(rounds):
             proposals = proposer.propose_batch(config, k=batch)
@@ -87,6 +88,7 @@ def run(
                               "status": decision["status"], "d_train": decision["scores"]["d_train"]})
                 if decision["status"] == "kept":
                     config = config.updated(c["param"], c["value"])
+                    kept_ideas.append(ideas[-1])
                 if verbose:
                     print(f"[round {r + 1}] {decision['idea_id']}: {c['param']}={c['value']} -> {decision['status']}")
 
@@ -121,6 +123,8 @@ def run(
             if e["kind"] in ("proposal", "decision"):
                 counts[e["status"]] = counts.get(e["status"], 0) + 1
         print(f"ideas     {counts}")
+        real = [i for i in kept_ideas if abs(i["d_train"]) >= dashboard.NEAR_ZERO]
+        print(f"keeps     {len(real)} of {len(kept_ideas)} moved Jul-Sep skill by {dashboard.NEAR_ZERO} or more")
         for e in memory.bound("critic").entries():
             if e["kind"] == "note" and e["agent"] != "loop":
                 s = e["scores"]

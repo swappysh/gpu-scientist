@@ -13,6 +13,7 @@ import json
 import sys
 from pathlib import Path
 
+NEAR_ZERO = 0.001  # a kept change that moves Jul-Sep skill less than this did not do real work
 FATE = {"kept": "#1a7f37", "killed": "#888", "refuted": "#cf222e", "corroborated": "#1a7f37"}
 
 
@@ -110,11 +111,22 @@ def _memory(log: list[dict]) -> str:
 def render(trace: dict) -> str:
     rounds, final = trace["rounds"], trace.get("final")
     ideas = [i for r in rounds for i in r["ideas"]]
-    kept = sum(i["status"] == "kept" for i in ideas)
+    kept = [(r["round"], i) for r in rounds for i in r["ideas"] if i["status"] == "kept"]
+    real = [(n, i) for n, i in kept if abs(i["d_train"]) >= NEAR_ZERO]
     refuted = sum(i.get("critic") == "refuted" for i in ideas)
     state = "finished" if final else f"running, round {rounds[-1]['round']} done"
-    summary = (f"{len(rounds) - 1} rounds, {len(ideas)} ideas: {kept} kept, {len(ideas) - kept} killed, "
-               f"{refuted} refuted by the critic. Jul–Sep skill {rounds[0]['skill_train']:+.3f} → {rounds[-1]['skill_train']:+.3f}.")
+    summary = f"{len(rounds) - 1} rounds, {len(ideas)} ideas. "
+    if real:
+        wins = ", ".join(f"<code>{i['param']}={i['value']}</code> in round {n} ({i['d_train']:+.3f})" for n, i in real)
+        summary += (f"{len(real)} kept change{'s' if len(real) > 1 else ''} moved Jul–Sep skill by {NEAR_ZERO} or more: {wins}. "
+                    f"{len(kept) - len(real)} more passed the gate but moved it less. ")
+        last = max(n for n, _ in real)
+        if last < rounds[-1]["round"]:
+            summary += f"Nothing after round {last} moved it that much. "
+    else:
+        summary += f"{len(kept)} passed the gate; none moved Jul–Sep skill by {NEAR_ZERO} or more. "
+    summary += (f"{refuted} refuted by the critic. "
+                f"Jul–Sep skill {rounds[0]['skill_train']:+.3f} → {rounds[-1]['skill_train']:+.3f}.")
     if final:
         summary += (f" October, scored once at the end: {final['skill_heldout']:+.3f} vs the starter's "
                     f"{final['baseline_skill_heldout']:+.3f}.")

@@ -1,0 +1,9 @@
+# results/loop_rounds.json: each kept change scored against the config before it
+round 1 idea-002 half_life_days=14.0: Jul-Sep -0.0008, September +0.0187
+round 3 idea-007 pool_weight=0.7: Jul-Sep +0.0619, September +0.0390
+round 3 idea-009 momentum_fit=0.2: Jul-Sep +0.0002, September +0.0004
+round 5 idea-013 drift_weight=0.02: Jul-Sep -0.0001, September +0.0000
+round 6 idea-017 min_samples=5: Jul-Sep +0.0000, September +0.0000
+round 7 idea-020 min_samples=6: Jul-Sep +0.0000, September +0.0000
+round 8 idea-024 drift_weight=0.03: Jul-Sep -0.0000, September +0.0000
+end: Jul-Sep +0.1573, September +0.1853
