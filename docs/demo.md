@@ -30,11 +30,11 @@ We built this in one afternoon, in eight versions. Two mistakes taught us the mo
 
 ## 1:30 What the loop tried and kept
 
-[TODO: round chart from gpuloop, loop/results/loop_rounds.png]
+[loop/results/loop_rounds.png]
 
-TODO: one sentence per round, from loop_rounds.json: what was tried, what was kept, what was killed.
+This is the last live run: eight rounds, three ideas each. The loop kept 7 of 24. Almost all the gain came from two of them: weighting recent repricing more, and borrowing repricing behavior from other series. Momentum weights, band changes and window changes were killed every time.
 
-In a sweep of 38 settings on July to September, one idea mattered most: borrowing repricing behavior from all 725 series in the pack. Doubling the band width cut September skill by two thirds.
+The run's final settings score +0.149 on October, against +0.122 for the start. We kept the submission we picked before this run, because switching now would mean choosing on October.
 
 ## 2:00 Results, honestly
 
@@ -56,7 +56,7 @@ Remember the six-year-old A100. Rent holds up, so we forecast rent first. Our vi
 
 [Terminal: `cd loop && ./demo_read.sh`. Needs PAST_API_KEY. `./demo_read.sh <scope>` replays a finished run instead.]
 
-Here the evaluator writes a verdict into the notebook. The proposer reads it back, with the earlier verdicts and the critic's refutations, all dated September 30 or earlier. The last lines are the raw server response to the proposer. It holds no October numbers. The critic reads the same notebook and does see them.
+Here the evaluator writes a verdict into the notebook. The proposer reads it back, with the earlier verdicts and the critic's refutations, all dated September 30 or earlier. The last lines are the raw server response to the proposer. It holds no October numbers. The critic reads the same notebook and does see them. In the last full run the agents wrote 110 facts, 32 of them critic-only, and the proposer got none of the 32.
 
 ## 3:30 Caveats
 

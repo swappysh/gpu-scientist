@@ -16,15 +16,14 @@ steps = [
  ("3:49 PM", "v4  leak fixed", "keep/kill on September,\nnot October; critic re-tests\nthe current config"),
  ("4:43 PM", "v5  right target", "tune on the 37 scored series;\nranges hold 76% of prices\n(starter 62%)"),
  ("4:54 PM", "v6  honest + traced", "bootstrap: score gain may be\nluck; every round logged\n(ideas, kept, killed)"),
- ("now", "v7  in progress", "8-round run on Modal,\nread-permission test,\ndemo of one agent\nreading another's notes"),
+ ("5:14 PM", "v7  live run", "8 rounds: LLM + past.dev\n+ Modal; kept 7 of 24;\nproposer saw 0 of 32\nprivate facts"),
 ]
 xs = range(len(steps))
-ax.plot([0, len(steps)-1.5], [0, 0], color="k", lw=2.5)
-ax.plot([len(steps)-1.5, len(steps)-1], [0, 0], color="k", lw=2.5, ls="--")
+ax.plot([0, len(steps)-1], [0, 0], color="k", lw=2.5)
 for i, (t, name, what) in enumerate(steps):
     up = i % 2 == 0
     y = 1 if up else -1
-    col = "tab:red" if i in (3,) else ("tab:green" if i in (4, 5, 6) else ("grey" if i == 7 else "k"))
+    col = "tab:red" if i in (3,) else ("tab:green" if i in (4, 5, 6, 7) else "k")
     ax.plot([i], [0], "o", ms=11, color=col)
     ax.plot([i, i], [0, y*0.35], color=col, lw=1.5)
     ax.text(i, y*0.42, name, ha="center", va="bottom" if up else "top", fontsize=12, color=col, weight="bold")
@@ -34,5 +33,5 @@ ax.text(3, -1.45, "oops: a big win\non the wrong series", ha="center", va="top",
 ax.set_xlim(-0.7, len(steps)-0.3); ax.set_ylim(-1.85, 1.25)
 ax.axis("off")
 ax.set_title("HOW OUR FORECASTING FRAMEWORK EVOLVED (SAT NOV 14, PT)", fontsize=15)
-fig.text(0.99, 0.01, "commits on gpu-scientist main: 96bc708 ... 52ff939", ha="right", fontsize=7, color="grey")
+fig.text(0.99, 0.01, "commits on gpu-scientist main: 96bc708 ... 5777795", ha="right", fontsize=7, color="grey")
 fig.tight_layout(); fig.savefig(sys.argv[1] if len(sys.argv) > 1 else "docs/evolution.png", dpi=150)

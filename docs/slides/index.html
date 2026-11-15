@@ -69,7 +69,7 @@ th { font-weight:600; color:var(--mute); }
   <h2>What the loop tried and kept</h2>
   <img class="fig" id="rounds" src="../../loop/results/loop_rounds.png" alt="Round-by-round chart"
        onerror="this.outerHTML='<div class=&quot;box&quot;>Round chart lands at loop/results/loop_rounds.png</div>'">
-  <p class="small" style="margin-top:2vh">Sweep of 38 settings, July to September: borrowing repricing behavior from all 725 series raised September skill from +0.127 to +0.162. Doubling the band cut it to +0.041.</p>
+  <p class="small" style="margin-top:2vh">Last live run: 8 rounds, 7 of 24 ideas kept, gains in rounds 1 and 3. Its final settings score +0.149 on October vs +0.122 for the start (coverage 0.71). The submission stays the one picked before this run.</p>
 </section>
 
 <section class="slide">
@@ -109,6 +109,7 @@ th { font-weight:600; color:var(--mute); }
   <h2>One agent reads another agent's memory</h2>
   <div class="box">[live terminal]&nbsp; <code>cd loop &amp;&amp; ./demo_read.sh</code></div>
   <p style="margin-top:3vh">The evaluator writes a verdict. The proposer reads it back, with everything dated up to September 30. The raw server response to the proposer holds no October numbers. The critic sees them.</p>
+  <p class="small mute">Last run: 110 facts, 32 critic-only. The proposer got 0 of the 32.</p>
 </section>
 
 <section class="slide">

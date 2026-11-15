@@ -55,9 +55,19 @@ We built the system in one afternoon, in eight versions (docs/evolution.png, reb
 
 ## What the loop learned across rounds
 
-TODO (gpuloop): the round-by-round log and chart, from loop/results/loop_rounds.json and loop_rounds.png. For each round: what was proposed, kept, killed and refuted, and the September skill after it.
+![Agent loop rounds](../loop/results/loop_rounds.png)
 
-The sweep that picked the final settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
+The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the LLM proposer, the live past.dev memory and Modal backtests. It ran 8 rounds of 3 ideas each and kept 7 of the 24 ideas. Rounds 2 and 4 kept nothing. The critic corroborated all 7 kept ideas, so in this run it never reversed a decision.
+
+Almost all the gain came in two rounds. Round 1 kept a 14-day half-life, which raised September skill from +0.127 to +0.146. Round 3 kept borrowing repricing behavior from other series at weight 0.7, which raised July to September skill from +0.095 to +0.157 and September skill to +0.185. The four ideas kept after round 3 moved September skill by less than 0.001. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
+
+The run's final settings score +0.149 on October against the start's +0.122, with coverage 0.71. We did not switch the submission to them. The submission was picked on July to September before this run, and switching after seeing October would mean choosing on October. We have not bootstrapped this October gap.
+
+In this run the agents wrote 110 facts to past.dev, 32 of them critic-only. The proposer's reads returned none of the 32.
+
+Sources: loop/results/loop_rounds.json, loop/results/dashboard.html.
+
+The sweep that picked the submitted settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
 
 - Borrowing repricing behavior from other series helped most. Half weight raised September skill from +0.127 to +0.162 on its own.
 - Wider bands cost skill quickly. Scaling the band by 2 cut September skill to +0.041.
@@ -75,7 +85,7 @@ Sources: loop/results/backtest.json, key "aws_trend"; loop/results/october_37_th
 - Most of the September edge did not survive to October. The final configuration led the start by 0.045 in September and by 0.012 in October, a gap within noise. Choosing among 38 configurations on September made September look better than it was.
 - Momentum hurts on posted prices. Adding it at 0.5 cut September skill from +0.127 to +0.034.
 - A drift term added nothing (+0.125 against +0.127 in September).
-- TODO (gpuloop): any LLM-proposer rounds that kept nothing.
+- In the last live run, rounds 2 and 4 kept nothing, and the four ideas kept after round 3 changed September skill by less than 0.001.
 
 ## Rent and resale in 2028 and 2029
 
@@ -87,4 +97,4 @@ We expect an H100 to rent for about $3/hr and sell for about $4,700 in November 
 - Most posted series have short histories: the pack's rental panels start in January 2026 or later, and many start in August.
 - The resale view rests on two used-price prints and a handful of rate cards that span all of 2026.
 - The memory boundary relies on each agent naming itself honestly (see Method).
-- TODO (gpuloop): whether the final 8-round run used the live past.dev API end to end.
+- Recall from past.dev is a ranked search. In round 8 of the last run it missed 1 of 21 earlier ideas; the proposer's list of idea ids stopped a repeat.
