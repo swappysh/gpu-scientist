@@ -1,5 +1,7 @@
 # gpu-scientist
 
+Team: Step Function
+
 An AI scientist that forecasts GPU rental prices for the Pacific track at the SF AI Research Hackathon (14–15 Nov 2026). Three agents share an experiment ledger on past.dev and run their backtests on Modal.
 
 ![the loop](docs/loop.png)
