@@ -6,6 +6,8 @@ Spoken text is plain. Lines in [brackets] are what to show. Times are cumulative
 
 [Title: GPU price scientist]
 
+On AWS spot, a six-year-old A100 rents for more than it did at age two.
+
 GPU rental prices move in steps. On most days, tomorrow's price is today's price. So "the price stays flat" is a hard forecast to beat.
 
 We asked two things. Can a team of agents improve a price forecaster on its own, one change at a time, without peeking at the month it is judged on? And what will an H100 or an A100 be worth in two or three years?
@@ -18,7 +20,9 @@ The forecaster's middle guess is the last price. The real work is the band aroun
 
 Three agents share one lab notebook, which is a past.dev memory. A proposer suggests one change to the forecaster. An evaluator backtests it on Modal and keeps it only if September improves. A critic re-tests every kept change on reshuffled series and kills the ones that don't hold.
 
-Every fact in the notebook carries a date and a list of who may read it. The proposer reads only facts as of September 30. October scores are hidden from it. October is scored once, at the end.
+Each fact goes into the notebook with a date and a list of who may read it. The proposer asks only for facts dated September 30 or earlier. October scores go to a list it is not on. October is scored once, at the end.
+
+TODO: match these three sentences to gpuloop's read-scoping check. Cut any part the memory layer does not enforce.
 
 ## 1:15 What the loop tried and kept
 
@@ -32,7 +36,7 @@ In a sweep of 38 settings on July to September, one idea mattered most: borrowin
 
 [Table from docs/FINDINGS.md]
 
-The clear win is calibration. In October, which no decision saw, our band held the true price 76% of the time. The target is 80%. The starting forecaster managed 62%.
+The clear win is calibration. In October, which no decision saw, on the 37 series Sunday scores, our band held the true price 76% of the time. The target is 80%. The starting forecaster managed 62%.
 
 The skill gain is small, and it is not significant. We score +0.134 against +0.122. The 95% interval on that difference runs from slightly below zero to +0.04.
 
@@ -42,7 +46,7 @@ One thing we learned: a trend setting helps a lot on AWS spot, and does not help
 
 [docs/resale.md, the view table]
 
-On AWS spot, a six-year-old A100 rents for more than it did at age two. Rent holds up, so we forecast rent first. Our view: an H100 sells for about $4,700 in November 2028, 14% of its launch price, with a range of 8 to 22%.
+Remember the six-year-old A100. Rent holds up, so we forecast rent first. Our view: an H100 sells for about $4,700 in November 2028, 14% of its launch price, with a range of 8 to 22%.
 
 ## 2:50 One agent reads another agent's memory
 
