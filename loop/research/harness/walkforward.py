@@ -74,7 +74,9 @@ def cached_cells(agent_file: str, world: core.World, cache: Path | None) -> list
         return json.loads(f.read_text())
     rows = all_cells(agent_file, world)
     cache.mkdir(parents=True, exist_ok=True)
-    f.write_text(json.dumps(rows))
+    tmp = f.with_suffix(f".{time.time_ns()}.tmp")  # two processes may fill one cache
+    tmp.write_text(json.dumps(rows))
+    tmp.replace(f)
     return rows
 
 
