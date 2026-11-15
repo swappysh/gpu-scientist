@@ -59,9 +59,9 @@ We built the system in one afternoon, in eight versions (docs/evolution.png, reb
 
 The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the LLM proposer, the live past.dev memory and Modal backtests. It ran 8 rounds of 3 ideas each and kept 7 of the 24 ideas. Rounds 2 and 4 kept nothing. The critic corroborated all 7 kept ideas, so in this run it never reversed a decision.
 
-Almost all the gain came in two rounds. Round 1 kept a 14-day half-life, which raised September skill from +0.127 to +0.146. Round 3 kept borrowing repricing behavior from other series at weight 0.7, which raised July to September skill from +0.095 to +0.157 and September skill to +0.185. The four ideas kept after round 3 moved September skill by less than 0.001. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
+Almost all the September gain came in two rounds. Round 1 kept a 14-day half-life, which raised September skill from +0.127 to +0.146 and left July to September skill flat. Round 3 kept borrowing repricing behavior from other series at weight 0.7, which raised July to September skill from +0.095 to +0.157 and September skill to +0.185. The four ideas kept after round 3 moved September skill by less than 0.001. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
 
-The run's final settings score +0.149 on October against the start's +0.122, with coverage 0.71. We did not switch the submission to them. The submission was picked on July to September before this run, and switching after seeing October would mean choosing on October. We have not bootstrapped this October gap.
+The run's final settings score +0.149 on October against the start's +0.122, with coverage 0.71. We did not switch the submission to them. The submission was picked on July to September before this run, and switching after seeing October would mean choosing on October. This October gap is not yet tested for significance.
 
 In this run the agents wrote 110 facts to past.dev, 32 of them critic-only. The proposer's reads returned none of the 32.
 
