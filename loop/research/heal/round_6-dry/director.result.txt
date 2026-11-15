@@ -1,0 +1,26 @@
+All three files are in `./out/`. I tested the three new checks on the cells: each one rejects the pick against both the incumbent and its parent, passes the incumbent against itself, and passes all 15 earlier chain steps.
+
+**What changed.** The pick (b06b208) added "runs". When a line has made two or more moves one way in the past week and none back, it takes the run's pace since its first move, multiplies it by h, and adds that to the median. The band is then stretched so it reaches the new median. Nothing caps this, so a two-day run is projected 3.5× forward at h=7.
+
+**Where the loss rose:**
+- **Period:** on the whole dev set the pick still looks better than the incumbent (skill 0.171 vs 0.152), so the pick check passed it. But the gain is all in September. On cells whose target day falls in the last 15 dev days (October), skill fell from 0.163 for the parent to 0.094, below the incumbent's 0.146.
+- **Horizons and weeks:** it got worse at every horizon in October (at h=3, 0.111 → 0.027). The damage is in the origin weeks starting Sep 28 and Oct 5.
+- **Lines:** two lines, fastgpu B200 on-demand and gpurentalprices A100_40GB on-demand, add +1.52 loss against the incumbent. That is more than the pick's entire net gain over the incumbent on dev (−0.98).
+- **Example:** for B200 on Oct 3 at h=7, the last price was 7.52. The pick put both its median and q90 at 11.30, while the parent's q90 was 8.20. The price came in at 7.42.
+
+**Why the keep rule passed it.** I'm inferring the keep window from the numbers, because the rule itself isn't described in this folder. The window seems to cover September, when runs really did continue. Each step only had to beat its parent there, and the pick was already worse than its parent on dev overall (0.171 vs 0.205). October was a different market: prices moved more often (a move share of 0.45 vs 0.27) and mostly upward. Many short runs formed, got projected forward, and then stalled or reversed.
+
+**New checks** (thresholds were chosen in skill points before testing; earlier steps' worst values are shown for comparison):
+
+| Check | Rejects when | Pick vs incumbent | Worst earlier step |
+|---|---|---|---|
+| `check_median_outside_ref_band` | loss rises by more than 1% of flat loss on cells where the new median falls outside the reference's own q10–q90 band | +0.025 | +0.003 |
+| `check_single_line_damage` | any single line adds more than 1% of flat loss | +0.016 | +0.003 |
+| `check_recent_window` | skill on the last 15 dev days drops by more than 0.02 | 0.145 → 0.100 | drop of 0.009 |
+
+**Lesson line:** any forecaster that projects a recent move forward must cap the median shift, and be judged per line and on the last 15 dev days.
+
+Files are in `out/`:
+- `postmortem.md`
+- `lesson.txt`
+- `checks.py`

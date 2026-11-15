@@ -1,0 +1,44 @@
+[
+ {
+  "check": "check_median_outside_ref_band",
+  "doc": "Cells where cand's median leaves ref's own [q10, q90] must not raise loss, in sum, by more",
+  "rejects_pick": true,
+  "why_pick": "341 medians outside ref band, loss change +0.0252 of flat (max +0.01)",
+  "passes_incumbent": true,
+  "rejects_pick_as_keep": true,
+  "why_keep": "67 medians outside ref band, loss change +0.0318 of flat (max +0.01)",
+  "passes_parent_as_pick": true,
+  "chain_rejects": [],
+  "chain_steps": 14,
+  "passed": true,
+  "reason": "ok"
+ },
+ {
+  "check": "check_single_line_damage",
+  "doc": "No single series may raise loss by more than 1% of ref's total flat loss. Reason: a",
+  "rejects_pick": true,
+  "why_pick": "worst line fastgpu_daily.neocloud_rate_card.B200.on_demand.median loss change +0.0161 of flat (max +0.01)",
+  "passes_incumbent": true,
+  "rejects_pick_as_keep": true,
+  "why_keep": "worst line fastgpu_daily.neocloud_rate_card.B200.on_demand.median loss change +0.0201 of flat (max +0.01)",
+  "passes_parent_as_pick": true,
+  "chain_rejects": [],
+  "chain_steps": 14,
+  "passed": true,
+  "reason": "ok"
+ },
+ {
+  "check": "check_recent_window",
+  "doc": "Skill on cells whose target day (origin + h) is in the last 15 dev days must not fall more than",
+  "rejects_pick": true,
+  "why_pick": "last-15-day skill 0.100 vs ref 0.145 (max drop 0.02)",
+  "passes_incumbent": true,
+  "rejects_pick_as_keep": true,
+  "why_keep": "last-15-day skill 0.100 vs ref 0.164 (max drop 0.02)",
+  "passes_parent_as_pick": true,
+  "chain_rejects": [],
+  "chain_steps": 14,
+  "passed": true,
+  "reason": "ok"
+ }
+]

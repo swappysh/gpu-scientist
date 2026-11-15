@@ -1,0 +1,15 @@
+16c9717	parent 18c491e	pacsci2: band: right after a line moves (last 2 days), borrow only pool changes from lines that had also just moved; seed covers only 0.57-0.61 there in both Jul-Aug and Sept
+d0396d3	parent 16c9717	pacsci2: state: a line whose same GPU and pricing just moved at another source is about to move too, so treat it as just moved and borrow the just-moved pool
+9fa57cb	parent d0396d3	pacsci2: simpler: drop the AR(1) momentum on the last daily change; the band and the just-moved state carry the skill
+43fa54e	parent 9fa57cb	pacsci2: weekday: a line whose own move rate clearly differs by weekday (chi-square, 5%) re-prices on a schedule, so for h<7 learn only from its own windows starting on the origin's weekday
+69f3ead	parent 43fa54e	pacsci2: horizon: a line whose h-day changes spread at least h times its 1-day ones (moves add up, no reversion) gets its h-day band from summed draws of 1-day changes, which are more plentiful and fr
+b186d4e	parent 69f3ead	pacsci2: horizon: in the summed h-day band, a weekday-bound line draws day k's change from windows on day k's weekday, not all from the origin's weekday
+f865cde	parent b186d4e	pacsci2: revert: port pacsci1's class reversion: centre the band on the last price pulled back toward its 14-day median by the class's past undo share, and draw the band from changes net of that pull-
+1859cd5	parent f865cde	pacsci2: weekday: port pacsci1's weekday move-mass factor (per-line weekday move rates shrunk to the source's), applied only to lines the chi-square test finds weekday-bound
+2969d01	parent 1859cd5	pacsci2: revert: port pacsci1's noise redraw: a reverting line that re-quotes daily blends its band with its last 14 days' price quantiles, by the class undo share times its daily move rate
+1bd0783	parent 2969d01	pacsci2: revert: the pull back toward the 14-day median moves the band's moves, and the median only by the line's daily move share: a step line's median holds at its last price, a daily re-quoter's is
+57281f6	parent 1bd0783	pacsci2: state: a line that just moved learns from its own windows that started right after its past moves (when it has MIN_SAMPLES of them), as the pool already does: an occasional stepper rarely ste
+99db9d9	parent 57281f6	pacsci2: pool: port pacsci1 1565c54: spot, on-demand, serverless and reserved quotes of a class are different markets; the class pool and the class pull-back share use only lines of the same class and
+799b5c4	parent 99db9d9	pacsci2: median: quantiles are read off the weighted step distribution (no interpolation leak between a held price and a move), and a daily re-quoter whose moves add up keeps its median change (drift
+19a5148	parent 799b5c4	pacsci2: levels: port pacsci1's old levels (0cba333): prices the line quoted in the last 14 days get the market's share of h-day moves that landed on such a price, times the line's daily move share
+b06b208	parent 19a5148	pacsci2: runs: port pacsci1's runs at their pace since the first move (c3bc47d): a line with two or more moves one way in a week and none back gets the market's net share of runs that went on, which m

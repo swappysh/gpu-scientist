@@ -12,12 +12,17 @@ the final pick (model vs v7). They read per-cell dev rows from core.evaluate_dev
      fall more than TOL below the reference (keep: parent; pick: v7).
   G3 no single line pays for the rest: no line's loss may rise by more than TOL of the total
      flat loss (all dev cells) vs the reference (keep: parent; pick: v7).
+
+Healing rounds (heal.py) add checks in healed/round_N.py. Each is check(cand, ref) -> (ok, why),
+run in both forms after G1-G3. A check that crashes counts as a reject.
 """
 
 from __future__ import annotations
 
+import importlib.util
 import math
 from collections import defaultdict
+from pathlib import Path
 
 BIG = 0.04  # G1: about two typical moves (mean |move| 0.02-0.03)
 TOL = 0.005  # G2, G3: same size as the locked Jul-Sep tolerance
@@ -62,13 +67,38 @@ def g3(cand: dict, ref: dict) -> tuple[bool, str]:
     return d[worst] / tot <= TOL, f"G3 worst line {worst}: loss up {d[worst] / tot:.4f} of flat (needs <= {TOL})"
 
 
+def _healed() -> list:
+    fns = []
+    for f in sorted(Path(__file__).with_name("healed").glob("round_*.py")):
+        spec = importlib.util.spec_from_file_location(f"healed_{f.stem}", f)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        fns += [getattr(m, n) for n in m.ADOPTED]
+    return fns
+
+
+HEALED = _healed()
+
+
+def _run_healed(cand: dict, ref: dict) -> list[str]:
+    out = []
+    for fn in HEALED:
+        try:
+            ok, why = fn(cand, ref)
+        except Exception as exc:  # noqa: BLE001
+            ok, why = False, f"{fn.__name__} crashed: {type(exc).__name__}"
+        if not ok:
+            out.append(f"{fn.__module__.removeprefix('healed_')} {fn.__name__}: {why}")
+    return out
+
+
 def keep_check(cand_rows: list, parent_rows: list) -> list[str]:
     """Reasons a keep fails the guards (empty list = passes)."""
     c, p = _index(cand_rows), _index(parent_rows)
-    return [why for ok, why in (g1_keep(c, p), g2(c, p), g3(c, p)) if not ok]
+    return [why for ok, why in (g1_keep(c, p), g2(c, p), g3(c, p)) if not ok] + _run_healed(c, p)
 
 
 def pick_check(model_rows: list, v7_rows: list) -> list[str]:
     """Reasons a final pick fails the guards (empty list = passes)."""
     m, v = _index(model_rows), _index(v7_rows)
-    return [why for ok, why in (g1_pick(m), g2(m, v), g3(m, v)) if not ok]
+    return [why for ok, why in (g1_pick(m), g2(m, v), g3(m, v)) if not ok] + _run_healed(m, v)
