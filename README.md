@@ -48,14 +48,14 @@ past.dev enforces the audience and the date cut on the server, and the client fi
 - Run `scored37-e` wrote 110 facts: 78 public and 32 private.
 - The proposer read 89 evaluator facts and 68 critic facts, and used them to skip tried ideas. It got 0 of the 32 private facts.
 - 24 ideas, with no repeats.
-- In v8, every researcher experiment is also written to past.dev as that researcher.
+- In v8, at least 87 of the 294 researcher notebook rows read back from past.dev, and no write failed. 87 is a floor: the read-back uses search, which can't list a scope.
 
 ### Caveats
 - *One shared key.* All agents use one project key, so an identity is a label, not a credential.
 - *No memory ablation.* We never ran the loop without memory, so we have no number for what memory adds.
 - *Recall can't list or filter by run.* In run `scored37-d` the proposer missed one of its ideas, reused its id and overwrote a kept idea's fact. We stopped that run and fixed it.
 - *Only October is private.* There are no per-agent private notes.
-- *Small scale.* A run writes tens of facts (v8: one per experiment).
+- *Small scale.* A run writes tens of facts (v8: at least 87).
 - *v8 tests past.dev only as a mirror.* Its working memory was a local notebook.
 
 ## Data
