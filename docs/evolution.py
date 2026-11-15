@@ -11,11 +11,11 @@ fig, ax = plt.subplots(figsize=(13, 6))
 steps = [
  ("1:09 PM", "v0  skeleton", "3 agents share one memory:\nproposer -> evaluator -> critic\n(fake prices, rule proposer)"),
  ("1:25 PM", "v1  LLM proposer", "gpt-5-mini suggests changes,\nrules as fallback"),
- ("3:10 PM", "v2  real data", "backtest on the pack,\nscored like the starter;\nModal: 7.5k -> 101k steps/h"),
- ("3:37 PM", "v3  trend model", "+0.36 on AWS spot...\nbut Sunday doesn't\nscore AWS spot"),
- ("3:49 PM", "v4  leak fixed", "keep/kill on September,\nnot October; critic re-tests\nthe current config"),
- ("4:43 PM", "v5  right target", "tune on the 37 scored series;\nranges hold 76% of prices\n(starter 62%)"),
- ("4:54 PM", "v6  honest + traced", "bootstrap: score gain may be\nluck; every round logged\n(ideas, kept, killed)"),
+ ("2:10 PM", "v2  real data", "backtest on the pack,\nscored like the starter;\nModal: 7.5k -> 101k steps/h"),
+ ("2:37 PM", "v3  trend model", "+0.36 on AWS spot...\nbut Sunday doesn't\nscore AWS spot"),
+ ("2:49 PM", "v4  leak fixed", "keep/kill on September,\nnot October; critic re-tests\nthe current config"),
+ ("3:43 PM", "v5  right target", "tune on the 37 scored series;\nranges hold 76% of prices\n(starter 62%)"),
+ ("3:54 PM", "v6  honest + traced", "bootstrap: score gain may be\nluck; every round logged\n(ideas, kept, killed)"),
  ("5:14 PM", "v7  live run", "8 rounds: LLM + past.dev\n+ Modal; 24 ideas, 1 real win;\nproposer saw 0 of 32\nprivate facts"),
 ]
 xs = range(len(steps))
