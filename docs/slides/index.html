@@ -26,7 +26,7 @@ img.fig { max-width:100%; max-height:58vh; object-fit:contain; align-self:center
 .row { display:flex; gap:5vw; align-items:flex-start; }
 .row > div { flex:1; }
 table { border-collapse:collapse; font-size:2.7vh; margin:1vh 0 2vh; }
-th, td { padding:0.8vh 1.6vw; text-align:right; border-bottom:1px solid var(--line); }
+th, td { padding:0.8vh 1.2vw; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap; }
 th:first-child, td:first-child { text-align:left; }
 th { font-weight:600; color:var(--mute); }
 .code { font-family:ui-monospace,Menlo,monospace; font-size:2.6vh; background:#efede7; padding:1.6vh 1.6vw; border-radius:6px; }
@@ -45,7 +45,7 @@ th { font-weight:600; color:var(--mute); }
 
 <section class="slide">
   <p class="mute">Pacific track, SF AI Research Hackathon, 14&ndash;15 Nov 2026</p>
-  <h1>We built an AI scientist that researches GPU prices, and it also gets better at doing research.</h1>
+  <h1>We built an AI scientist that researches GPU prices, and then let it rewrite its own research.</h1>
   <p>Every claim is checked, even the failures.</p>
   <p class="mute small" style="margin-top:4vh">Memory on past.dev. Backtests on Modal.</p>
 </section>
@@ -124,10 +124,31 @@ th { font-weight:600; color:var(--mute); }
 <section class="slide">
   <h2>Self-improvement: the scientist rewrites how it does research</h2>
   <p>The loop stalled turning the same settings. So in v8, three AI researchers rewrite the forecaster's code, and a director rewrites their strategy every hour.</p>
-  <p class="small mute">The scorer is locked and hash-checked. They can change how they search, never how they are judged. The test month stays hidden and scores only the final version.</p>
-  <div class="row" style="margin-top:2vh">
-    <div class="box">Chart after the 10 AM PT freeze:<br>forecast skill over iterations</div>
-    <div class="box">Chart after the 10 AM PT freeze:<br>research hit rate per director round</div>
+  <div class="row" style="margin-top:1vh">
+    <div><img class="fig" src="img/v8_skill.png" alt="September skill over the morning for three researchers: from 0.185 to between 0.28 and 0.33"></div>
+    <div><img class="fig" src="img/v8_hits.png" alt="Share of tries kept: 28 of 92 before the first director round, 15 of 25 after round 1, 7 of 11, 5 of 9, then 2 of 7"></div>
+  </div>
+  <p class="small mute">144 experiments in six hours, 57 kept. September skill went from 0.185 to 0.333. After the director's first round, the share of tries kept doubled, then fell back. The scorer is locked and hash-checked; October stayed hidden from the researchers until one final run.</p>
+</section>
+
+<section class="slide">
+  <h2>Then October said no</h2>
+  <div class="row">
+    <div>
+      <table>
+        <tr><th>skill</th><th>July&ndash;Aug</th><th>Sept</th><th>October</th></tr>
+        <tr><td>v7, submitted</td><td>+0.122</td><td>+0.185</td><td>+0.149</td></tr>
+        <tr><td>v8 pick</td><td>+0.155</td><td>+0.333</td><td class="bad">+0.069</td></tr>
+      </table>
+      <p>v8 beat v7 on the months it tuned on and lost on held-out October: &minus;0.080, 95% range &minus;0.130 to &minus;0.023. It has lower loss on only 13 of 37 lines. <b>v7 stays submitted.</b></p>
+    </div>
+    <div>
+      <ul>
+        <li>What stopped us was our pre-registered held-out test: the pick rule was written down before October was opened, and October was run once.</li>
+        <li>The pick passed that rule's July&ndash;August guard and still lost. The gain was fitted to the months we tuned on.</li>
+        <li>With other sources' prices a day late, its September skill is +0.330. We can't tell from this data whether sources backfill rows.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
