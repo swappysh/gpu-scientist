@@ -54,6 +54,8 @@ Remember the six-year-old A100. Rent holds up, so we forecast rent first. Our vi
 
 Here the proposer starts a new round. It asks the notebook what was tried. It gets back the evaluator's verdicts and the critic's refutations, all dated before September 30. It skips ideas that already failed. The October scores never come back.
 
+TODO: same read-scoping check as at 0:30 before saying the last two sentences live.
+
 ## 3:20 Caveats
 
 One month of held-out data on 37 series is small. The skill gain could be noise; the calibration gain is large. The resale view rests on two used-price prints. Everything rebuilds with one command from the public data pack.
