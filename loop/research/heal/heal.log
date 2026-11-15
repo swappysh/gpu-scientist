@@ -24,9 +24,9 @@
 18:42:03Z dry run: would append to LESSONS.md: stand-in
 18:42:03Z dry run: would extend dev: core.py: TRAIN_END 2026-10-15 -> 2026-11-06; HELDOUT_START 2026-10-16 -> 2026-11-07 (HELDOUT_END, PACK_END wait for new data)
 18:42:03Z dry run: would extend dev: build_dev.py <private full build> /tmp/gs-heal/loop/research/harness/dev_series.npz
-18:42:03Z dry run: would launch pacsci1: git worktree add /tmp/gs-heal99-a -b research/heal99-a; start point 19a5148; tmux new-window -n pacsci1 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci1 /tmp/gs-heal99-a
-18:42:03Z dry run: would launch pacsci2: git worktree add /tmp/gs-heal99-b -b research/heal99-b; start point 19a5148; tmux new-window -n pacsci2 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci2 /tmp/gs-heal99-b
-18:42:03Z dry run: would launch pacsci3: git worktree add /tmp/gs-heal99-c -b research/heal99-c; start point 18c491e; tmux new-window -n pacsci3 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci3 /tmp/gs-heal99-c
+18:42:03Z dry run: would launch pacsci1: git worktree add /tmp/gs-heal99-a -b research/heal99-a; start point 19a5148; tmux new-window -n pacsci1 <sandbox dir>/sandbox.sh pacsci1 /tmp/gs-heal99-a
+18:42:03Z dry run: would launch pacsci2: git worktree add /tmp/gs-heal99-b -b research/heal99-b; start point 19a5148; tmux new-window -n pacsci2 <sandbox dir>/sandbox.sh pacsci2 /tmp/gs-heal99-b
+18:42:03Z dry run: would launch pacsci3: git worktree add /tmp/gs-heal99-c -b research/heal99-c; start point 18c491e; tmux new-window -n pacsci3 <sandbox dir>/sandbox.sh pacsci3 /tmp/gs-heal99-c
 18:42:03Z dry run done; director cost $0.00
 18:42:27Z healing round 6, trigger = holdout fail: pick b06b208 lost to 18c491e -0.0800 [-0.1300, -0.0230] (dry run)
 18:42:27Z packet: dev cells 18c491e (2774 cells, 0 s)
@@ -58,7 +58,7 @@
 18:46:49Z dry run: would log meta.tsv row: healing round 6, trigger = holdout fail (b06b208 vs 18c491e -0.080); adopted check_median_outside_ref_band, check_single_line_damage, check_recent_window; restart from 19a5148 and 18c491e
 18:46:49Z dry run: would extend dev: core.py: TRAIN_END 2026-10-15 -> 2026-11-06; HELDOUT_START 2026-10-16 -> 2026-11-07 (HELDOUT_END, PACK_END wait for new data)
 18:46:49Z dry run: would extend dev: build_dev.py <private full build> /tmp/gs-heal/loop/research/harness/dev_series.npz
-18:46:49Z dry run: would launch pacsci1: git worktree add /tmp/gs-heal6-a -b research/heal6-a; start point 19a5148; tmux new-window -n pacsci1 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci1 /tmp/gs-heal6-a
-18:46:49Z dry run: would launch pacsci2: git worktree add /tmp/gs-heal6-b -b research/heal6-b; start point 19a5148; tmux new-window -n pacsci2 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci2 /tmp/gs-heal6-b
-18:46:49Z dry run: would launch pacsci3: git worktree add /tmp/gs-heal6-c -b research/heal6-c; start point 18c491e; tmux new-window -n pacsci3 /home/photon-personal/swappybot/lanes/pac-v8/sandbox.sh pacsci3 /tmp/gs-heal6-c
+18:46:49Z dry run: would launch pacsci1: git worktree add /tmp/gs-heal6-a -b research/heal6-a; start point 19a5148; tmux new-window -n pacsci1 <sandbox dir>/sandbox.sh pacsci1 /tmp/gs-heal6-a
+18:46:49Z dry run: would launch pacsci2: git worktree add /tmp/gs-heal6-b -b research/heal6-b; start point 19a5148; tmux new-window -n pacsci2 <sandbox dir>/sandbox.sh pacsci2 /tmp/gs-heal6-b
+18:46:49Z dry run: would launch pacsci3: git worktree add /tmp/gs-heal6-c -b research/heal6-c; start point 18c491e; tmux new-window -n pacsci3 <sandbox dir>/sandbox.sh pacsci3 /tmp/gs-heal6-c
 18:46:49Z dry run done; director cost $0.78
