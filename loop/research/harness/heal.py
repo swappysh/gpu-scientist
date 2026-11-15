@@ -48,8 +48,10 @@ HEALED = HERE / "healed"
 MODEL = "claude-opus-5-5"  # the researchers' and director's model
 BUDGET_USD = 2.5  # one director session; the lane's cap is $3
 MAX_CHAIN_REJECT = 0.5  # a check that rejects most past keeps would freeze research, not guard it
-SANDBOX = Path.home() / "swappybot/lanes/pac-v8/sandbox.sh"
-MANIFEST = Path.home() / "swappybot/lanes/pac-v8/harness.sha256"
+# RESEARCHER_SANDBOX: script that starts one researcher, called as `<script> <name> <worktree>`;
+# unset means heal.py prints the launch commands instead of running them
+SANDBOX = os.environ.get("RESEARCHER_SANDBOX")
+TMUX_SESSION = os.environ.get("RESEARCHER_TMUX", "research")
 RESEARCHERS = ("pacsci1", "pacsci2", "pacsci3")
 
 
@@ -211,7 +213,7 @@ def sandbox_args(packet: Path, out: Path, state: Path, net: bool) -> list[str]:
          "--bind", str(out), "/tmp/heal/out",
          "--unsetenv", "OPENAI_API_KEY", "--unsetenv", "MODAL_PROFILE", "--unsetenv", "PAST_API_KEY",
          "--unsetenv", "TMUX", "--unsetenv", "TMUX_PANE",
-         "--setenv", "PATH", f"{venv}/bin:{H}/swappybot/bin:{H}/.local/bin:/usr/local/bin:/usr/bin:/bin",
+         "--setenv", "PATH", f"{venv}/bin:{H}/.local/bin:/usr/local/bin:/usr/bin:/bin",
          "--chdir", "/tmp/heal"]
     if net:
         a += ["--ro-bind", f"{H}/.claude/settings.json", f"{H}/.claude/settings.json",
@@ -227,7 +229,8 @@ def run_director(packet: Path, out: Path, rnd_dir: Path, fake: Path | None) -> d
     out.mkdir(parents=True, exist_ok=True)
     if fake:  # tests: copy a prepared out dir instead of calling the model
         for f in fake.iterdir():
-            shutil.copy(f, out / f.name)
+            if f.is_file():
+                shutil.copy(f, out / f.name)
         log(rnd_dir, f"director: fake ({fake})")
         return {"cost_usd": 0.0}
     state = Path(tempfile.mkdtemp(prefix="heal-claude-"))
@@ -298,12 +301,12 @@ def trial(checks_file: Path, cells_dir: Path, pick: str, incumbent: str, parent:
 
 
 def run_trial(packet: Path, out: Path, a, steps, rnd_dir: Path, sandbox: bool) -> list[dict]:
-    args = [sys.executable, "-I", str(Path(__file__).resolve()), "--trial", str(out / "checks.py"),
+    args = [sys.executable, "-I", "-B", str(Path(__file__).resolve()), "--trial", str(out / "checks.py"),
             str(packet / "cells"), a.pick, a.incumbent, a.parent, str(packet / "chain.txt")]
     if sandbox:
         args = sandbox_args(packet, out, Path("/nonexistent"), net=False) + \
             ["--ro-bind", str(HERE), str(HERE)] + \
-            [args[0], "-I", str(Path(__file__).resolve()), "--trial", "/tmp/heal/out/checks.py",
+            [args[0], "-I", "-B", str(Path(__file__).resolve()), "--trial", "/tmp/heal/out/checks.py",
              "/tmp/heal/cells", a.pick, a.incumbent, a.parent, "/tmp/heal/chain.txt"]
     r = subprocess.run(args, capture_output=True, text=True, timeout=900)
     if r.returncode:
@@ -354,20 +357,28 @@ def extend_dev(full_npz: str, rnd_dir: Path) -> None:
 def restart_plan(rnd: int, a) -> list[tuple[str, str, str, str]]:
     """(researcher, start commit, branch, worktree): two from the pick's parent, one from the incumbent (as v8.1)."""
     starts = (a.parent, a.parent, a.incumbent)
-    return [(who, c, f"research/heal{rnd}-{'abc'[i]}", f"/tmp/gs-heal{rnd}-{'abc'[i]}")
+    return [(who, c, f"research/heal{rnd}-{'abc'[i]}", str(REPO.parent / f"{REPO.name}-heal{rnd}-{'abc'[i]}"))
             for i, (who, c) in enumerate(zip(RESEARCHERS, starts))]
+
+
+def launch_cmd(who: str, wt: str) -> list[str]:
+    return ["tmux", "new-window", "-d", "-t", f"{TMUX_SESSION}:", "-n", who, str(SANDBOX or "$RESEARCHER_SANDBOX"), who, wt]
 
 
 def restart(plan, rnd_dir: Path) -> None:
     for who, c, br, wt in plan:
-        if subprocess.run(["tmux", "list-windows", "-t", "swappybot", "-F", "#W"], capture_output=True,
+        if subprocess.run(["tmux", "list-windows", "-t", TMUX_SESSION, "-F", "#W"], capture_output=True,
                           text=True).stdout.split().count(who):
             log(rnd_dir, f"restart: window {who} still exists; not started (close it, then rerun with --restart-only)")
             continue
         git("worktree", "add", wt, "-b", br, "HEAD")
         subprocess.run(["git", "-C", wt, "checkout", c, "--", REL_AGENT], check=True)
         subprocess.run(["git", "-C", wt, "commit", "-q", "-m", f"heal round start point: {c} forecaster", "--", REL_AGENT])
-        subprocess.run(["tmux", "new-window", "-d", "-t", "swappybot:", "-n", who, str(SANDBOX), who, wt], check=True)
+        if not SANDBOX:
+            log(rnd_dir, f"restart: {who} ready on {br} from {c} in {wt}; RESEARCHER_SANDBOX unset, start it with: "
+                         + " ".join(launch_cmd(who, wt)))
+            continue
+        subprocess.run(launch_cmd(who, wt), check=True)
         log(rnd_dir, f"restart: {who} on {br} from {c} in {wt}")
 
 
@@ -394,6 +405,8 @@ def write_meta(row: dict) -> None:
 def rebuild_manifest() -> None:
     """Rehash every file the manifest lists, plus the healed checks (the run is over; researchers restart on these)."""
     import hashlib
+    from run import MANIFESTS
+    MANIFEST = MANIFESTS[0]
     if not MANIFEST.exists():
         return
     names = [ln.split(None, 1)[1].strip() for ln in MANIFEST.read_text().splitlines() if ln.strip()]
@@ -488,7 +501,7 @@ def main() -> None:
             log(rnd_dir, f"dry run: would extend dev: {c}")
         for who, c, br, wt in plan:
             log(rnd_dir, f"dry run: would launch {who}: git worktree add {wt} -b {br}; start point {c}; "
-                         f"tmux new-window -n {who} {SANDBOX} {who} {wt}")
+                         + " ".join(launch_cmd(who, wt)))
         if names:
             (rnd_dir / f"round_{rnd}.py").write_text(adopted_file(rnd, (out / "checks.py").read_text(), names, a))
         log(rnd_dir, f"dry run done; director cost ${cost:.2f}")

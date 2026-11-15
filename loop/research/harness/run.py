@@ -49,9 +49,12 @@ TSV = RESEARCH / "results.tsv"
 STATE = RESEARCH / "state"
 BEST = STATE / "best.json"
 HEADER = ["commit", "agent", "hypothesis", "sept", "julsep", "resample_share", "status", "lesson"]
-MANIFESTS = [Path("/tmp/pac-v8-lock/harness.sha256"),
-             Path.home() / "swappybot/lanes/pac-v8/harness.sha256"]
-SHARED = Path("/tmp/pac-v8-shared/notebook.tsv")  # the 3 researchers' rows, read by notebook.py
+# HARNESS_MANIFEST points at a locked copy kept outside the worktree; the repo copy is the fallback
+MANIFESTS = [Path(os.environ.get("HARNESS_MANIFEST") or RESEARCH / "harness.sha256")]
+# SHARED_DIR is the folder all researchers' worktrees share; one clone falls back to research/shared
+SHARED_DIR = Path(os.environ.get("SHARED_DIR") or RESEARCH / "shared")
+SHARED_DIR.mkdir(parents=True, exist_ok=True)
+SHARED = SHARED_DIR / "notebook.tsv"  # the researchers' rows, read by notebook.py
 LESSONS = SHARED.parent / "LESSONS.md"  # shared, append-only memory (research/LESSONS.md links here)
 MIN_GAIN = 0.003
 MAX_JULSEP_DROP = 0.005
