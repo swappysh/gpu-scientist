@@ -79,6 +79,16 @@ The sweep that picked the hand-picked settings tried 38 configurations on July t
 - Borrowing repricing behavior from other series helped most. At 0.5 times the own weight it raised September skill from +0.127 to +0.162 on its own.
 - Wider bands cost skill quickly. Scaling the band by 2 cut September skill to +0.041.
 
+## v8: AI researchers rewrite the forecaster
+
+- Three AI researchers edited the forecaster's code, each in a sandbox, and a director rewrote their strategy every hour. They ran 144 experiments and kept 57. September skill went from +0.185 to +0.333.
+- The pick also beat v7 on July to August, +0.155 against +0.122. On held-out October it lost: +0.069 against v7's +0.149, a gap of −0.080 (95% interval −0.130 to −0.023). The pick rule was written down before October was opened, and October was run once. v7 stays submitted.
+- Why: the last kept change pushed a line's median along a recent run of price moves, with no cap. That paid in September. October's prices moved more often, so the pick overshot: for B200 on 3 October, 7 days ahead, its median was 11.30 and the price came in at 7.42.
+- Healing is now automatic. Today's v8.1 round was started by a human; from 23d89ba the trigger is in the loop. On a replay of the v8 failure, a fresh director proposed 3 checks: all reject the v8 pick, pass v7 and reject none of 14 earlier keeps, for $0.78.
+- v8.1 holdout: result at ~12:15 PT.
+
+Sources: experiments and keeps in loop/research/v8-record/results-a.tsv, -b and -c (144 rows that are not baselines or forks; 57 keep or keep-simpler); the pick's July to August and September skill in loop/research/v8-record/PREREG.md; the October gap in loop/research/heal/round_6-dry/packet/FAILURE.md; the diagnosis and the B200 example in loop/research/heal/round_6-dry/director.result.txt; the replay in loop/research/heal/round_6-dry/trial.json and heal.log.
+
 ## AWS spot: trend works there and fails on posted prices
 
 A trend setting helps on AWS spot and does not help on posted prices. On 80 AWS spot series in October, a configuration that follows recent price momentum scores +0.36 skill against the starting configuration's +0.26. On the 37 posted rental series, the same trend model scores +0.101 against +0.122.
