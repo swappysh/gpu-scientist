@@ -14,6 +14,8 @@ The submission uses the agent loop's pick. On the 37 series that are scored, its
 
 In v8, three AI researchers rewrote the forecaster's code under an hourly director: 144 experiments, 57 kept, September skill from +0.185 to +0.333. On held-out October the v8 pick scored +0.069 against +0.149 for v7, a gap of −0.080 (95% interval −0.130 to −0.023). It was fitted to the months it tuned on, so v7 stays submitted. The pick rule was written down before October was opened, and October was run once. Healing is now automatic. Today's v8.1 round was started by a human; from 23d89ba the trigger is in the loop. On a replay of the v8 failure, a fresh director proposed 3 checks: all reject the v8 pick, pass v7 and reject none of 14 earlier keeps, for $0.78. Logs: [`loop/research/heal/round_6-dry/`](loop/research/heal/round_6-dry/).
 
+v7 is the submission; [`loop/challenger_v81_2026-11-06.csv`](loop/challenger_v81_2026-11-06.csv) is the v8.1 pick as a labelled challenger, not submitted. On held-out Oct 16–30 it scored +0.123 against v7's +0.109, a gap of +0.014 (95% interval −0.027 to +0.053): neither shown worse nor shown better. Details: [`loop/research/v81-record/HOLDOUT.md`](loop/research/v81-record/HOLDOUT.md).
+
 Rebuild the results and the submission in one command:
 
 ```bash
