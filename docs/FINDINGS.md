@@ -22,9 +22,9 @@ October scores sit behind a read boundary, and no decision uses them. Each fact 
 
 All three agents share one past.dev project key and name themselves in each request. So the boundary keeps honest code away from October numbers. It would not stop an agent that lies about its identity.
 
-The submitted configuration came out of the agent loop's last run (v7 on the timeline below). It differs from the starter in five settings, and two of them do the work. It borrows repricing behavior from all 725 series in the pack at weight 0.7. And it weights recent repricing more (14-day half-life). The other three (drift weight 0.03, minimum samples 6, momentum fit 0.2) each moved skill by less than 0.001 when replayed alone. Configs: loop/submit_config.json. Rebuild: loop/reproduce.sh.
+The submitted configuration came out of the agent loop's last run (v7 on the timeline below). It differs from the starter in five settings, and two of them do the work. It borrows repricing behavior from the other series of the same class in the pack, which together get 0.7 times the weight of the series' own history. And it weights recent repricing more (14-day half-life). The other three (drift weight 0.03, minimum samples 6, momentum fit 0.2) each moved skill by less than 0.001 when replayed alone. Configs: loop/submit_config.json. Rebuild: loop/reproduce.sh.
 
-We compare it with two others. The starter is the challenge's starting configuration. The hand-picked configuration (v5) is the best of a 38-config sweep we ran on July to September: half weight on other series, a 14-day half-life, and a band 20% wider.
+We compare it with two others. The starter is the challenge's starting configuration. The hand-picked configuration (v5) is the best of a 38-config sweep we ran on July to September: the same borrowing at 0.5 times the own weight, a 14-day half-life, and a band 20% wider.
 
 ## Evaluation
 
@@ -66,7 +66,7 @@ We built the system in one afternoon, in eight versions (docs/evolution.png, reb
 
 The last live run (scope scored37-e, 01:14 to 02:12 UTC on 15 November) used the LLM proposer, the live past.dev memory and Modal backtests. It ran 8 rounds of 3 ideas each. Seven of the 24 ideas passed the keep rule, and rounds 2 and 4 passed none. The critic corroborated all seven, so in this run it never reversed a decision.
 
-Replaying each keep alone shows one real win. Borrowing repricing behavior from other series at weight 0.7 (round 3) raised July to September skill by 0.062 and September skill by 0.039. A 14-day half-life (round 1) was a trade: September skill rose by 0.019 and July to September stayed flat. The other five keeps moved both by less than 0.001, so the search stalled after round 3. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
+Replaying each keep alone shows one real win. Borrowing repricing behavior from the same class at 0.7 times the own weight (round 3) raised July to September skill by 0.062 and September skill by 0.039. A 14-day half-life (round 1) was a trade: September skill rose by 0.019 and July to September stayed flat. The other five keeps moved both by less than 0.001, so the search stalled after round 3. All 5 band-width ideas, all 3 window ideas and all 4 momentum-weight ideas were killed.
 
 The run's final settings are the submission. Their October scores are in Results.
 
@@ -76,7 +76,7 @@ Sources: loop/results/loop_rounds.json, loop/results/dashboard.html; keeps repla
 
 The sweep that picked the hand-picked settings tried 38 configurations on July to September (loop/results/sweep_julsep_37.txt). Two lessons from it:
 
-- Borrowing repricing behavior from other series helped most. Half weight raised September skill from +0.127 to +0.162 on its own.
+- Borrowing repricing behavior from other series helped most. At 0.5 times the own weight it raised September skill from +0.127 to +0.162 on its own.
 - Wider bands cost skill quickly. Scaling the band by 2 cut September skill to +0.041.
 
 ## AWS spot: trend works there and fails on posted prices
