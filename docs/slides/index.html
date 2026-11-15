@@ -35,6 +35,7 @@ th { font-weight:600; color:var(--mute); }
 @media print {
   @page { size: 16in 9in; margin:0; }
   .slide { display:flex !important; position:relative; width:16in; height:9in; page-break-after:always; }
+  section.slide:last-of-type { page-break-after:auto; }
   .foot .n { display:none; }
 }
 </style>
