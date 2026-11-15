@@ -44,7 +44,7 @@ Its band is better calibrated than the starter's and worse than the hand-picked 
 | Hand-picked (v5) | +0.144 | +0.172 | +0.134 | 0.76 |
 | Loop, submitted (v7) | +0.157 | +0.185 | +0.149 | 0.71 |
 
-October has 1,522 cells; Jul-Sep has 2,010. Sources: loop/results/backtest.json, key "scored" (starter, hand-picked); loop/results/loop_rounds.json, key "final" (loop).
+October has 1,522 cells; Jul-Sep has 2,010. Sources: loop/results/backtest.json, key "scored" (starter and loop; the loop row matches loop/results/loop_rounds.json, key "final"). The hand-picked row is the same key at commit 5743afc, before the switch.
 
 The loop also beats the hand-picked configuration on October, by +0.015 (interval +0.004 to +0.027, lower loss on 27 of 37 series). The hand-picked configuration's own gain over the starter, +0.0125, is not significant: its interval runs from −0.0097 to +0.0412.
 
