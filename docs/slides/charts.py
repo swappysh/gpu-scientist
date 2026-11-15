@@ -2,6 +2,8 @@
 
     uv run --no-project --with matplotlib python docs/slides/charts.py <series_daily.csv>
 
+    uv run --no-project --with matplotlib python docs/slides/charts.py --v8 <meta.tsv> <researcher worktree>...
+
 series_daily.csv is the starter's build of the data pack (only the price-steps panel uses it).
 Writes PNGs to docs/slides/img/.
 """
@@ -144,7 +146,98 @@ def rounds(r):
     save(fig, "rounds.png")
 
 
+PT = -8 * 3600
+TRIES = ("keep", "keep-simpler", "discard", "crash", "leak")
+
+
+def v8_rows(worktrees):
+    import subprocess
+    out = []
+    for wt in worktrees:
+        f = Path(wt) / "loop/research/results.tsv"
+        lines = f.read_text().splitlines()
+        head = lines[0].split("\t")
+        for ln in lines[1:]:
+            r = dict(zip(head, ln.split("\t")))
+            ct = subprocess.run(["git", "-C", str(wt), "show", "-s", "--format=%ct", r["commit"]],
+                                capture_output=True, text=True).stdout.strip()
+            r["t"] = float(ct) if ct else None
+            out.append(r)
+    return out
+
+
+def pt_hour(t):
+    """Hours on the Pacific clock (Nov 15 2026 is PST, UTC-8)."""
+    return ((t + PT) % 86400) / 3600
+
+
+def v8_skill(rows):
+    fig, ax = plt.subplots(figsize=(12, 5.8))
+    colors = {"pacsci1": "tab:blue", "pacsci2": "tab:orange", "pacsci3": "tab:purple"}
+    base = max(float(r["sept"]) for r in rows if r["status"] == "baseline")
+    start = min(pt_hour(r["t"]) for r in rows if r["status"] in TRIES and r["t"]) - 0.1
+    floor = base - 0.015  # tries below this sit on the floor as small triangles
+    for agent, c in colors.items():
+        rs = sorted((r for r in rows if r["agent"] == agent and r["t"] and r["status"] in TRIES), key=lambda r: r["t"])
+        if not rs:
+            continue
+        best, xs, ys = base, [start], [base]
+        for r in rs:
+            if r["status"].startswith("keep"):
+                best = max(best, float(r["sept"]))
+            xs.append(pt_hour(r["t"])); ys.append(best)
+            if r["sept"]:
+                y = max(float(r["sept"]), floor)
+                ax.plot(pt_hour(r["t"]), y, ("o" if r["status"].startswith("keep") else ".") if y > floor else "v",
+                        color=c, alpha=0.9 if r["status"].startswith("keep") else 0.35, ms=9)
+        ax.step(xs, ys, where="post", color=c, lw=2.5, label=f"researcher {agent[-1]}")
+    ax.axhline(base, color="grey", ls="--", lw=1.5)
+    ax.set_ylim(floor - 0.003, None)
+    ax.text(start, base - 0.002, "start: the old loop's best", color="grey", fontsize=11, va="top")
+    ax.set_xlabel("time, Sunday morning (Pacific)")
+    ax.set_ylabel("September skill")
+    ax.set_title("best kept version (line) and every try (dots)")
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda h, _: f"{int(h)}:{int(round(h % 1 * 60)):02d}"))
+    ax.legend(loc="lower right", frameon=False)
+    ax.spines[["top", "right"]].set_visible(False)
+    save(fig, "v8_skill.png")
+
+
+def v8_hits(rows, meta):
+    import datetime as dt
+    cuts = []
+    if meta and Path(meta).exists():
+        ml = Path(meta).read_text().splitlines()
+        head = ml[0].split("\t")
+        cuts = [dt.datetime.fromisoformat(dict(zip(head, ln.split("\t")))["time_utc"]).timestamp() for ln in ml[1:] if ln.strip()]
+    edges = [0.0] + cuts + [float("inf")]
+    tries = [r for r in rows if r["status"] in TRIES and r["t"]]
+    n, k, labels = [], [], []
+    for i in range(len(edges) - 1):
+        win = [r for r in tries if edges[i] <= r["t"] < edges[i + 1]]
+        n.append(len(win)); k.append(sum(r["status"].startswith("keep") for r in win))
+        labels.append("before the\nfirst round" if i == 0 else f"after round {i}\n({pt_hour(edges[i]):.0f} AM)")
+    fig, ax = plt.subplots(figsize=(12, 5.8))
+    rate = [kk / nn if nn else 0 for kk, nn in zip(k, n)]
+    ax.bar(range(len(rate)), rate, color="tab:green", alpha=0.7, width=0.6)
+    for i, (kk, nn) in enumerate(zip(k, n)):
+        ax.text(i, rate[i] + 0.02, f"{kk} of {nn}", ha="center", fontsize=13)
+    ax.set_xticks(range(len(rate))); ax.set_xticklabels(labels)
+    ax.set_xlim(-0.6, max(len(rate), 5) - 0.4)
+    ax.set_ylim(0, max(rate + [0.5]) + 0.15)
+    ax.set_ylabel("share of tries kept")
+    ax.set_title("research hit rate, per director round")
+    ax.spines[["top", "right"]].set_visible(False)
+    save(fig, "v8_hits.png")
+
+
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["--v8"]:
+        # charts.py --v8 META_TSV WORKTREE...   (slide 7, after the freeze)
+        rs = v8_rows(sys.argv[3:])
+        v8_skill(rs)
+        v8_hits(rs, sys.argv[2])
+        sys.exit()
     lr = json.loads((RES / "loop_rounds.json").read_text())
     if len(sys.argv) > 1:
         steps(sys.argv[1])
