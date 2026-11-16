@@ -28,6 +28,8 @@ In v8, three AI researchers rewrote the forecaster's code under an hourly direct
 
 v7 is the submission; [`loop/challenger_v81_2026-11-06.csv`](loop/challenger_v81_2026-11-06.csv) is the v8.1 pick as a labelled challenger, not submitted. On held-out Oct 16–30 it scored +0.123 against v7's +0.109, a gap of +0.014 (95% interval −0.027 to +0.053): neither shown worse nor shown better. Details: [`loop/research/v81-record/HOLDOUT.md`](loop/research/v81-record/HOLDOUT.md).
 
+v8.2 kept nothing: each of its two researchers tried one change, and neither gained the +0.003 on the gate that the rule asks for, so the v8.1 challenger stays. Record: [`loop/research/v82-record/`](loop/research/v82-record/).
+
 v8.3 is a dev-only result: its pick scored +0.026 over v8.1 on the gate (Sep 1 – Oct 29, .2318 against .2058; 99.5% of resamples favour it), and it has not been scored on unseen data yet. Challenger, not submitted: [`loop/challenger_v83_2026-11-06.csv`](loop/challenger_v83_2026-11-06.csv). Record: [`loop/research/v83-record/`](loop/research/v83-record/).
 
 Walk-forward replay: each round is scored once on a week it has not seen, then that week joins dev. Over Oct 1 – Nov 4, the second week's loss (−0.137, 95% interval −0.317 to −0.001) started healing with no human. Details: [`loop/research/REPLAY.md`](loop/research/REPLAY.md).
