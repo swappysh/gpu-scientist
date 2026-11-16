@@ -1,0 +1,5 @@
+{"name": "870891d", "who": "start", "gate": 0.2058, "dev": 0.2004, "julaug": 0.1615, "lines": 340, "guards": []}
+{"name": "c9804cc", "who": "start", "gate": 0.1943, "dev": 0.1907, "julaug": 0.1649, "lines": 268, "guards": []}
+{"name": "v7", "who": "ref", "gate": 0.1556, "dev": 0.1516, "julaug": 0.1221, "lines": 102, "guards": []}
+vs 870891d: c9804cc gate -0.0115 dev -0.0097 share 0.06 no
+PICK 870891d (no candidate passes step 3; v8.1 stays) | eligible: ['870891d', 'c9804cc']
