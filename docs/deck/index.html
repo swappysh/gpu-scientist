@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU Scientist: Step Function</title>
+<style>
+/* === FONTS (Google Fonts files, bundled so the deck works offline) === */
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-400i-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-400i-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-700-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/LibreBaskerville-700-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Shrikhand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Shrikhand-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Shrikhand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/Shrikhand-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/SpaceGrotesk-600-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/SpaceGrotesk-600-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* === THEME: BOLD POSTER === */
+:root {
+    --white: #FFFFFF;
+    --ink: #1C1410;
+    --red: #D8000F;
+    --light: #F5F2EF;
+    --muted: #6E625A;
+    --stage-bg: #1C1410;
+    --slide-bg: #FFFFFF;
+    --font-display: 'Shrikhand', cursive;
+    --font-body: 'Libre Baskerville', Georgia, serif;
+    --font-label: 'Space Grotesk', sans-serif;
+    --poster-shadow: 2px 2px 0 rgba(28,20,16,0.25), 4px 4px 0 rgba(28,20,16,0.2), 6px 6px 0 rgba(28,20,16,0.15);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* === VIEWPORT BASE (frontend-slides, verbatim) === */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+    .deck-controls {
+        display: none !important;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* === TYPE === */
+.slide { font-family: var(--font-body); color: var(--ink); box-sizing: border-box; }
+.slide * { box-sizing: border-box; }
+.pad { position: absolute; inset: 0; padding: 96px 120px 110px; }
+.eyebrow {
+    font-family: var(--font-label); font-weight: 600; font-size: 28px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin: 0 0 28px;
+}
+.title {
+    font-family: var(--font-display); font-weight: 400; font-size: 92px; line-height: 1.08;
+    margin: 0; color: var(--ink);
+}
+.title .red { color: var(--red); }
+.body { font-size: 42px; line-height: 1.5; margin: 0; }
+.small { font-size: 34px; line-height: 1.5; color: var(--muted); margin: 0; }
+.num { font-family: var(--font-display); color: var(--red); line-height: 1; }
+.tilt { display: inline-block; transform: rotate(-4deg); }
+.label {
+    font-family: var(--font-label); font-weight: 600; font-size: 26px;
+    letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* === PANELS === */
+.slide.red { --slide-bg: var(--red); background: var(--red); color: var(--white); }
+.slide.dark { --slide-bg: var(--ink); background: var(--ink); color: var(--white); }
+.slide.red .title, .slide.dark .title { color: var(--white); }
+.slide.red .title { text-shadow: var(--poster-shadow); }
+.slide.red .eyebrow { color: var(--white); opacity: 0.85; }
+.slide.dark .eyebrow { color: var(--red); }
+.slide.dark .small { color: #BFB3AA; }
+
+.split { display: grid; height: 100%; gap: 72px; align-items: center; }
+.figure { display: flex; align-items: center; justify-content: center; height: 100%; }
+.figure img { display: block; max-height: 640px; width: auto; }
+
+.card {
+    border-left: 4px solid var(--red); padding: 10px 0 10px 32px; margin: 0 0 40px;
+}
+.card .label { color: var(--red); margin-bottom: 8px; }
+.card p { font-size: 36px; line-height: 1.45; margin: 0; }
+.parts .part-head { font-family: var(--font-display); font-size: 40px; line-height: 1.1; margin: 10px 0 18px; }
+.parts ul { margin: 0; padding: 0 0 0 28px; font-size: 28px; line-height: 1.38; }
+.parts li { margin: 0 0 12px; }
+.parts .card { padding-left: 24px; }
+
+.rule-box {
+    border: 3px solid var(--ink); outline: 1.5px solid var(--ink); outline-offset: -12px;
+    padding: 36px 44px;
+}
+
+
+.logos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 56px; align-items: start; }
+.logos .logo { height: 120px; display: flex; align-items: center; }
+.logos .logo img { max-height: 120px; max-width: 100%; width: auto; display: block; }
+.logos p { font-size: 32px; line-height: 1.4; margin: 28px 0 0; }
+
+/* === CHROME === */
+.progress {
+    position: fixed; left: 0; bottom: 0; height: 5px; background: var(--red);
+    width: 0; z-index: 1000; transition: width 0.4s var(--ease-out);
+}
+.counter {
+    position: absolute; right: 64px; bottom: 40px; z-index: 5;
+    font-family: var(--font-label); font-weight: 600; font-size: 24px; letter-spacing: 3px;
+    opacity: 0.5;
+}
+.slide.red .counter, .slide.dark .counter { color: var(--white); }
+.brand {
+    position: absolute; left: 120px; bottom: 40px; z-index: 5;
+    font-family: var(--font-label); font-weight: 600; font-size: 24px; letter-spacing: 3px;
+    text-transform: uppercase; opacity: 0.5;
+}
+
+/* === REVEAL === */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
+.slide.visible .reveal { opacity: 1; transform: none; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.08s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.16s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.24s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.32s; }
+@media print { .reveal { opacity: 1 !important; transform: none !important; } .progress { display: none; } }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="stage">
+
+<!-- 01 TITLE -->
+<section class="slide" data-n="1">
+  <div class="pad" style="display:flex;flex-direction:column;justify-content:center;padding-bottom:300px;">
+    <p class="eyebrow reveal">Step Function · GPU price forecasting</p>
+    <h1 class="title reveal" style="font-size:96px;">We didn't build a forecaster.</h1>
+    <h1 class="title reveal" style="font-size:96px;margin-top:10px;"><span class="red tilt" style="transform:rotate(-2deg);">We built an AI scientist</span><br>that builds forecasters.</h1>
+    <p class="body reveal" style="margin-top:44px;font-size:38px;line-height:1.4;"><em>It doesn’t trust every improvement. It tests each change, keeps only reliable ones, and can decide to keep the old model.</em></p>
+  </div>
+  <div class="reveal" style="position:absolute;left:120px;right:120px;bottom:110px;border-top:3px solid var(--ink);padding-top:30px;display:flex;align-items:center;gap:72px;">
+    <span class="label" style="color:var(--red);">Built with</span>
+    <span style="display:flex;align-items:center;"><img src="img/logos/pacific.png" alt="" style="height:64px;"><span style="font-family:var(--font-label);font-weight:600;font-size:42px;margin-left:16px;">Pacific</span></span>
+    <img src="img/logos/pastdev.svg" alt="past.dev" style="height:44px;">
+    <img src="img/logos/modal.svg" alt="Modal" style="height:40px;">
+    <img src="img/logos/originator.png" alt="Originator" style="height:64px;">
+  </div>
+</section>
+
+<!-- 02 MODEL -->
+<section class="slide" data-n="2">
+  <div class="pad" style="padding-top:84px;">
+    <div class="split" style="grid-template-columns: 1fr 1fr; align-items:start;">
+      <div>
+        <p class="eyebrow reveal">The model · empirical quantiles, not regression</p>
+        <h2 class="title reveal" style="font-size:76px;">It forecasts from <span class="red">past price changes.</span></h2>
+        <ul class="reveal" style="margin:40px 0 0;padding:0 0 0 32px;font-size:33px;line-height:1.42;">
+          <li style="margin-bottom:16px;">Three numbers per forecast: 10th percentile (low), 50th (typical), 90th (high).</li>
+          <li style="margin-bottom:16px;">The middle starts near the latest price.</li>
+          <li style="margin-bottom:16px;">The range comes from real past changes: the series’ own, plus similar GPU sellers’.</li>
+          <li>1, 3 and 7 days ahead.</li>
+        </ul>
+      </div>
+      <div class="reveal" style="display:flex;flex-direction:column;align-items:center;margin-top:60px;">
+        <img src="img/steps.png" alt="An A100 rental price that stays flat, then jumps" style="max-height:620px;max-width:100%;">
+        <p class="small" style="font-size:28px;margin-top:18px;">GPU prices stay flat, then jump.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 SETTINGS -->
+<section class="slide" data-n="3">
+  <div class="pad" style="padding-top:72px;">
+    <p class="eyebrow reveal">The v7 loop · what it could tune</p>
+    <h2 class="title reveal" style="font-size:76px;">Seven settings, <span class="red">one per idea.</span></h2>
+    <p class="body reveal" style="font-size:30px;margin-top:18px;">A proposer suggests one setting change per idea. An evaluator backtests it and keeps or kills it. A critic re-checks each keep on resamples. No code changes in v7.</p>
+    <div class="reveal" style="margin-top:28px;"><div style="display:grid;grid-template-columns:420px 1fr 200px;padding-bottom:8px;"><span class="label" style="color:var(--muted);font-size:22px;">Setting</span><span class="label" style="color:var(--muted);font-size:22px;">What it controls</span><span class="label" style="color:var(--muted);font-size:22px;text-align:right;">v7 value</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--red);">pool_weight</span><span style="font-size:31px;">how much to learn from similar sellers</span><span class="label" style="font-size:32px;text-align:right;color:var(--red);">0.7</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--red);">half_life_days</span><span style="font-size:31px;">how much more recent data counts</span><span class="label" style="font-size:32px;text-align:right;color:var(--red);">14</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--ink);">band_scale</span><span style="font-size:31px;">how wide the range is</span><span class="label" style="font-size:32px;text-align:right;color:var(--ink);">default</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--ink);">window_days</span><span style="font-size:31px;">how much history to use</span><span class="label" style="font-size:32px;text-align:right;color:var(--ink);">default</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--ink);">momentum_fit</span><span style="font-size:31px;">how much recent moves shift the middle</span><span class="label" style="font-size:32px;text-align:right;color:var(--ink);">0.2</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--ink);">drift_weight</span><span style="font-size:31px;">a small up or down trend</span><span class="label" style="font-size:32px;text-align:right;color:var(--ink);">0.03</span></div><div style="display:grid;grid-template-columns:420px 1fr 200px;border-top:2px solid #E2DBD5;padding:14px 0;align-items:baseline;"><span class="label" style="font-size:30px;text-transform:none;letter-spacing:1px;color:var(--ink);">min_samples</span><span style="font-size:31px;">history needed before trusting a series</span><span class="label" style="font-size:32px;text-align:right;color:var(--ink);">6</span></div></div>
+  </div>
+</section>
+
+<!-- 04 FRAMEWORK -->
+<section class="slide" data-n="4">
+  <div class="pad" style="padding-top:72px;">
+    <p class="eyebrow reveal">The v8 loop · researchers edit code</p>
+    <div class="reveal" style="display:flex;align-items:baseline;justify-content:space-between;">
+      <h2 class="title" style="font-size:80px;">The framework</h2>
+      <span class="label" style="color:var(--red);font-size:28px;border:3px solid var(--red);padding:8px 18px;">This is the v8 loop</span>
+    </div>
+    <div class="figure reveal" style="height:auto;margin-top:20px;"><img src="img/data_flow.png" alt="Price data to researchers, a locked judge, a sealed October score, a shared notebook and a director" style="width:1680px;max-height:none;"></div>
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:28px;">
+      <div class="card" style="margin:0;"><div class="label">Researchers may edit</div><p style="font-size:31px;">Only the forecaster file, each in its own sandbox.</p></div>
+      <div class="card" style="margin:0;"><div class="label">Locked</div><p style="font-size:31px;">The scorer, the data split and the keep rule.</p></div>
+      <div class="card" style="margin:0;"><div class="label">past.dev</div><p style="font-size:31px;">Mirror and audit trail of the notebook. In the v7 loop, read limits kept October scores from the proposer; only the critic saw them.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 FOUR PARTS -->
+<section class="slide" data-n="5">
+  <div class="pad" style="padding-top:72px;">
+    <p class="eyebrow reveal">The v8 loop · inside it</p>
+    <h2 class="title reveal" style="font-size:80px;">Four parts</h2>
+    <div class="reveal parts" style="display:grid;grid-template-columns:repeat(4,1fr);gap:36px;margin-top:36px;">
+      <div class="card" style="margin:0;">
+        <div class="label">Forecaster</div>
+        <p class="part-head">What gets built.</p>
+        <ul>
+          <li>Median: essentially the last price (tiny drift and momentum terms).</li>
+          <li>10–90 range: past price changes, its own plus similar sellers’ at 0.7 weight.</li>
+          <li>Recent changes count more (14-day half-life).</li>
+          <li>1, 3 and 7 days ahead.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin:0;">
+        <div class="label">Researchers</div>
+        <p class="part-head">Try changes.</p>
+        <ul>
+          <li>3 AI agents.</li>
+          <li>Each edits only the forecaster file, in its own sandbox.</li>
+          <li>One code change per try.</li>
+          <li>Mirror each try to past.dev as its own identity.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin:0;">
+        <div class="label">Judge</div>
+        <p class="part-head">Keeps or reverts.</p>
+        <ul>
+          <li>Backtests each try on Jul–Sep: pinball loss vs “tomorrow = today”.</li>
+          <li>A locked keep rule decides.</li>
+          <li>Agents can’t edit it.</li>
+          <li>Modal runs the backtests in parallel.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin:0;">
+        <div class="label">Director</div>
+        <p class="part-head">Plans each hour.</p>
+        <ul>
+          <li>Reads the shared notebook every hour: each try, score and lesson.</li>
+          <li>Plans what to try next, who tries it, in what order, and what to drop.</li>
+          <li>Can’t change the rules or override the judge.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="reveal" style="position:absolute;left:120px;right:120px;bottom:110px;border-top:3px solid var(--ink);padding-top:24px;margin:0;font-size:30px;line-height:1.4;"><span class="label" style="color:var(--red);">v8.1</span>&nbsp; The same loop, with 3 new checks in the judge, written by a fresh director after v8 lost.</p>
+  </div>
+</section>
+
+<!-- 06 JUDGED + CLIMB -->
+<section class="slide" data-n="6">
+  <div class="pad" style="padding-top:80px;">
+    <p class="eyebrow reveal">The judge · v8’s keep rule</p>
+    <h2 class="title reveal" style="font-size:68px;white-space:nowrap;">A change stays only if it clears a <span class="red">locked bar.</span></h2>
+    <div class="split" style="grid-template-columns: 1.15fr 0.85fr; height:auto; margin-top:44px; align-items:start;">
+      <div class="reveal">
+        <div class="rule-box" style="padding:30px 40px;">
+          <p class="body" style="font-size:34px;line-height:1.55;">• Gate skill up by at least <strong>+0.003</strong><br>• Jul–Sep skill down by at most <strong>0.005</strong><br>• At least <strong>60%</strong> of resamples favour it<br>• Near-ties go to the simpler code</p>
+        </div>
+        <p class="body" style="font-size:29px;line-height:1.45;margin-top:28px;"><strong>Skill</strong> = 1 − pinball loss ÷ the loss of "tomorrow = today", pooled over every series, origin and horizon.</p>
+        <p class="body" style="font-size:29px;line-height:1.45;margin-top:18px;"><strong>Pick once:</strong> the pick rule is written down before the held-out month is opened, then that month is scored once.</p>
+      </div>
+      <div class="reveal">
+        <div class="card" style="margin:0;"><div class="label">October stays sealed</div><p style="font-size:31px;">It is kept apart as the final test. No agent sees it while the loop runs.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 V7 WORKED -->
+<section class="slide" data-n="7">
+  <div class="pad" style="padding-top:84px;">
+    <div class="split" style="grid-template-columns: 0.95fr 1.05fr; align-items:start;">
+      <div>
+        <p class="eyebrow reveal">What worked · v7, the submission</p>
+        <h2 class="title reveal" style="font-size:76px;white-space:nowrap;">What worked in <span class="red">v7.</span></h2>
+        <ul class="reveal" style="margin:30px 0 0;padding:0 0 0 30px;font-size:30px;line-height:1.4;">
+          <li style="margin-bottom:12px;">Prices stay flat, then jump, so the latest price is a strong start.</li>
+          <li style="margin-bottom:12px;">One real win: <strong>pool_weight 0.7</strong>, learning more from similar sellers.</li>
+          <li>One trade: <strong>half_life_days 14</strong> lifted September, but not July–September.</li>
+        </ul>
+        <p class="reveal" style="margin:34px 0 0;white-space:nowrap;"><span class="num tilt" style="font-size:118px;">+0.149</span><span class="body" style="margin-left:24px;font-size:36px;">vs +0.122 starter</span></p>
+        <p class="body reveal" style="margin-top:18px;font-size:32px;">The range holds the real price <span class="num" style="font-size:52px;">71%</span> of the time.</p>
+        <p class="small reveal" style="margin-top:22px;font-size:25px;">Skill = improvement over “tomorrow’s price equals today’s”. October, 37 scored series, scored once after the pick was fixed.</p>
+      </div>
+      <div class="reveal" style="display:flex;align-items:center;justify-content:center;height:860px;">
+        <img src="img/v7_vs_starter.png" alt="Skill by month: v7 above the starter in every month" style="max-height:640px;max-width:100%;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 V7 DID NOT -->
+<section class="slide" data-n="8">
+  <div class="pad" style="padding-top:72px;">
+    <p class="eyebrow reveal">What did not work · v7</p>
+    <h2 class="title reveal" style="font-size:80px;">Most changes were <span class="red">noise.</span></h2>
+    <ul class="reveal" style="margin:40px 0 0;padding:0 0 0 32px;font-size:34px;line-height:1.45;max-width:1500px;">
+      <li style="margin-bottom:16px;">The other 5 keeps (momentum_fit, drift_weight, min_samples) each moved skill by less than 0.001.</li>
+      <li style="margin-bottom:16px;">After round 3 the search kept retrying the same few settings.</li>
+      <li>The v7 gate kept any September gain above zero, so nearly useless changes got through.</li>
+    </ul>
+    <div class="reveal rule-box" style="margin-top:48px;padding:30px 44px;">
+      <p class="label" style="color:var(--red);">Honest conclusion</p>
+      <p class="body" style="font-size:38px;line-height:1.4;margin-top:10px;">The loop did not discover many major improvements. It found one useful change and showed that most other changes were noise.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 ONE REAL RUN -->
+<section class="slide" data-n="9">
+  <div class="pad" style="padding-top:72px;">
+    <p class="eyebrow reveal">v8 · one step in the v8 pick's chain</p>
+    <h2 class="title reveal" style="font-size:80px;">One real run</h2>
+    <div class="reveal rule-box" style="margin-top:36px;padding:32px 44px;">
+      <div style="display:flex;gap:64px;align-items:baseline;">
+        <div><div class="label" style="color:var(--red);">Researcher</div><p style="font-size:34px;margin:6px 0 0;">Researcher 2</p></div>
+        <div><div class="label" style="color:var(--red);">September skill</div><p style="margin:6px 0 0;"><span class="num" style="font-size:56px;color:var(--ink);">+0.2181 </span><span class="num" style="font-size:56px;">→ +0.2309</span></p></div>
+        <div><div class="label" style="color:var(--red);">Verdict</div><p style="font-size:34px;margin:6px 0 0;"><strong>keep</strong> · 99% of resamples</p></div>
+      </div>
+      <div class="label" style="color:var(--red);margin-top:22px;">Idea</div>
+      <p style="font-size:28px;line-height:1.4;margin:4px 0 0;">“weekday: a line whose own move rate clearly differs by weekday (chi-square, 5%) re-prices on a schedule, so for h&lt;7 learn only from its own windows starting on the origin's weekday”</p>
+      <div class="label" style="color:var(--red);margin-top:18px;">Lesson</div>
+      <p style="font-size:24px;line-height:1.4;margin:4px 0 0;color:var(--muted);">“lines that re-price on fixed weekdays ([one seller's] spot: Mon/Tue 30-35% vs weekend 5%) need weekday-matched own windows for h1/h3: Sept +0.013, Jul-Sep +0.009, hyperscaler spot Sept .25-&gt;.32; gate it on a chi-square test, since filtering thin 8-week lines (rate cards, marketplace) by weekday loses”</p>
+    </div>
+    <div class="reveal card" style="margin:30px 0 0;"><div class="label">past.dev · one agent reads another (v7 loop)</div><p style="font-size:28px;line-height:1.4;">Reading as of 2026-09-30, the proposer read 89 facts by the evaluator and 68 by the critic, to skip tried ideas. It got 0 of the 32 private October facts.</p></div>
+  </div>
+</section>
+
+<!-- 10 TWIST -->
+<section class="slide red" data-n="10">
+  <div class="pad" style="padding-right:80px;">
+    <div class="split" style="grid-template-columns: 0.95fr 1.05fr;">
+      <div>
+        <p class="eyebrow reveal">v8 · 144 code changes, 57 kept · September +0.185 → +0.333</p>
+        <h2 class="title reveal" style="font-size:84px;">On unseen October, v8 lost.</h2>
+        <p class="reveal" style="margin:20px 0 0;"><span class="num tilt" style="font-size:130px;color:var(--white);text-shadow:var(--poster-shadow);">−0.080</span></p>
+        <p class="body reveal" style="font-size:32px;margin-top:14px;">+0.069 vs v7 +0.149 · 95% interval −0.130 to −0.023</p>
+        <p class="body reveal" style="margin-top:24px;font-size:30px;line-height:1.38;"><strong>It looked better on the months it practiced on and chased recent trends too hard. It overfit. The rule, written before October was opened, kept v7.</strong></p>
+        <p class="body reveal" style="margin-top:32px;font-size:28px;opacity:0.9;">How: one run on October origins, 37 series; the interval comes from resampling series.</p>
+      </div>
+      <div class="figure reveal" style="background:var(--white);padding:28px;height:auto;"><img src="img/october_loss.png" alt="v8 pick soars in September, falls below v7 in October" style="max-height:600px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 HEAL + V8.1 -->
+<section class="slide" data-n="11">
+  <div class="pad" style="padding-top:76px;">
+    <p class="eyebrow reveal">v8.1 · the fix</p>
+    <h2 class="title reveal" style="font-size:72px;">A loss writes its own <span class="red">post-mortem.</span></h2>
+    <div class="split" style="grid-template-columns: 1.1fr 0.9fr; height:auto; margin-top:36px; gap:64px; align-items:start;">
+      <div class="reveal">
+        <p class="label" style="color:var(--red);margin:0 0 16px;">3 checks a fresh director proposed after the v8 loss</p>
+        <div class="card" style="margin:0 0 18px;"><p style="font-size:29px;">Big median moves outside the old 10–90 range may add at most 1% of flat loss.</p></div>
+        <div class="card" style="margin:0 0 18px;"><p style="font-size:29px;">No single series may cost more than 1% of flat loss.</p></div>
+        <div class="card" style="margin:0 0 18px;"><p style="font-size:29px;">Skill on the last 15 dev days may drop at most 0.02.</p></div>
+        <p class="small" style="font-size:26px;margin-top:6px;">How: a dry replay of the v8 loss. All 3 reject the v8 pick, pass v7 and none of 14 earlier keeps. $0.78.</p>
+      </div>
+      <div class="reveal">
+        <p class="label" style="color:var(--red);margin:0;">v8.1 · after healing</p>
+        <p class="body" style="font-size:44px;margin-top:12px;"><strong>No longer worse.</strong> Not shown better.</p>
+        <p style="margin:18px 0 0;"><span class="num tilt" style="font-size:104px;">+0.014</span></p>
+        <p class="body" style="font-size:30px;margin-top:14px;">vs v7 · 95% interval −0.027 to +0.053</p>
+        <p class="small" style="font-size:26px;margin-top:16px;">How: held-out origins Oct 16–30 (8 origins, 37 series), scored once. +0.123 vs v7 +0.109.</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:22px;border-top:2px solid #E2DBD5;padding-top:14px;">
+      <p class="small" style="font-size:23px;line-height:1.4;">v8.2 (a short extra round today): nothing beat v8.1 by the pre-set rule. Why: the round was 20 minutes; both researchers found a real gain just under the bar, one quit early, one waited 7 minutes on a loop that was waiting for itself.</p>
+      <p class="small" style="font-size:23px;line-height:1.4;margin-top:6px;"><span class="label" style="color:var(--red);font-size:20px;">Dev only</span>&nbsp; v8.3 (one hour, today): +0.026 on the gate over v8.1, clears the pre-set bar. Dev months only: not yet scored on unseen data, and v8 also looked great on dev.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 CLOSE -->
+<section class="slide red" data-n="12">
+  <div class="pad" style="display:flex;flex-direction:column;justify-content:center;">
+    <p class="eyebrow reveal">The main achievement</p>
+    <h2 class="title reveal" style="font-size:66px;line-height:1.15;">The main achievement was not simply building a stronger model.</h2>
+    <p class="body reveal" style="font-size:44px;line-height:1.4;margin-top:36px;">It was building a system that can test improvements fairly, detect overfitting, and know when to keep the existing model.</p>
+    <p class="body reveal" style="font-size:32px;margin-top:30px;opacity:0.9;">Use v7’s ranges today. The loop tells you when a new model has earned a switch.</p>
+    <p class="label reveal" style="margin-top:56px;font-size:34px;letter-spacing:3px;text-transform:none;">github.com/swappysh/gpu-scientist</p>
+    <p class="label reveal" style="margin-top:14px;font-size:30px;opacity:0.85;">Team Step Function</p>
+  </div>
+</section>
+
+</main>
+</div>
+<div class="progress" id="progress"></div>
+
+<script>
+/* === SCALE STAGE === */
+const stage = document.getElementById('stage');
+function fit() {
+    const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+    const x = (innerWidth - 1920 * f) / 2, y = (innerHeight - 1080 * f) / 2;
+    stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+}
+addEventListener('resize', fit);
+fit();
+
+/* === NAVIGATION === */
+const slides = [...document.querySelectorAll('.slide')];
+const total = slides.length;
+slides.forEach((s, i) => {
+    const c = document.createElement('div');
+    c.className = 'counter';
+    c.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    s.appendChild(c);
+});
+let cur = 0;
+function goToSlide(i) {
+    cur = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, j) => s.classList.toggle('active', j === cur));
+    slides.forEach((s, j) => s.classList.toggle('visible', j === cur));
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+    history.replaceState(null, '', '#' + (cur + 1));
+}
+addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); goToSlide(cur + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); goToSlide(cur - 1); }
+    if (e.key === 'Home') goToSlide(0);
+    if (e.key === 'End') goToSlide(total - 1);
+});
+let tx = null;
+addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) goToSlide(cur + (dx < 0 ? 1 : -1));
+    tx = null;
+});
+let wheelLock = false;
+addEventListener('wheel', e => {
+    if (wheelLock || Math.abs(e.deltaY) < 20) return;
+    wheelLock = true; setTimeout(() => { wheelLock = false; }, 600);
+    goToSlide(cur + (e.deltaY > 0 ? 1 : -1));
+}, { passive: true });
+window.presentation = { goToSlide, total };
+goToSlide((parseInt(location.hash.slice(1), 10) || 1) - 1);
+</script>
+</body>
+</html>
