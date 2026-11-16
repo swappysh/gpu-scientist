@@ -48,7 +48,7 @@ def case(tmp_path, monkeypatch):
     monkeypatch.setattr(heal, "git", lambda *a: a[-1].split("~")[0] + "\n" if a[0] == "rev-parse" else "")
     monkeypatch.setattr(heal, "chain", lambda inc, pick: [("p1", "i0", "parent step"), ("k2", "p1", "pick step")])
     monkeypatch.setattr(heal, "forecaster", lambda c: f"# forecaster {c}\n")
-    monkeypatch.setattr(heal, "move_rates", lambda: "fake move rates\n")
+    monkeypatch.setattr(heal, "move_rates", lambda *a: "fake move rates\n")
     return tmp_path, cells, fake
 
 
