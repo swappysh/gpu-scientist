@@ -4,7 +4,11 @@ Team: Step Function
 
 An AI scientist that forecasts GPU rental prices for the Pacific track at the SF AI Research Hackathon (14–15 Nov 2026). Three agents share an experiment ledger on past.dev and run their backtests on Modal.
 
-![the loop](docs/loop.png)
+![The v8 loop: 3 AI researchers, a locked judge, a director, and the shared notebook (mirrored on past.dev)](docs/framework-v8.png)
+
+The v8 loop: 3 AI researchers, a locked judge, a director, and the shared notebook (mirrored on past.dev)
+
+The v7 loop that made the submission: [`docs/loop.png`](docs/loop.png)
 
 Data flow, and who can read what: [`docs/data-flow-v2.png`](docs/data-flow-v2.png) (full detail: [`docs/data-flow.png`](docs/data-flow.png)).
 
