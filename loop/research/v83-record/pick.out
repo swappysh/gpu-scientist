@@ -1,0 +1,25 @@
+{"name": "cfeab06", "who": "pacsci2", "gate": 0.2318, "dev": 0.2247, "julaug": 0.173, "lines": 318, "guards": []}
+{"name": "93f54d7", "who": "pacsci1", "gate": 0.2275, "dev": 0.2199, "julaug": 0.1645, "lines": 381, "guards": []}
+{"name": "13bba5c", "who": "pacsci2", "gate": 0.2238, "dev": 0.2176, "julaug": 0.1727, "lines": 316, "guards": []}
+{"name": "d92c086", "who": "pacsci1", "gate": 0.2232, "dev": 0.2159, "julaug": 0.1629, "lines": 381, "guards": []}
+{"name": "1533115", "who": "pacsci2", "gate": 0.2205, "dev": 0.2147, "julaug": 0.1727, "lines": 311, "guards": []}
+{"name": "8f6986b", "who": "pacsci1", "gate": 0.2196, "dev": 0.2128, "julaug": 0.1638, "lines": 381, "guards": []}
+{"name": "3a44de9", "who": "pacsci2", "gate": 0.2166, "dev": 0.2112, "julaug": 0.1727, "lines": 311, "guards": []}
+{"name": "a6d6190", "who": "pacsci2", "gate": 0.2112, "dev": 0.2065, "julaug": 0.1727, "lines": 299, "guards": []}
+{"name": "b776439", "who": "near-miss", "gate": 0.2077, "dev": 0.2021, "julaug": 0.1615, "lines": 341, "guards": []}
+{"name": "870891d", "who": "start", "gate": 0.2058, "dev": 0.2004, "julaug": 0.1615, "lines": 340, "guards": []}
+{"name": "e258c4a", "who": "near-miss", "gate": 0.1964, "dev": 0.1934, "julaug": 0.1714, "lines": 269, "guards": []}
+{"name": "c9804cc", "who": "start", "gate": 0.1943, "dev": 0.1907, "julaug": 0.1649, "lines": 268, "guards": []}
+{"name": "v7", "who": "ref", "gate": 0.1556, "dev": 0.1516, "julaug": 0.1221, "lines": 102, "guards": []}
+vs 870891d: c9804cc gate -0.0115 dev -0.0097 share 0.06 no
+vs 870891d: b776439 gate 0.0019 dev 0.0017 share 0.825 no
+vs 870891d: e258c4a gate -0.0094 dev -0.007 share 0.105 no
+vs 870891d: a6d6190 gate 0.0054 dev 0.0061 share 0.81 beats
+vs 870891d: 8f6986b gate 0.0138 dev 0.0124 share 1.0 beats
+vs 870891d: d92c086 gate 0.0174 dev 0.0155 share 1.0 beats
+vs 870891d: 3a44de9 gate 0.0108 dev 0.0108 share 0.905 beats
+vs 870891d: 1533115 gate 0.0147 dev 0.0143 share 0.95 beats
+vs 870891d: 13bba5c gate 0.018 dev 0.0172 share 0.975 beats
+vs 870891d: cfeab06 gate 0.026 dev 0.0243 share 0.995 beats
+vs 870891d: 93f54d7 gate 0.0217 dev 0.0195 share 1.0 beats
+PICK cfeab06 pacsci2 gate 0.2318 julaug 0.173 lines 318 | passing step 3 in order: ['cfeab06', '93f54d7', '13bba5c', 'd92c086', '1533115', '8f6986b', '3a44de9', 'a6d6190']
