@@ -10,7 +10,7 @@ Data flow, and who can read what: [`docs/data-flow-v2.png`](docs/data-flow-v2.pn
 
 ## Presentation
 
-The final presentation deck is [`docs/strange-threads-deck-v5.pdf`](docs/strange-threads-deck-v5.pdf).
+The final presentation deck is [`docs/step-function-deck-v5.pdf`](docs/step-function-deck-v5.pdf).
 
 ## Idea
 Posted GPU rental prices move in steps, so on most days tomorrow's price equals today's. The middle forecast is the last price. The low and high come from how often each kind of seller reprices, and by how much. A team of agents improves the forecaster one change at a time. A change counts only if it wins on September origins; October is scored once, at the end.
