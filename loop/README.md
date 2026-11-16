@@ -45,6 +45,8 @@ This builds the series from the pack, writes `results/backtest.json` and writes 
 
 Challenger (not the submission): `challenger_v81_2026-11-06.csv` is the v8.1 pick 870891d at origin 11-06, same rows and schema (2175 rows, 725 series). Reproduce: `uv run python research/challenger.py research/forecaster_agent_v81.py data/series_scored.npz 2026-11-06 challenger_v81_2026-11-06.csv "v8.1 pick 870891d (research forecaster, code: loop/research/forecaster_agent_v81.py); challenger, not the submission"`. Its holdout result is in `research/v81-record/HOLDOUT.md`.
 
+Challenger v8.3 (not the submission): `challenger_v83_2026-11-06.csv` is the v8.3 pick cfeab06 at origin 11-06, same rows and schema (2175 rows, 725 series). It was picked on dev data to Nov 6 by a rule written before the round, with no unseen weeks left, so its gains are dev-only evidence until November is scored. Reproduce: `uv run python research/challenger.py research/forecaster_agent_v83.py data/series_scored.npz 2026-11-06 challenger_v83_2026-11-06.csv "v8.3 pick cfeab06, dev-only evidence (holdout weeks already used); code: loop/research/forecaster_agent_v83.py; challenger, not the submission"`. The round and pick are in `research/v83-record/` on branch research/v83-record.
+
 Run the loop:
 
 ```bash
